@@ -17,6 +17,7 @@
 	local sysinfo = luci.util.ubus("system", "info") or { }
 	local boardinfo = luci.util.ubus("system", "board") or { }
 	local unameinfo = nixio.uname() or { }
+	local serialnum = luci.sys.exec("getserialnum") or { }
 
 	local meminfo = sysinfo.memory or {
 		total = 0,
@@ -559,11 +560,9 @@
 
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Hostname%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<tr><td width="33%"><%:Model%></td><td><%=pcdata(boardinfo.model or boardinfo.system or "?")%></td></tr>
-		<tr><td width="33%"><%:Firmware Version%></td><td>
-			<%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%> /
-			<%=pcdata(ver.luciname)%> (<%=pcdata(ver.luciversion)%>)
-		</td></tr>
+		<tr><td width="33%"><%:Model%></td><td>RTU968</td></tr>
+		<tr><td width="33%"><%:S/N%></td><td><%=serialnum or "?"%></td></tr>
+		<tr><td width="33%"><%:Firmware Version%></td><td><%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%></td></tr>
 		<tr><td width="33%"><%:Kernel Version%></td><td><%=unameinfo.release or "?"%></td></tr>
 		<tr><td width="33%"><%:Local Time%></td><td id="localtime">-</td></tr>
 		<tr><td width="33%"><%:Uptime%></td><td id="uptime">-</td></tr>
