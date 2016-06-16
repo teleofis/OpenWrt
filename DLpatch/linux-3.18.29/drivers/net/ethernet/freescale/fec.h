@@ -53,11 +53,13 @@
 #define FEC_R_FSTART		0x150 /* FIFO receive start reg */
 #define FEC_R_DES_START_1	0x160 /* Receive descriptor ring 1 */
 #define FEC_X_DES_START_1	0x164 /* Transmit descriptor ring 1 */
+#define FEC_R_BUFF_SIZE_1	0x168 /* Maximum receive buff ring1 size */
 #define FEC_R_DES_START_2	0x16c /* Receive descriptor ring 2 */
 #define FEC_X_DES_START_2	0x170 /* Transmit descriptor ring 2 */
+#define FEC_R_BUFF_SIZE_2	0x174 /* Maximum receive buff ring2 size */
 #define FEC_R_DES_START_0	0x180 /* Receive descriptor ring */
 #define FEC_X_DES_START_0	0x184 /* Transmit descriptor ring */
-#define FEC_R_BUFF_SIZE		0x188 /* Maximum receive buff size */
+#define FEC_R_BUFF_SIZE_0	0x188 /* Maximum receive buff size */
 #define FEC_R_FIFO_RSFL		0x190 /* Receive FIFO section full threshold */
 #define FEC_R_FIFO_RSEM		0x194 /* Receive FIFO section empty threshold */
 #define FEC_R_FIFO_RAEM		0x198 /* Receive FIFO almost empty threshold */
@@ -165,7 +167,9 @@
 #define FEC_X_DES_START_0	0x3d4 /* Transmit descriptor ring */
 #define FEC_X_DES_START_1	FEC_X_DES_START_0
 #define FEC_X_DES_START_2	FEC_X_DES_START_0
-#define FEC_R_BUFF_SIZE		0x3d8 /* Maximum receive buff size */
+#define FEC_R_BUFF_SIZE_0	0x3d8 /* Maximum receive buff size */
+#define FEC_R_BUFF_SIZE_1	FEC_R_BUFF_SIZE_0
+#define FEC_R_BUFF_SIZE_2	FEC_R_BUFF_SIZE_0
 #define FEC_FIFO_RAM		0x400 /* FIFO RAM buffer */
 /* Not existed in real chip
  * Just for pass build.
@@ -279,36 +283,40 @@ struct bufdesc_ex {
 #define FEC_ENET_MAX_TX_QS	3
 #define FEC_ENET_MAX_RX_QS	3
 
-#define FEC_R_DES_START(X)	((X == 1) ? FEC_R_DES_START_1 : \
-				((X == 2) ? \
+#define FEC_R_DES_START(X)	(((X) == 1) ? FEC_R_DES_START_1 : \
+				(((X) == 2) ? \
 					FEC_R_DES_START_2 : FEC_R_DES_START_0))
-#define FEC_X_DES_START(X)	((X == 1) ? FEC_X_DES_START_1 : \
-				((X == 2) ? \
+#define FEC_X_DES_START(X)	(((X) == 1) ? FEC_X_DES_START_1 : \
+				(((X) == 2) ? \
 					FEC_X_DES_START_2 : FEC_X_DES_START_0))
-#define FEC_R_DES_ACTIVE(X)	((X == 1) ? FEC_R_DES_ACTIVE_1 : \
-				((X == 2) ? \
+#define FEC_R_BUFF_SIZE(X)	(((X) == 1) ? FEC_R_BUFF_SIZE_1 : \
+				(((X) == 2) ? \
+					FEC_R_BUFF_SIZE_2 : FEC_R_BUFF_SIZE_0))
+#define FEC_R_DES_ACTIVE(X)	(((X) == 1) ? FEC_R_DES_ACTIVE_1 : \
+				(((X) == 2) ? \
 				   FEC_R_DES_ACTIVE_2 : FEC_R_DES_ACTIVE_0))
-#define FEC_X_DES_ACTIVE(X)	((X == 1) ? FEC_X_DES_ACTIVE_1 : \
-				((X == 2) ? \
+#define FEC_X_DES_ACTIVE(X)	(((X) == 1) ? FEC_X_DES_ACTIVE_1 : \
+				(((X) == 2) ? \
 				   FEC_X_DES_ACTIVE_2 : FEC_X_DES_ACTIVE_0))
 
-#define FEC_DMA_CFG(X)		((X == 2) ? FEC_DMA_CFG_2 : FEC_DMA_CFG_1)
+#define FEC_DMA_CFG(X)		(((X) == 2) ? FEC_DMA_CFG_2 : FEC_DMA_CFG_1)
 
 #define DMA_CLASS_EN		(1 << 16)
-#define FEC_RCMR(X)		((X == 2) ? FEC_RCMR_2 : FEC_RCMR_1)
-#define IDLE_SLOPE_MASK		0xFFFF
+#define FEC_RCMR(X)		(((X) == 2) ? FEC_RCMR_2 : FEC_RCMR_1)
+#define IDLE_SLOPE_MASK		0xffff
 #define IDLE_SLOPE_1		0x200 /* BW fraction: 0.5 */
 #define IDLE_SLOPE_2		0x200 /* BW fraction: 0.5 */
-#define IDLE_SLOPE(X)		((X == 1) ? (IDLE_SLOPE_1 & IDLE_SLOPE_MASK) : \
+#define IDLE_SLOPE(X)		(((X) == 1) ?				\
+				(IDLE_SLOPE_1 & IDLE_SLOPE_MASK) :	\
 				(IDLE_SLOPE_2 & IDLE_SLOPE_MASK))
-#define RCMR_MATCHEN            (0x1 << 16)
-#define RCMR_CMP_CFG(v, n)	((v & 0x7) <<  (n << 2))
+#define RCMR_MATCHEN		(0x1 << 16)
+#define RCMR_CMP_CFG(v, n)	(((v) & 0x7) <<  (n << 2))
 #define RCMR_CMP_1		(RCMR_CMP_CFG(0, 0) | RCMR_CMP_CFG(1, 1) | \
 				RCMR_CMP_CFG(2, 2) | RCMR_CMP_CFG(3, 3))
 #define RCMR_CMP_2		(RCMR_CMP_CFG(4, 0) | RCMR_CMP_CFG(5, 1) | \
 				RCMR_CMP_CFG(6, 2) | RCMR_CMP_CFG(7, 3))
-#define RCMR_CMP(X)		((X == 1) ? RCMR_CMP_1 : RCMR_CMP_2)
-#define FEC_TX_BD_FTYPE(X)	((X & 0xF) << 20)
+#define RCMR_CMP(X)		(((X) == 1) ? RCMR_CMP_1 : RCMR_CMP_2)
+#define FEC_TX_BD_FTYPE(X)	(((X) & 0xf) << 20)
 
 /* The number of Tx and Rx buffers.  These are allocated from the page
  * pool.  The code may assume these are power of two, so it it best
@@ -348,6 +356,7 @@ struct bufdesc_ex {
 #define FEC_ENET_RXB    ((uint)0x01000000)      /* A buffer was received */
 #define FEC_ENET_MII    ((uint)0x00800000)      /* MII interrupt */
 #define FEC_ENET_EBERR  ((uint)0x00400000)      /* SDMA bus error */
+#define FEC_ENET_WAKEUP	((uint)0x00020000)	/* Wakeup request */
 #define FEC_ENET_TXF	(FEC_ENET_TXF_0 | FEC_ENET_TXF_1 | FEC_ENET_TXF_2)
 #define FEC_ENET_RXF	(FEC_ENET_RXF_0 | FEC_ENET_RXF_1 | FEC_ENET_RXF_2)
 #define FEC_ENET_TS_AVAIL       ((uint)0x00010000)
@@ -359,7 +368,7 @@ struct bufdesc_ex {
 /* ENET interrupt coalescing macro define */
 #define FEC_ITR_CLK_SEL		(0x1 << 30)
 #define FEC_ITR_EN		(0x1 << 31)
-#define FEC_ITR_ICFT(X)		((X & 0xFF) << 20)
+#define FEC_ITR_ICFT(X)		(((X) & 0xFF) << 20)
 #define FEC_ITR_ICTT(X)		((X) & 0xFFFF)
 #define FEC_ITR_ICFT_DEFAULT	200  /* Set 200 frame count threshold */
 #define FEC_ITR_ICTT_DEFAULT	1000 /* Set 1000us timer threshold */
@@ -416,6 +425,10 @@ struct bufdesc_ex {
  * (40ns * 6).
  */
 #define FEC_QUIRK_BUG_CAPTURE		(1 << 10)
+/* Controller has only one MDIO bus */
+#define FEC_QUIRK_SINGLE_MDIO		(1 << 11)
+/* Controller supports RACC register */
+#define FEC_QUIRK_HAS_RACC		(1 << 12)
 
 struct fec_enet_priv_tx_q {
 	int index;
@@ -501,8 +514,10 @@ struct fec_enet_private {
 	int	speed;
 	struct	completion mdio_done;
 	int	irq[FEC_IRQ_NUM];
-	int	bufdesc_ex;
+	bool	bufdesc_ex;
 	int	pause_flag;
+	int	wol_flag;
+	u32	quirks;
 
 	struct	napi_struct napi;
 	int	csum_flags;
@@ -546,6 +561,7 @@ struct fec_enet_private {
 };
 
 void fec_ptp_init(struct platform_device *pdev);
+void fec_ptp_stop(struct platform_device *pdev);
 void fec_ptp_start_cyclecounter(struct net_device *ndev);
 int fec_ptp_set(struct net_device *ndev, struct ifreq *ifr);
 int fec_ptp_get(struct net_device *ndev, struct ifreq *ifr);
