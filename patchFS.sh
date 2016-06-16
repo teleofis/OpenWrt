@@ -13,5 +13,4 @@
 
 cp -R FSpatch/etc rootfs/
 cp -R FSpatch/usr rootfs/
-cp -R FSpatch/www rootfs/
 cp -R FSpatch/sbin rootfs/
