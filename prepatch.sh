@@ -1,5 +1,5 @@
 #!/bin/bash
-cd dl_patch/
+cd DLpatch/
 tar cfJ linux-3.18.29.tar.xz linux-3.18.29
+mv DLpatch/linux-3.18.29.tar.xz ./dl
 cd ..
-mv dl_patch/linux-3.18.29.tar.xz ./dl
