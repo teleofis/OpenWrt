@@ -19,3 +19,8 @@ key-build*
 .emacs.desktop*
 TAGS*~
 git-src
+/result/
+/rootfs/
+/openwrt-mxs-root.ext4
+/rootfs.img
+/sysupgrade_RTU968.tar
