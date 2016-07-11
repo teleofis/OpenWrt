@@ -3,8 +3,7 @@ CC = gcc
 CFLAGS = -Os -Wall -Wmissing-declarations -g3
 CPPFLAGS = -I../inc -I./ -I$(STAG_DIR)/usr/include
 LDFLAGS  = -L$(STAG_DIR)/usr/lib -L./
-
-LDLIBS = 
+LDLIBS = -luci -lpthread
 
 PROGRAMS=pollmydevice
 

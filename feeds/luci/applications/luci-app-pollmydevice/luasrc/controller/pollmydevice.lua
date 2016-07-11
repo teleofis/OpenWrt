@@ -11,11 +11,11 @@ function index()
     local page
     page = node("admin", "services")
 
-    page = entry({"admin", "services", "pollmydevice"}, cbi("pollmydevice")$
+    page = entry({"admin", "services", "pollmydevice"}, cbi("pollmydevice"), _(translate("PollMyDevice")))
     page.leaf   = true
     page.subindex = true
 
-    uci:foreach--("pollmydevice", "interface",
+    uci:foreach("pollmydevice", "interface",
             function (section)
                     local ifc = section[".name"]
                     entry({"admin", "services", "pollmydevice", ifc},

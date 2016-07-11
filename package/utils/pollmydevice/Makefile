@@ -13,15 +13,15 @@ include $(INCLUDE_DIR)/package.mk
 define Package/pollmydevice
   SECTION:=utils
   CATEGORY:=Utilities
-  TITLE:=TCP to RS232 and RS485 converter
-  DEPENDS:=+libuci 
+  TITLE:=PollMyDevice project
+  DEPENDS:=+libpthread +libuci
 endef
 
 TARGET_CFLAGS += -I$(STAGING_DIR)/usr/include
 TARGET_LDFLAGS += -L$(STAGING_DIR)/usr/lib
 
 define Package/pollmydevice/description
- This package contains utility for serial port polling.
+ This package contains utility for sim check manage.
 endef
 
 define Build/Prepare

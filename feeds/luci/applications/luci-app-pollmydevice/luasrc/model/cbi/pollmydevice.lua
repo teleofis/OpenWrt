@@ -5,7 +5,7 @@ require 'luci.sys'
 
 arg[1] = arg[1] or ""
 
-local has_iface  = fs.access("/etc/config/pollmydevice")
+local has_iface = nixio.fs.access("/etc/config/pollmydevice")
 
 m = Map("pollmydevice", translate("PollMyDevice") .. " " .. arg[1]:upper(), translate("TCP to RS232/RS485 converter"))
 
