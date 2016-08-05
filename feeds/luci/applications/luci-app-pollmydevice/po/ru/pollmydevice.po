@@ -1,0 +1,43 @@
+# Vladimir Ovseychuk <ovseychuk@teleofis.com>, 2016.
+
+msgid "PollMyDevice"
+msgstr "Опрос портов по TCP"
+
+msgid "Utility Settings"
+msgstr "Настройки"
+
+msgid "TCP to RS232/RS485 converter"
+msgstr "Конвертер TCP - Последовательный порт"
+
+msgid "BaudRate"
+msgstr "Скорость (бод)"
+
+msgid "ByteSize"
+msgstr ""
+
+msgid "Parity"
+msgstr "Четность"
+
+msgid "StopBits"
+msgstr "Стоп-биты"
+
+msgid "Server Port"
+msgstr "Порт (режим server)"
+
+msgid "Connection Hold Time"
+msgstr "Время удержания приоритета соединения"
+
+msgid "Client Host or IP Address"
+msgstr "Адрес сервера (режим client)"
+
+msgid "Client Port"
+msgstr "Порт сервера (режим client)"
+
+msgid "Client Reconnection Timeout"
+msgstr "Таймаут соединения (режим client)"
+
+msgid "Client Authentification"
+msgstr "Авторизация Teleofis"
+
+msgid "Use Teleofis Authentification"
+msgstr "Использовать авторизацию по Teleofis ID (режим client)"
