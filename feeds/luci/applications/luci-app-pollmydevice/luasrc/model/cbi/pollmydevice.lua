@@ -19,11 +19,23 @@ mode = s:option(ListValue, "mode", translate("Mode"))
   mode:value("client")
   mode.optional = false
 
-baudrate = s:option(Value, "baudrate",  translate("BaudRate"))
+baudrate = s:option(ListValue, "baudrate",  translate("BaudRate"))
   baudrate.default = 9600
-  baudrate.datatype = "uinteger"
-  baudrate.rmempty = false
+  baudrate:value(300)
+  baudrate:value(600)
+  baudrate:value(1200)
+  baudrate:value(2400)
+  baudrate:value(4800)
+  baudrate:value(9600)
+  baudrate:value(19200)
+  baudrate:value(38400)
+  baudrate:value(57600)
+  baudrate:value(115200)
+  baudrate:value(230400)
+  baudrate:value(460800)
+  baudrate:value(921600)
   baudrate.optional = false
+  baudrate.datatype = "uinteger"
 
 bytesize = s:option(ListValue, "bytesize", translate("ByteSize"))
   bytesize.default = 8

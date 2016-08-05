@@ -1,99 +1,43 @@
 # Vladimir Ovseychuk <ovseychuk@teleofis.com>, 2016.
-msgid ""
-msgstr ""
 
 msgid "PollMyDevice"
 msgstr "Опрос портов по TCP"
 
-msgid "SIM manager for 3g modem"
-msgstr "Менеджер СИМ карт 3G модема"
-
-msgid "General settings"
+msgid "Utility Settings"
 msgstr "Настройки"
 
-msgid "Enable Simman"
-msgstr "Разрешить работу сервиса"
+msgid "TCP to RS232/RS485 converter"
+msgstr "Конвертер TCP - Последовательный порт"
 
-msgid "Enabled"
-msgstr "Включить"
+msgid "BaudRate"
+msgstr "Скорость (бод)"
 
-msgid "Number of failed attempts"
-msgstr "Число неудачных попыток"
+msgid "ByteSize"
+msgstr ""
 
-msgid "Period of check, sec"
-msgstr "Период опроса, сек"
+msgid "Parity"
+msgstr "Четность"
 
-msgid "Return to priority SIM, sec"
-msgstr "Период переключения на приоритетную СИМ карту, сек"
+msgid "StopBits"
+msgstr "Стоп-биты"
 
-msgid "AT modem device name"
-msgstr "Имя устройства АТ модема"
+msgid "Server Port"
+msgstr "Порт (режим server)"
 
-msgid "IP address of remote servers"
-msgstr "Адреса тестовых серверов"
+msgid "Connection Hold Time"
+msgstr "Время удержания приоритета соединения"
 
-msgid "SIM1 settings"
-msgstr "Параметры СИМ карты 1"
+msgid "Client Host or IP Address"
+msgstr "Адрес сервера (режим client)"
 
-msgid "Priority"
-msgstr "Приоритет"
+msgid "Client Port"
+msgstr "Порт сервера (режим client)"
 
-msgid "APN"
-msgstr "Имя точки доступа"
+msgid "Client Reconnection Timeout"
+msgstr "Таймаут соединения (режим client)"
 
-msgid "Pincode"
-msgstr "Пин код"
+msgid "Client Authentification"
+msgstr "Авторизация Teleofis"
 
-msgid "User name"
-msgstr "Имя пользователя"
-
-msgid "Password"
-msgstr "Пароль"
-
-msgid "SIM2 settings"
-msgstr "Параметры СИМ карты 2"
-
-msgid "SIM Info"
-msgstr "Информация по подключению"
-
-msgid "SIM State"
-msgstr "Состояние SIM карт"
-
-msgid "Active SIM CCID"
-msgstr "CCID активной SIM карты"
-
-msgid "Pincode Status"
-msgstr "Статус PIN-кода"
-
-msgid "Signal Strength"
-msgstr "Уровень сигнала"
-
-msgid "Registration Status"
-msgstr "Статус регистрации в сети"
-
-msgid "Base Station ID"
-msgstr "ID базовой станции"
-
-msgid "Base Station Band"
-msgstr "Частотный канал"
-
-msgid "Cellural Network Type"
-msgstr "Технология доступа"
-
-msgid "GPRS Status"
-msgstr "Статус GPRS"
-
-msgid "Package Type"
-msgstr "Тип пакетной передачи"
-
-msgid "Modem IMEI"
-msgstr "IMEI модема"
-
-msgid "Provider Info"
-msgstr "Информация об операторе"
-
-msgid "Refresh Info"
-msgstr "Обновить информацию"
-
-msgid "Refresh"
-msgstr "Обновить"
+msgid "Use Teleofis Authentification"
+msgstr "Использовать авторизацию по Teleofis ID (режим client)"
