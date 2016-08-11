@@ -15,6 +15,7 @@ function index()
 
 	if fs.access("/bin/opkg") then
 		entry({"admin", "system", "packages"}, call("action_packages"), _("Software"), 10)
+		entry({"admin", "system", "packages", "ipkupload"}, form("admin_system/ipkupload"))
 		entry({"admin", "system", "packages", "ipkg"}, form("admin_system/ipkg"))
 	end
 
