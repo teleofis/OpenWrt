@@ -24,6 +24,8 @@ end
 nw.init(m.uci)
 fw.init(m.uci)
 
+--handle = io.open("/tmp/debug", "w") 
+--handle:write("start ifaces_lua\n")
 
 local net = nw:get_network(arg[1])
 
@@ -237,7 +239,7 @@ end
 
 
 if not net:is_floating() then
-	ifname_single = s:taboption("physical", Value, "ifname_single", translate("Interface"))
+	ifname_single = s:taboption("physical", Value, "ifname_single", translate("Interface"), translate("WARNING! Due to i.MX287 architecture eth1 can work only while working eth0"))
 	ifname_single.template = "cbi/network_ifacelist"
 	ifname_single.widget = "radio"
 	ifname_single.nobridges = true
@@ -268,9 +270,26 @@ if not net:is_floating() then
 			end
 		end
 
-		table.sort(old_ifs)
-		table.sort(new_ifs)
+-- WATCH THIS!!!
+		--table.sort(old_ifs)
+		--table.sort(new_ifs)
+--[[
+		local ch = 0
+		for i = 1, math.max(#old_ifs, #new_ifs) do
+			if old_ifs[i] ~= new_ifs[i] then
+				backup_ifnames()
+				ch = 1
+			end
+		end
 
+		if ch==0 then return end
+]]
+		m:del(net:name(), "ifname")
+		m:set(net:name(), "ifname", table.concat(new_ifs, " "))
+
+--		handle:write(table.concat(new_ifs, " "))
+--		handle:write(" \n")
+--[[	
 		for i = 1, math.max(#old_ifs, #new_ifs) do
 			if old_ifs[i] ~= new_ifs[i] then
 				backup_ifnames()
@@ -283,12 +302,13 @@ if not net:is_floating() then
 				break
 			end
 		end
+]]
 	end
 end
 
 
 if not net:is_virtual() then
-	ifname_multi = s:taboption("physical", Value, "ifname_multi", translate("Interface"))
+	ifname_multi = s:taboption("physical", Value, "ifname_multi", translate("Interface"), translate("WARNING! Due to i.MX287 architecture eth1 can work only while working eth0"))
 	ifname_multi.template = "cbi/network_ifacelist"
 	ifname_multi.nobridges = true
 	ifname_multi.rmempty = false

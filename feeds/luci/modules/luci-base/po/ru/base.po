@@ -405,6 +405,9 @@ msgstr "Мост"
 msgid "Bridge interfaces"
 msgstr "Объединить в мост"
 
+msgid "WARNING! Due to i.MX287 architecture eth1 can work only while working eth0"
+msgstr "ВНИМАНИЕ! Из-за аппаратных ограничений i.MX287 интерфейс eth1 может работать только при работающем eth0"
+
 msgid "Bridge unit number"
 msgstr "Номер моста"
 
@@ -423,7 +426,7 @@ msgstr "Буферизировано"
 msgid ""
 "Build/distribution specific feed definitions. This file will NOT be "
 "preserved in any sysupgrade."
-msgstr "Конфигурация источников для менеджера пакетов(конфигурация репозиториев)"
+msgstr "Конфигурация источников для менеджера пакетов"
 
 msgid "Buttons"
 msgstr "Кнопки"
