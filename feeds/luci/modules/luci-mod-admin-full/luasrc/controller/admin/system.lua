@@ -15,6 +15,7 @@ function index()
 
 	if fs.access("/bin/opkg") then
 		entry({"admin", "system", "packages"}, call("action_packages"), _("Software"), 10)
+		entry({"admin", "system", "packages", "ipkupload"}, form("admin_system/ipkupload"))
 		entry({"admin", "system", "packages", "ipkg"}, form("admin_system/ipkg"))
 	end
 
@@ -171,14 +172,14 @@ function action_flashops()
 	local fs  = require "nixio.fs"
 
 	local upgrade_avail = fs.access("/lib/upgrade/platform.sh")
-	local reset_avail   = os.execute([[grep -E '"rootfs_data"|"ubi"' /proc/mtd >/dev/null 2>&1]]) == 0
+	local reset_avail   = os.execute([[grep '"rootfs_data"' /proc/mtd >/dev/null 2>&1]]) == 0
 
 	local restore_cmd = "tar -xzC/ >/dev/null 2>&1"
-	local backup_cmd  = "sysupgrade --create-backup - 2>/dev/null"
+	local backup_cmd  = "backup --create-backup - 2>/dev/null"
 	local image_tmp   = "/tmp/firmware.img"
 
 	local function image_supported()
-		return (os.execute("sysupgrade -T %q >/dev/null" % image_tmp) == 0)
+		return (os.execute("backup -T %q >/dev/null" % image_tmp) == 0)
 	end
 
 	local function image_checksum()
@@ -267,16 +268,16 @@ function action_flashops()
 				})
 			end
 		--
-		-- Start sysupgrade flash
+		-- Start backup flash
 		--
 		elseif step == 2 then
 			local keep = (luci.http.formvalue("keep") == "1") and "" or "-n"
 			luci.template.render("admin_system/applyreboot", {
 				title = luci.i18n.translate("Flashing..."),
 				msg   = luci.i18n.translate("The system is flashing now.<br /> DO NOT POWER OFF THE DEVICE!<br /> Wait a few minutes before you try to reconnect. It might be necessary to renew the address of your computer to reach the device again, depending on your settings."),
-				addr  = (#keep > 0) and "192.168.1.1" or nil
+				addr  = (#keep > 0) and "192.168.88.1" or nil
 			})
-			fork_exec("sleep 1; killall dropbear uhttpd; sleep 1; /sbin/sysupgrade %s %q" %{ keep, image_tmp })
+			fork_exec("sleep 1; killall dropbear uhttpd; sleep 1; /sbin/backup %s %q" %{ keep, image_tmp })
 		end
 	elseif reset_avail and luci.http.formvalue("reset") then
 		--
@@ -285,9 +286,9 @@ function action_flashops()
 		luci.template.render("admin_system/applyreboot", {
 			title = luci.i18n.translate("Erasing..."),
 			msg   = luci.i18n.translate("The system is erasing the configuration partition now and will reboot itself when finished."),
-			addr  = "192.168.1.1"
+			addr  = "192.168.88.1"
 		})
-		fork_exec("sleep 1; killall dropbear uhttpd; sleep 1; jffs2reset -y && reboot")
+		fork_exec("firstboot -y; reboot -f")
 	else
 		--
 		-- Overview

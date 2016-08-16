@@ -405,6 +405,9 @@ msgstr "Мост"
 msgid "Bridge interfaces"
 msgstr "Объединить в мост"
 
+msgid "WARNING! Due to i.MX287 architecture eth1 can work only while working eth0"
+msgstr "ВНИМАНИЕ! Из-за аппаратных ограничений i.MX287 интерфейс eth1 может работать только при работающем eth0"
+
 msgid "Bridge unit number"
 msgstr "Номер моста"
 
@@ -423,7 +426,7 @@ msgstr "Буферизировано"
 msgid ""
 "Build/distribution specific feed definitions. This file will NOT be "
 "preserved in any sysupgrade."
-msgstr ""
+msgstr "Конфигурация источников для менеджера пакетов"
 
 msgid "Buttons"
 msgstr "Кнопки"
@@ -585,10 +588,10 @@ msgstr ""
 msgid ""
 "Custom feed definitions, e.g. private feeds. This file can be preserved in a "
 "sysupgrade."
-msgstr ""
+msgstr "Пользовательские или закрытые источники"
 
 msgid "Custom feeds"
-msgstr ""
+msgstr "Пользовательские источники"
 
 msgid ""
 "Customizes the behaviour of the device <abbr title=\"Light Emitting Diode"
@@ -733,7 +736,7 @@ msgid "Distance to farthest network member in meters."
 msgstr "Расстояние до самого удалённого сетевого узла в метрах."
 
 msgid "Distribution feeds"
-msgstr ""
+msgstr "Конфигурация источников ПО"
 
 msgid "Diversity"
 msgstr "Разновидность антенн"
@@ -1038,7 +1041,19 @@ msgid "General Setup"
 msgstr "Основные настройки"
 
 msgid "General options for opkg"
-msgstr ""
+msgstr "Основные настройки opkg"
+
+msgid "Upload and install .ipk file"
+msgstr "Загрузка и установка .ipk файла"
+
+msgid "Upload"
+msgstr "Загрузить"
+
+msgid "Upload package"
+msgstr "Загрузить пакет"
+
+msgid "Package installed"
+msgstr "Пакет установлен"
 
 msgid "Generate archive"
 msgstr "Создать архив"
@@ -1050,7 +1065,7 @@ msgid "Given password confirmation did not match, password not changed!"
 msgstr "Введённые пароли не совпадают, пароль не изменён!"
 
 msgid "Global network options"
-msgstr ""
+msgstr "Глобальные настройки сети"
 
 msgid "Go to password configuration..."
 msgstr "Перейти к настройке пароля..."
