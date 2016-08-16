@@ -13,7 +13,7 @@ msgid "BaudRate"
 msgstr "Скорость (бод)"
 
 msgid "ByteSize"
-msgstr ""
+msgstr "Размер слова"
 
 msgid "Parity"
 msgstr "Четность"

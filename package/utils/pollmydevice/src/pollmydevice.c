@@ -1185,7 +1185,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     
     // for web view
     char cmd[100];
-    sprintf(cmd,"uci set pollmydevice.%d.teleofisid=%lld",deviceID, deviceConfig.teleofisID);
+    sprintf(cmd,"uci set pollmydevice.%d.teleofisid=%lld && uci commit pollmydevice",deviceID, deviceConfig.teleofisID);
     FILE *fp;
     fp = popen(cmd,"r");
     if (popen(cmd,"r") != NULL) 
