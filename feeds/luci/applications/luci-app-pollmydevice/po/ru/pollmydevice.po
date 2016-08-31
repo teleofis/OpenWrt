@@ -18,26 +18,29 @@ msgstr "Размер слова"
 msgid "Parity"
 msgstr "Четность"
 
+msgid "Flow Control"
+msgstr "Управление потоком"
+
 msgid "StopBits"
 msgstr "Стоп-биты"
 
 msgid "Server Port"
-msgstr "Порт (режим server)"
+msgstr "Порт"
 
 msgid "Connection Hold Time"
 msgstr "Время удержания приоритета соединения"
 
 msgid "Client Host or IP Address"
-msgstr "Адрес сервера (режим client)"
+msgstr "Адрес сервера"
 
 msgid "Client Port"
-msgstr "Порт сервера (режим client)"
+msgstr "Порт сервера"
 
 msgid "Client Reconnection Timeout"
-msgstr "Таймаут соединения (режим client)"
+msgstr "Таймаут соединения"
 
 msgid "Client Authentification"
 msgstr "Авторизация Teleofis"
 
 msgid "Use Teleofis Authentification"
-msgstr "Использовать авторизацию по Teleofis ID (режим client)"
+msgstr "Использовать авторизацию по Teleofis ID"
