@@ -490,8 +490,8 @@ msgstr "Запущено"
 msgid "Status file format version"
 msgstr "Версия формата статусного файла"
 
-msgid "Switch to advanced configuration »"
-msgstr "Перейти к расширенным настройкам »"
+msgid "Switch to advanced configuration"
+msgstr "Перейти к расширенным настройкам"
 
 msgid "TCP/UDP port # for both local and remote"
 msgstr "Номер локального и удалённого TCP/UDP порта"
@@ -553,8 +553,8 @@ msgstr "таймаут простоя tun/tap"
 msgid "yes (%i)"
 msgstr "да (%i)"
 
-msgid "« Switch to basic configuration"
-msgstr "« Перейти к основным настройкам"
+msgid "Switch to basic configuration"
+msgstr "Перейти к основным настройкам"
 
 #~ msgid "Cryptography"
 #~ msgstr "Криптография"

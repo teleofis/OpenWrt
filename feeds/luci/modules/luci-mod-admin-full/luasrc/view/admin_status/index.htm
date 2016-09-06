@@ -18,6 +18,7 @@
 	local boardinfo = luci.util.ubus("system", "board") or { }
 	local unameinfo = nixio.uname() or { }
 	local serialnum = luci.sys.exec("getserialnum") or { }
+	local bootversion = luci.sys.exec("fw_printenv ver | awk -F '=' '{print $2}'") or { }
 
 	local meminfo = sysinfo.memory or {
 		total = 0,
@@ -564,6 +565,7 @@
 		<tr><td width="33%"><%:S/N%></td><td><%=serialnum or "?"%></td></tr>
 		<tr><td width="33%"><%:Firmware Version%></td><td><%=pcdata(ver.distname)%> <%=pcdata(ver.distversion)%></td></tr>
 		<tr><td width="33%"><%:Kernel Version%></td><td><%=unameinfo.release or "?"%></td></tr>
+		<tr><td width="33%"><%:Bootloader Version%></td><td><%=bootversion or "?"%></td></tr>
 		<tr><td width="33%"><%:Local Time%></td><td id="localtime">-</td></tr>
 		<tr><td width="33%"><%:Uptime%></td><td id="uptime">-</td></tr>
 		<tr><td width="33%"><%:Load Average%></td><td id="loadavg">-</td></tr>
