@@ -60,6 +60,9 @@ msgstr "Дописать журнал в файл"
 msgid "Authenticate using username/password"
 msgstr "Аутентификация с использованием имени пользователя и пароля"
 
+msgid "Path to username/password file(empty when not use)"
+msgstr "Путь к файлу с логином/паролем(оставить пустым, если не используется)"
+
 msgid "Automatically redirect default route"
 msgstr "Автоматически перенаправлять маршруты по умолчанию"
 
