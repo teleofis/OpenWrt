@@ -224,6 +224,7 @@ void CleanThread(struct fdStructType *threadFD)
     close(threadFD->TCPtimer);
     close(threadFD->epollFD);
     free(threadFD);
+    LOG("Descriptors closed\n");
 }
 /*****************************************/
 /************* SERVER FUNC ***************/
@@ -331,12 +332,28 @@ void *ServerThreadFunc(void *args)
     }
     bzero(&serialPortConfig, sizeof(serialPortConfig)); // clear struct for new port settings
 
-    // set config 
-    cfsetospeed(&serialPortConfig, deviceConfig.baudRate);
-    cfsetispeed(&serialPortConfig, deviceConfig.baudRate);
-
+    // set config
+    speed_t newBaudRate;
+    switch (deviceConfig.baudRate) 
+    {
+        case 300:       newBaudRate = B300      ; break;
+        case 600:       newBaudRate = B600      ; break;
+        case 1200:      newBaudRate = B1200     ; break;
+        case 1800:      newBaudRate = B1800     ; break;
+        case 2400:      newBaudRate = B2400     ; break;
+        case 4800:      newBaudRate = B4800     ; break;
+        case 9600:      newBaudRate = B9600     ; break;
+        case 19200:     newBaudRate = B19200    ; break;
+        case 38400:     newBaudRate = B38400    ; break;
+        case 57600:     newBaudRate = B57600    ; break;
+        case 115200:    newBaudRate = B115200   ; break;
+        case 230400:    newBaudRate = B230400   ; break;
+        case 460800:    newBaudRate = B460800   ; break;
+        case 921600:    newBaudRate = B921600   ; break;
+        default:        newBaudRate = B9600     ; break;
+    }
     
-    serialPortConfig.c_cflag = CLOCAL | CREAD;   // Enable the receiver and set local mode, 8n1 ???
+    serialPortConfig.c_cflag = newBaudRate | CLOCAL | CREAD;   // Enable the receiver and set local mode, 8n1 ???
 
     // set parity
     if(deviceConfig.parity == PARITY_EVEN)
@@ -354,7 +371,7 @@ void *ServerThreadFunc(void *args)
     {
         serialPortConfig.c_cflag |= CRTSCTS;
     }
-    else if(deviceConfig.parity == FC_XONXOFF)
+    else if(deviceConfig.flowcontrol == FC_XONXOFF)
     {
         serialPortConfig.c_iflag |= (IXON | IXOFF | IXANY);
     }
@@ -552,7 +569,7 @@ void *ClientThreadFunc(void *args)
     /***** Serial Port *****/
     /////////////////////////
     struct termios serialPortConfig;
-/// here we must forbid access to serial from other apps
+    /// here we must forbid access to serial from other apps
 
     // open serial
     threadFD->serialPort = open(deviceConfig.deviceName, O_RDWR | O_NOCTTY);
@@ -570,12 +587,28 @@ void *ClientThreadFunc(void *args)
     }
     bzero(&serialPortConfig, sizeof(serialPortConfig)); // clear struct for new port settings
 
-    // set config 
-    cfsetospeed(&serialPortConfig, deviceConfig.baudRate);
-    cfsetispeed(&serialPortConfig, deviceConfig.baudRate);
-
+    // set config
+    speed_t newBaudRate;
+    switch (deviceConfig.baudRate) 
+    {
+        case 300:       newBaudRate = B300      ; break;
+        case 600:       newBaudRate = B600      ; break;
+        case 1200:      newBaudRate = B1200     ; break;
+        case 1800:      newBaudRate = B1800     ; break;
+        case 2400:      newBaudRate = B2400     ; break;
+        case 4800:      newBaudRate = B4800     ; break;
+        case 9600:      newBaudRate = B9600     ; break;
+        case 19200:     newBaudRate = B19200    ; break;
+        case 38400:     newBaudRate = B38400    ; break;
+        case 57600:     newBaudRate = B57600    ; break;
+        case 115200:    newBaudRate = B115200   ; break;
+        case 230400:    newBaudRate = B230400   ; break;
+        case 460800:    newBaudRate = B460800   ; break;
+        case 921600:    newBaudRate = B921600   ; break;
+        default:        newBaudRate = B9600     ; break;
+    }
     
-    serialPortConfig.c_cflag = CLOCAL | CREAD;   // Enable the receiver and set local mode, 8n1 ???
+    serialPortConfig.c_cflag = newBaudRate | CLOCAL | CREAD;   // Enable the receiver and set local mode, 8n1 ???
 
     // set parity
     if(deviceConfig.parity == PARITY_EVEN)
@@ -593,7 +626,7 @@ void *ClientThreadFunc(void *args)
     {
         serialPortConfig.c_cflag |= CRTSCTS;
     }
-    else if(deviceConfig.parity == FC_XONXOFF)
+    else if(deviceConfig.flowcontrol == FC_XONXOFF)
     {
         serialPortConfig.c_iflag |= (IXON | IXOFF | IXANY);
     }
@@ -1114,9 +1147,9 @@ device_config_t GetFullDeviceConfig(int deviceID)
         if(memcmp(UCIptr.o->v.string, "XON/XOFF", 3) == 0)
             deviceConfig.flowcontrol = FC_XONXOFF;
         else if(memcmp(UCIptr.o->v.string, "RTS/CTS", 3) == 0)
-            deviceConfig.parity = FC_RTSCTS;
+            deviceConfig.flowcontrol = FC_RTSCTS;
         else
-            deviceConfig.parity = FC_NONE;
+            deviceConfig.flowcontrol = FC_NONE;
     }
 
     // stopbits
