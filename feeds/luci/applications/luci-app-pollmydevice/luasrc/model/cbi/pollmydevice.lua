@@ -78,12 +78,11 @@ flowcontrol = s:option(ListValue, "flowcontrol", translate("Flow Control"))
   flowcontrol:depends("mode","client")
 
 server_port = s:option(Value, "server_port",  translate("Server Port"))
-  server_port.default = 33333
   server_port.datatype = "and(uinteger, min(1025), max(65535))"
   --server_port.rmempty = false
   server_port:depends("mode","server")
 
-conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time"))
+conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time (sec)"))
   conn_time.default = 60
   conn_time.datatype = "and(uinteger, min(0), max(100000))"
   --conn_time.rmempty = false
@@ -100,7 +99,7 @@ client_port = s:option(Value, "client_port",  translate("Client Port"))
   --client_port.rmempty = false
   client_port:depends("mode","client")
 
-client_timeout = s:option(Value, "client_timeout",  translate("Client Reconnection Timeout"))
+client_timeout = s:option(Value, "client_timeout",  translate("Client Reconnection Timeout (sec)"))
   client_timeout.default = 60
   client_timeout.datatype = "and(uinteger, min(0), max(100000))"
   --client_timeout.rmempty = false
