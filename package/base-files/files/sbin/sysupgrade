@@ -44,11 +44,24 @@ try_upgrade ()
 
 			### if we have an upgrade archive
 			tar -xf sysupgrade_RTU968.tar
-			if [ ! -f rootfs.img ] || [ ! -f openwrt-mxs-uImage ] || [ ! -f fdt.dtb ]; 
+			if [ ! -f rootfs.img ] || [ ! -f openwrt-mxs-uImage ] || [ ! -f fdt.dtb ] || [ ! -f check.md5 ]; 
 			then
 		    	echo "Upgrade archive is corrupted"
 		    	exit 1
 		    fi
+
+		    MD5_FDT=$(md5sum fdt.dtb)
+		    MD5_KERN=$(md5sum openwrt-mxs-uImage)
+		    MD5_ROOT=$(md5sum rootfs.img)
+		    MD5_FDT_FROMFILE=$(sed -n 1p check.md5)
+		    MD5_KERN_FROMFILE=$(sed -n 2p check.md5)
+		    MD5_ROOT_FROMFILE=$(sed -n 3p check.md5)
+		    if [ "$MD5_FDT" != "$MD5_FDT_FROMFILE" ] || [ "$MD5_KERN" != "$MD5_KERN_FROMFILE" ] || [ "$MD5_ROOT" != "$MD5_ROOT_FROMFILE" ]; 
+			then
+		    	echo "Upgrade archive is corrupted"
+		    	exit 1
+		    fi
+
 		    ## if we have all upgrade files
 		    # if test mode
 		    if [ "$MODETEST" -eq 1 ]
@@ -56,6 +69,7 @@ try_upgrade ()
 				rm rootfs.img
 				rm openwrt-mxs-uImage
 				rm fdt.dtb
+				rm check.md5
 				echo OK
 				exit 0
 			fi
