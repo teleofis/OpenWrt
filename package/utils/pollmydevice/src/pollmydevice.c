@@ -31,6 +31,10 @@
 #define PARITY_EVEN         1
 #define PARITY_ODD          2
 
+#define FC_NONE         0
+#define FC_XONXOFF      1
+#define FC_RTSCTS       2
+
 #define EPOLL_RUN_TIMEOUT       -1
 #define MAX_CLIENTS_IN_QUEUE    10
 
@@ -49,6 +53,8 @@
 
 #define IMEI_LENGTH             15
 
+#define FIRST_RECONN_TIMEOUT    10
+
 typedef struct 
 {
     int mode;
@@ -56,6 +62,7 @@ typedef struct
     int baudRate;
     int byteSize;
     int parity;
+    int flowcontrol;
     int stopBits;
     int serverPort;
     int holdConnTime;
@@ -217,6 +224,7 @@ void CleanThread(struct fdStructType *threadFD)
     close(threadFD->TCPtimer);
     close(threadFD->epollFD);
     free(threadFD);
+    LOG("Descriptors closed\n");
 }
 /*****************************************/
 /************* SERVER FUNC ***************/
@@ -324,12 +332,28 @@ void *ServerThreadFunc(void *args)
     }
     bzero(&serialPortConfig, sizeof(serialPortConfig)); // clear struct for new port settings
 
-    // set config 
-    cfsetospeed(&serialPortConfig, deviceConfig.baudRate);
-    cfsetispeed(&serialPortConfig, deviceConfig.baudRate);
-
+    // set config
+    speed_t newBaudRate;
+    switch (deviceConfig.baudRate) 
+    {
+        case 300:       newBaudRate = B300      ; break;
+        case 600:       newBaudRate = B600      ; break;
+        case 1200:      newBaudRate = B1200     ; break;
+        case 1800:      newBaudRate = B1800     ; break;
+        case 2400:      newBaudRate = B2400     ; break;
+        case 4800:      newBaudRate = B4800     ; break;
+        case 9600:      newBaudRate = B9600     ; break;
+        case 19200:     newBaudRate = B19200    ; break;
+        case 38400:     newBaudRate = B38400    ; break;
+        case 57600:     newBaudRate = B57600    ; break;
+        case 115200:    newBaudRate = B115200   ; break;
+        case 230400:    newBaudRate = B230400   ; break;
+        case 460800:    newBaudRate = B460800   ; break;
+        case 921600:    newBaudRate = B921600   ; break;
+        default:        newBaudRate = B9600     ; break;
+    }
     
-    serialPortConfig.c_cflag = CLOCAL | CREAD;   // Enable the receiver and set local mode, 8n1 ???
+    serialPortConfig.c_cflag = newBaudRate | CLOCAL | CREAD;   // Enable the receiver and set local mode, 8n1 ???
 
     // set parity
     if(deviceConfig.parity == PARITY_EVEN)
@@ -340,6 +364,16 @@ void *ServerThreadFunc(void *args)
     {
         serialPortConfig.c_cflag |= PARENB;
         serialPortConfig.c_cflag |= PARODD;
+    }
+
+    // set flow control
+    if(deviceConfig.flowcontrol == FC_RTSCTS)
+    {
+        serialPortConfig.c_cflag |= CRTSCTS;
+    }
+    else if(deviceConfig.flowcontrol == FC_XONXOFF)
+    {
+        serialPortConfig.c_iflag |= (IXON | IXOFF | IXANY);
     }
 
     if(deviceConfig.stopBits == 2)
@@ -535,7 +569,7 @@ void *ClientThreadFunc(void *args)
     /***** Serial Port *****/
     /////////////////////////
     struct termios serialPortConfig;
-/// here we must forbid access to serial from other apps
+    /// here we must forbid access to serial from other apps
 
     // open serial
     threadFD->serialPort = open(deviceConfig.deviceName, O_RDWR | O_NOCTTY);
@@ -553,12 +587,28 @@ void *ClientThreadFunc(void *args)
     }
     bzero(&serialPortConfig, sizeof(serialPortConfig)); // clear struct for new port settings
 
-    // set config 
-    cfsetospeed(&serialPortConfig, deviceConfig.baudRate);
-    cfsetispeed(&serialPortConfig, deviceConfig.baudRate);
-
+    // set config
+    speed_t newBaudRate;
+    switch (deviceConfig.baudRate) 
+    {
+        case 300:       newBaudRate = B300      ; break;
+        case 600:       newBaudRate = B600      ; break;
+        case 1200:      newBaudRate = B1200     ; break;
+        case 1800:      newBaudRate = B1800     ; break;
+        case 2400:      newBaudRate = B2400     ; break;
+        case 4800:      newBaudRate = B4800     ; break;
+        case 9600:      newBaudRate = B9600     ; break;
+        case 19200:     newBaudRate = B19200    ; break;
+        case 38400:     newBaudRate = B38400    ; break;
+        case 57600:     newBaudRate = B57600    ; break;
+        case 115200:    newBaudRate = B115200   ; break;
+        case 230400:    newBaudRate = B230400   ; break;
+        case 460800:    newBaudRate = B460800   ; break;
+        case 921600:    newBaudRate = B921600   ; break;
+        default:        newBaudRate = B9600     ; break;
+    }
     
-    serialPortConfig.c_cflag = CLOCAL | CREAD;   // Enable the receiver and set local mode, 8n1 ???
+    serialPortConfig.c_cflag = newBaudRate | CLOCAL | CREAD;   // Enable the receiver and set local mode, 8n1 ???
 
     // set parity
     if(deviceConfig.parity == PARITY_EVEN)
@@ -569,6 +619,16 @@ void *ClientThreadFunc(void *args)
     {
         serialPortConfig.c_cflag |= PARENB;
         serialPortConfig.c_cflag |= PARODD;
+    }
+
+    // set flow control
+    if(deviceConfig.flowcontrol == FC_RTSCTS)
+    {
+        serialPortConfig.c_cflag |= CRTSCTS;
+    }
+    else if(deviceConfig.flowcontrol == FC_XONXOFF)
+    {
+        serialPortConfig.c_iflag |= (IXON | IXOFF | IXANY);
     }
 
     if(deviceConfig.stopBits == 2)
@@ -615,32 +675,33 @@ void *ClientThreadFunc(void *args)
     /** Connect To Server **/
     /////////////////////////
     struct sockaddr_in addr;
-
     struct hostent *server;
-
-    server = gethostbyname(deviceConfig.clientHost);
-    if (server == NULL) 
-    {
-        LOG("Error. Hostname incorrect %s\n", deviceConfig.clientHost);
-        pthread_exit(NULL);
-    }
-
-    // server's internet address
-    bzero((char *) &addr, sizeof(addr));
-    addr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr, (char *)&addr.sin_addr.s_addr, server->h_length);
-    addr.sin_port = htons(deviceConfig.clientPort);
-
-    threadFD->mainSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if(threadFD->mainSocket < 0)
-    {
-        LOG("Error while creating client socket \n");
-        pthread_exit(NULL);
-    }
 
     LOG("Trying to connect... \n");
     while(1)
     {
+        server = gethostbyname(deviceConfig.clientHost);
+        if (server == NULL) 
+        {
+            LOG("Error while resolving %s\n", deviceConfig.clientHost);
+            sleep(FIRST_RECONN_TIMEOUT);
+            continue;
+        }
+
+        // server's internet address
+        bzero((char *) &addr, sizeof(addr));
+        addr.sin_family = AF_INET;
+        bcopy((char *)server->h_addr, (char *)&addr.sin_addr.s_addr, server->h_length);
+        addr.sin_port = htons(deviceConfig.clientPort);
+
+        threadFD->mainSocket = socket(AF_INET, SOCK_STREAM, 0);
+        if(threadFD->mainSocket < 0)
+        {
+            LOG("Error while creating client socket \n");
+            sleep(FIRST_RECONN_TIMEOUT);
+            continue;
+        }
+
         result = connect(threadFD->mainSocket, (struct sockaddr *)&addr, sizeof(addr));
         if(result == 0)
         {
@@ -654,8 +715,8 @@ void *ClientThreadFunc(void *args)
         }
         else
         {
-            LOG("Couldn't connect. Retry after %d sec \n", clientTimeout);
-            usleep(1000*clientTimeout);
+            LOG("Couldn't connect. Retry after %d sec \n", FIRST_RECONN_TIMEOUT);
+            sleep(FIRST_RECONN_TIMEOUT);
         }
     }
 
@@ -711,6 +772,7 @@ void *ClientThreadFunc(void *args)
             if(eventSource == threadFD->mainSocket)   
             {
                 numOfReadBytes = recv(eventSource, dataBuffer, dataBufferSize, 0);
+                //LOG("incoming %d bytes\n", numOfReadBytes);
                 if(numOfReadBytes > 0)  // in case of normal packet
                 {
                     // if we are autorized already OR we don't need autorization
@@ -729,65 +791,65 @@ void *ClientThreadFunc(void *args)
                         // if it is an autorization request from server
                         if (numOfReadBytes == 28)
                         {
-                        	if(memcmp(dataBuffer, authRequest, 28) == 0)
-                        	{
-                        		LOG("Autorization request from server\n");
-	                            numOfReadBytes = FormAuthAnswer(dataBuffer, deviceConfig.teleofisID);
-	                            send(threadFD->mainSocket, dataBuffer, numOfReadBytes, 0); // maybe add some check???
-	                            dataBuffer[numOfReadBytes] = 0;
-                        	}
-                        	else if(memcmp(dataBuffer, authAcknow, 28) == 0)
-                        	{
-	                            autorized = 1;
-	                            LOG("Autorization OK \n");
-                        	}
-                        	else // error, reconnect
-	                        {
-	                            LOG("Autorization ERROR. Reconnect... \n");
+                            if(memcmp(dataBuffer, authRequest, 28) == 0)
+                            {
+                                LOG("Autorization request from server\n");
+                                numOfReadBytes = FormAuthAnswer(dataBuffer, deviceConfig.teleofisID);
+                                send(threadFD->mainSocket, dataBuffer, numOfReadBytes, 0); // maybe add some check???
+                                dataBuffer[numOfReadBytes] = 0;
+                            }
+                            else if(memcmp(dataBuffer, authAcknow, 28) == 0)
+                            {
+                                autorized = 1;
+                                LOG("Autorization OK \n");
+                            }
+                            else // error, reconnect
+                            {
+                                LOG("Autorization ERROR. Reconnect... \n");
 
-	                            // close existing connection
-	                            close(eventSource);
-	                            // remove from epoll
-	                            epollConfig.data.fd = eventSource;
-	                            epoll_ctl(threadFD->epollFD, EPOLL_CTL_DEL, eventSource, &epollConfig);
-	                            LOG("Connection closed by server\n");
+                                // close existing connection
+                                close(eventSource);
+                                // remove from epoll
+                                epollConfig.data.fd = eventSource;
+                                epoll_ctl(threadFD->epollFD, EPOLL_CTL_DEL, eventSource, &epollConfig);
+                                LOG("Connection closed by server\n");
 
-	                            serverAvailable = 0;
-	                            autorized = 0;
-	                            // re-create socket
-	                            threadFD->mainSocket = socket(AF_INET, SOCK_STREAM, 0);
-	                            if(threadFD->mainSocket < 0)
-	                            {
-	                                LOG("Error while re-opening client socket \n");
-	                            }
+                                serverAvailable = 0;
+                                autorized = 0;
+                                // re-create socket
+                                threadFD->mainSocket = socket(AF_INET, SOCK_STREAM, 0);
+                                if(threadFD->mainSocket < 0)
+                                {
+                                    LOG("Error while re-opening client socket \n");
+                                }
 
-	                            // add to epoll again
-	                            epollConfig.events = EPOLLIN | EPOLLPRI | EPOLLERR | EPOLLHUP;
-	                            epollConfig.data.fd = threadFD->mainSocket;
-	                            result = epoll_ctl(threadFD->epollFD, EPOLL_CTL_ADD, threadFD->mainSocket, &epollConfig);
-	                            if(result < 0)
-	                            {
-	                                LOG("Error while socket epoll regisration\n");
-	                                pthread_exit(NULL);
-	                            }
+                                // add to epoll again
+                                epollConfig.events = EPOLLIN | EPOLLPRI | EPOLLERR | EPOLLHUP;
+                                epollConfig.data.fd = threadFD->mainSocket;
+                                result = epoll_ctl(threadFD->epollFD, EPOLL_CTL_ADD, threadFD->mainSocket, &epollConfig);
+                                if(result < 0)
+                                {
+                                    LOG("Error while socket epoll regisration\n");
+                                    pthread_exit(NULL);
+                                }
 
-	                            result = connect(threadFD->mainSocket, (struct sockaddr *)&addr, sizeof(addr));
+                                result = connect(threadFD->mainSocket, (struct sockaddr *)&addr, sizeof(addr));
 
-	                            // if connection is not successfull, restart timer
-	                            if(result != 0)
-	                            {
-	                                result = timerfd_settime(threadFD->TCPtimer, 0, &newValue, &oldValue);
-	                                if(result < 0)
-	                                {
-	                                    LOG("Error while timer setup \n");
-	                                }
-	                            }
-	                            else
-	                            {
-	                                LOG("Client re-connected successfully \n");
-	                                serverAvailable = 1;
-	                            }
-	                        }
+                                // if connection is not successfull, restart timer
+                                if(result != 0)
+                                {
+                                    result = timerfd_settime(threadFD->TCPtimer, 0, &newValue, &oldValue);
+                                    if(result < 0)
+                                    {
+                                        LOG("Error while timer setup \n");
+                                    }
+                                }
+                                else
+                                {
+                                    LOG("Client re-connected successfully \n");
+                                    serverAvailable = 1;
+                                }
+                            }
                         }
                         else // error, reconnect
                         {
@@ -975,6 +1037,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     char UCIpathBaudRate[MAX_CHARS_IN_UCIPATH]      = ".baudrate";
     char UCIpathBytesize[MAX_CHARS_IN_UCIPATH]      = ".bytesize";
     char UCIpathParity[MAX_CHARS_IN_UCIPATH]        = ".parity";
+    char UCIpathFlowControl[MAX_CHARS_IN_UCIPATH]   = ".flowcontrol";
     char UCIpathStopBits[MAX_CHARS_IN_UCIPATH]      = ".stopbits";
     char UCIpathServerPort[MAX_CHARS_IN_UCIPATH]    = ".server_port";
     char UCIpathHoldConnTime[MAX_CHARS_IN_UCIPATH]  = ".holdconntime";
@@ -1000,7 +1063,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathMode);
         return deviceConfig;
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
@@ -1022,7 +1085,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathDeviceName);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         memcpy(deviceConfig.deviceName, UCIptr.o->v.string, sizeof(deviceConfig.deviceName));
@@ -1034,7 +1097,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathBaudRate);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.baudRate = atoi(UCIptr.o->v.string);
@@ -1046,7 +1109,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathBytesize);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.byteSize = atoi(UCIptr.o->v.string);
@@ -1058,7 +1121,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathParity);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
     {
@@ -1070,6 +1133,25 @@ device_config_t GetFullDeviceConfig(int deviceID)
             deviceConfig.parity = PARITY_NONE;
     }
 
+    // flow control
+    memcpy(UCIpath , UCIpathBegin, MAX_CHARS_IN_UCIPATH);
+    strncat(UCIpath, UCIpathNumber, MAX_DIGITS_IN_DEV_NUM-2);
+    strncat(UCIpath, UCIpathFlowControl, TMP_PATH_LENGTH);
+    if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
+        (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
+    {
+        LOG("No UCI field %s \n", UCIpathFlowControl);
+    }
+    if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
+    {
+        if(memcmp(UCIptr.o->v.string, "XON/XOFF", 3) == 0)
+            deviceConfig.flowcontrol = FC_XONXOFF;
+        else if(memcmp(UCIptr.o->v.string, "RTS/CTS", 3) == 0)
+            deviceConfig.flowcontrol = FC_RTSCTS;
+        else
+            deviceConfig.flowcontrol = FC_NONE;
+    }
+
     // stopbits
     memcpy(UCIpath , UCIpathBegin, MAX_CHARS_IN_UCIPATH);
     strncat(UCIpath, UCIpathNumber, MAX_DIGITS_IN_DEV_NUM-2);
@@ -1077,7 +1159,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathStopBits);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.stopBits = atoi(UCIptr.o->v.string);
@@ -1089,7 +1171,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathServerPort);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.serverPort = atoi(UCIptr.o->v.string);
@@ -1101,7 +1183,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathHoldConnTime);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.holdConnTime = atoi(UCIptr.o->v.string);
@@ -1113,7 +1195,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathClientHost);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         memcpy(deviceConfig.clientHost, UCIptr.o->v.string, sizeof(deviceConfig.clientHost));
@@ -1125,7 +1207,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathClientPort);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.clientPort = atoi(UCIptr.o->v.string);
@@ -1137,7 +1219,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathClientAuth);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.clientAuth = atoi(UCIptr.o->v.string);
@@ -1149,7 +1231,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
         (UCIptr.o==NULL || UCIptr.o->v.string==NULL)) 
     {
-        LOG("UCI path is incorrect: %s \n", UCIpath);
+        LOG("No UCI field %s \n", UCIpathClientTimeout);
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.clientTimeout = atoi(UCIptr.o->v.string);

@@ -171,16 +171,28 @@ function action_flashops()
 	local sys = require "luci.sys"
 	local fs  = require "nixio.fs"
 
-	local upgrade_avail = fs.access("/lib/upgrade/platform.sh")
+	--local upgrade_avail = fs.access("/lib/upgrade/platform.sh")
 	local reset_avail   = os.execute([[grep '"rootfs_data"' /proc/mtd >/dev/null 2>&1]]) == 0
 
 	local restore_cmd = "tar -xzC/ >/dev/null 2>&1"
 	local backup_cmd  = "backup --create-backup - 2>/dev/null"
-	local image_tmp   = "/tmp/firmware.img"
+	--local image_tmp   = "/tmp/firmware.img"
+	local image_tmp   = "/tmp/sysupgrade_RTU968.tar"
+
+
 
 	local function image_supported()
-		return (os.execute("backup -T %q >/dev/null" % image_tmp) == 0)
+	    --return (os.execute("backup -T %q >/dev/null" % image_tmp) == 0)
+	    local test = io.popen("sysupgrade -t")
+	    local result = test:read("*a")
+	    test:close()
+	    if result == "OK\n" then
+	            return true
+	    else
+	            return false
+	    end
 	end
+
 
 	local function image_checksum()
 		return (luci.sys.exec("md5sum %q" % image_tmp):match("^([^%s]+)"))
@@ -277,7 +289,8 @@ function action_flashops()
 				msg   = luci.i18n.translate("The system is flashing now.<br /> DO NOT POWER OFF THE DEVICE!<br /> Wait a few minutes before you try to reconnect. It might be necessary to renew the address of your computer to reach the device again, depending on your settings."),
 				addr  = (#keep > 0) and "192.168.88.1" or nil
 			})
-			fork_exec("sleep 1; killall dropbear uhttpd; sleep 1; /sbin/backup %s %q" %{ keep, image_tmp })
+			--fork_exec("sleep 1; killall dropbear uhttpd; sleep 1; /sbin/backup %s %q")
+			fork_exec("/sbin/sysupgrade -y ; sleep 20")
 		end
 	elseif reset_avail and luci.http.formvalue("reset") then
 		--
