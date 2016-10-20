@@ -10,8 +10,6 @@ m = Map("pollmydevice", translate("PollMyDevice"), translate("TCP to RS232/RS485
 s = m:section(NamedSection, arg[1], "pollmydevice", translate("Utility Settings"))
 s.addremove = false
 
-teleofisid = s:option(DummyValue, "teleofisid",  translate("Teleofis ID"))
-
 mode = s:option(ListValue, "mode", translate("Mode"))
   mode.default = "disabled"
   mode:value("disabled")
@@ -36,6 +34,8 @@ baudrate = s:option(ListValue, "baudrate",  translate("BaudRate"))
   baudrate:value(921600)
   baudrate.optional = false
   baudrate.datatype = "uinteger"
+  baudrate:depends("mode","server")
+  baudrate:depends("mode","client")
 
 bytesize = s:option(ListValue, "bytesize", translate("ByteSize"))
   bytesize.default = 8
@@ -45,6 +45,17 @@ bytesize = s:option(ListValue, "bytesize", translate("ByteSize"))
   bytesize:value(8)
   bytesize.optional = false
   bytesize.datatype = "uinteger"
+  bytesize:depends("mode","server")
+  bytesize:depends("mode","client")
+
+stopbits = s:option(ListValue, "stopbits", translate("StopBits"))
+  stopbits.default = 1
+  stopbits:value(1)
+  stopbits:value(2)
+  stopbits.optional = false
+  stopbits.datatype = "uinteger"
+  stopbits:depends("mode","server")
+  stopbits:depends("mode","client")
 
 parity = s:option(ListValue, "parity", translate("Parity"))
   parity.default = "none"
@@ -53,42 +64,54 @@ parity = s:option(ListValue, "parity", translate("Parity"))
   parity:value("none")
   parity.optional = false
   parity.datatype = "string"
+  parity:depends("mode","server")
+  parity:depends("mode","client")
 
-stopbits = s:option(ListValue, "stopbits", translate("StopBits"))
-  stopbits.default = 1
-  stopbits:value(1)
-  stopbits:value(2)
-  stopbits.optional = false
-  stopbits.datatype = "uinteger"
+flowcontrol = s:option(ListValue, "flowcontrol", translate("Flow Control"))
+  flowcontrol.default = "none"
+  flowcontrol:value("XON/XOFF")
+  flowcontrol:value("RTS/CTS")
+  flowcontrol:value("none")
+  flowcontrol.optional = false
+  flowcontrol.datatype = "string"
+  flowcontrol:depends("mode","server")
+  flowcontrol:depends("mode","client")
 
 server_port = s:option(Value, "server_port",  translate("Server Port"))
-  server_port.default = 33333
   server_port.datatype = "and(uinteger, min(1025), max(65535))"
-  server_port.rmempty = false
-  server_port.optional = false
+  --server_port.rmempty = false
+  server_port:depends("mode","server")
 
-conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time"))
+conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time (sec)"))
   conn_time.default = 60
   conn_time.datatype = "and(uinteger, min(0), max(100000))"
-  conn_time.rmempty = false
-  conn_time.optional = false
+  --conn_time.rmempty = false
+  conn_time:depends("mode","server")
 
 client_host = s:option(Value, "client_host",  translate("Client Host or IP Address"))
+  client_host.default = "hub.m2m24.ru"
   client_host.datatype = "string"
+  client_host:depends("mode","client")
 
 client_port = s:option(Value, "client_port",  translate("Client Port"))
   client_port.default = 6008
   client_port.datatype = "and(uinteger, min(1025), max(65535))"
-  client_port.rmempty = false
-  client_port.optional = false
+  --client_port.rmempty = false
+  client_port:depends("mode","client")
 
-client_timeout = s:option(Value, "client_timeout",  translate("Client Reconnection Timeout"))
+client_timeout = s:option(Value, "client_timeout",  translate("Client Reconnection Timeout (sec)"))
   client_timeout.default = 60
   client_timeout.datatype = "and(uinteger, min(0), max(100000))"
-  client_timeout.rmempty = false
-  client_timeout.optional = false
+  --client_timeout.rmempty = false
+  client_timeout:depends("mode","client")
 
 client_auth = s:option(Flag, "client_auth", translate("Client Authentification"), translate("Use Teleofis Authentification"))  -- create enable checkbox
-  client_auth.rmempty = false
+  client_auth.default = 1
+  --client_auth.rmempty = false
+  client_auth:depends("mode","client")
+
+teleofisid = s:option(DummyValue, "teleofisid",  translate("Teleofis ID"))
+  --client_auth.rmempty = false
+  teleofisid:depends("mode","client")
 
 return m

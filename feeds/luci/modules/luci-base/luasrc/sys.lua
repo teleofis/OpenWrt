@@ -346,6 +346,15 @@ function net.devices()
 	return devs
 end
 
+function net.activedevices()
+	local devs = {}
+	for k, v in ipairs(nixio.getifaddrs()) do
+		if v.family == "packet" and v.flags.up == true then
+			devs[#devs+1] = v.name
+		end
+	end
+	return devs
+end
 
 function net.deviceinfo()
 	local devs = {}

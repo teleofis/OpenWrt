@@ -20,4 +20,5 @@ echo 0 > /sys/class/gpio/gpio69/value
 echo 77 > /sys/class/gpio/export
 echo out > /sys/class/gpio/gpio77/direction
 echo 1 > /sys/class/gpio/gpio77/value
+watchdog -t 30 -T 60 /dev/watchdog0
 exit 0

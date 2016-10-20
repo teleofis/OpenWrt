@@ -12,7 +12,7 @@ local knownParams = {
 
 	{ "Service", {
 		-- initialisation and daemon options
-		{ ListValue,	"verb",							{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 },						translate("Set output verbosity") },
+		{ ListValue,	"verb",							{ "", 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 },					translate("Set output verbosity") },
 		{ Flag,			"mlock",						0,																translate("Disable Paging") },
 		{ Flag,			"disable_occ",					0,																translate("Disable options consistency check") },
 	--	{ Value,		"user",							"root",															translate("Set UID to user") },
@@ -30,9 +30,9 @@ local knownParams = {
 		{ Value,		"nice",							0,																translate("Change process priority") },
 		{ Flag,			"fast_io",						0,																translate("Optimize TUN/TAP/UDP writes") },
 		{ Value,		"echo",							"some params echoed to log",									translate("Echo parameters to log") },
-		{ ListValue,	"remap_usr1",					{ "SIGHUP", "SIGTERM" },										translate("Remap SIGUSR1 signals") },
+		{ ListValue,	"remap_usr1",					{ "", "SIGHUP", "SIGTERM" },									translate("Remap SIGUSR1 signals") },
 		{ Value,		"status",						"/var/run/openvpn.status 5",									translate("Write status to file every n seconds") },
-		{ Value,		"status_version",				{ 1, 2 },														translate("Status file format version") },	-- status
+		{ Value,		"status_version",				{ "", 1, 2 },													translate("Status file format version") },	-- status
 		{ Value,		"mute",							5,																translate("Limit repeated log messages") },
 
 		{ Value,		"up",							"/usr/bin/ovpn-up",												translate("Shell cmd to execute after tun device open") },
@@ -42,18 +42,18 @@ local knownParams = {
 		{ Flag,			"up_restart",					0,																translate("Run up/down scripts for all restarts") },
 		{ Value,		"route_up",						"/usr/bin/ovpn-routeup",										translate("Execute shell cmd after routes are added") },
 		{ Value,		"ipchange",						"/usr/bin/ovpn-ipchange",										translate("Execute shell command on remote ip change"),	{ mode="p2p" } },
-		{ DynamicList,	"setenv",						{ "VAR1 value1", "VAR2 value2" },								translate("Pass environment variables to script") },
+		{ DynamicList,	"setenv",						{ "", "VAR1 value1", "VAR2 value2" },							translate("Pass environment variables to script") },
 		{ Value,		"tls_verify",					"/usr/bin/ovpn-tlsverify",										translate("Shell command to verify X509 name") },
 		{ Value,		"client_connect",				"/usr/bin/ovpn-clientconnect",									translate("Run script cmd on client connection") },
 		{ Flag,			"client_disconnect",			0,																translate("Run script cmd on client disconnection") },
 		{ Value,		"learn_address",				"/usr/bin/ovpn-learnaddress",									translate("Executed in server mode whenever an IPv4 address/route or MAC address is added to OpenVPN's internal routing table") },
 		{ Value,		"auth_user_pass_verify",		"/usr/bin/ovpn-userpass via-env",								translate("Executed in server mode on new client connections, when the client is still untrusted") },
-		{ ListValue,	"script_security",				{ 0, 1, 2, 3 },													translate("Policy level over usage of external programs and scripts"),	{mode="server" } },
+		{ ListValue,	"script_security",				{ "", 0, 1, 2, 3 },												translate("Policy level over usage of external programs and scripts"),	{mode="server" } },
 	} },
 
 	{ "Networking", {
 		-- socket config
-		{ ListValue,	"mode",							{ "p2p", "server" },											translate("Major mode") },
+		{ ListValue,	"mode",							{ "", "p2p", "server" },										translate("Major mode") },
 		{ Value,		"local",						"0.0.0.0",														translate("Local host name or ip address") },
 		{ Value,		"port",							1194,															translate("TCP/UDP port # for both local and remote") },
 		{ Value,		"lport",						1194,															translate("TCP/UDP port # for local (default=1194)") },
@@ -62,7 +62,7 @@ local knownParams = {
 		{ Flag,			"nobind",						0,																translate("Do not bind to local address and port") },
 
 		{ Value,		"dev",							"tun0",															translate("tun/tap device") },
-		{ ListValue,	"dev_type",						{ "tun", "tap" },												translate("Type of used device") },
+		{ ListValue,	"dev_type",						{ "", "tun", "tap" },											translate("Type of used device") },
 		{ Value,		"dev_node",						"/dev/net/tun",													translate("Use tun/tap device node") },
 		{ Flag,			"tun_ipv6",						0,																translate("Make tun device IPv6 capable") },
 
@@ -75,9 +75,9 @@ local knownParams = {
 		{ Value,		"route_delay",					0,																translate("Delay n seconds after connection") },
 		{ Flag,			"route_noexec",					0,																translate("Don't add routes automatically") },
 
-		{ ListValue,	"mtu_disc",						{ "yes", "maybe", "no" },										translate("Enable Path MTU discovery") },
+		{ ListValue,	"mtu_disc",						{ "", "yes", "maybe", "no" },									translate("Enable Path MTU discovery") },
 		{ Flag,			"mtu_test",						0,																translate("Empirically measure MTU") },
-		{ ListValue,			"comp_lzo",				{ "yes", "no", "adaptive" },																translate("Use fast LZO compression") },
+		{ ListValue,	"comp_lzo",						{ "", "yes", "no", "adaptive" },								translate("Use fast LZO compression") },
 		{ Flag,			"comp_noadapt",					0,																translate("Don't use adaptive lzo compression"),	{ comp_lzo=1 } },
 		{ Value,		"link_mtu",						1500,															translate("Set TCP/UDP MTU") },
 		{ Value,		"tun_mtu",						1500,															translate("Set tun/tap device MTU") },
@@ -106,13 +106,13 @@ local knownParams = {
 		{ Flag,			"management_query_passwords",	0,																translate("Query management channel for private key") },	-- management
 		{ Flag,			"management_hold",				0,																translate("Start OpenVPN in a hibernating state") },	-- management
 		{ Value,		"management_log_cache",			100,															translate("Number of lines for log file history") },	-- management
-		{ ListValue,	"topology",						{ "net30", "p2p", "subnet" },									translate("'net30', 'p2p', or 'subnet'"),	{dev_type="tun" } },
+		{ ListValue,	"topology",						{ "", "net30", "p2p", "subnet" },								translate("'net30', 'p2p', or 'subnet'"),	{dev_type="tun" } },
 	} },
 
 	{ "VPN", {
 		{ Value,		"server",						"10.200.200.0 255.255.255.0",									translate("Configure server mode"),	{ server_mode="1" } },
 		{ Value,		"server_bridge",				"10.200.200.1 255.255.255.0 10.200.200.200 10.200.200.250",		translate("Configure server bridge"),	{ server_mode="1" } },
-		{ DynamicList,	"push",							{ "redirect-gateway", "comp-lzo" },								translate("Push options to peer"),	{ server_mode="1" } },
+		{ DynamicList,	"push",							{ "", "redirect-gateway", "comp-lzo" },							translate("Push options to peer"),	{ server_mode="1" } },
 		{ Flag,			"push_reset",					0,																translate("Don't inherit global push options"),	{ server_mode="1" } },
 		{ Flag,			"disable",						0,																translate("Client is disabled"),	{ server_mode="1" } },
 		{ Value,		"ifconfig_pool",				"10.200.200.100 10.200.200.150 255.255.255.0",					translate("Set aside a pool of subnets"),	{ server_mode="1" } },
@@ -135,17 +135,17 @@ local knownParams = {
 		{ Flag,			"username_as_common_name",		0,																translate("Use username as common name"),	{ server_mode="1" } },
 		{ Flag,			"client",						0,																translate("Configure client mode"),	{ server_mode="0" }, { server_mode="" } },
 		{ Flag,			"pull",							0,																translate("Accept options pushed from server"),	{ client="1" } },
-		{ Value,		"auth_user_pass",				"/etc/openvpn/userpass.txt",									translate("Authenticate using username/password"),	{ client="1" } },
-		{ ListValue,	"auth_retry",					{ "none", "nointeract", "interact" },							translate("Handling of authentication failures"),	{ client="1" } },
+		{ Value,		"auth_user_pass",				"",																translate("Path to username/password file(empty when not use)"),	{ client="1" } },
+		{ ListValue,	"auth_retry",					{ "", "none", "nointeract", "interact" },						translate("Handling of authentication failures"),	{ client="1" } },
 		{ Value,		"explicit_exit_notify",			1,																translate("Send notification to peer on disconnect"),	{ client="1" } },
 		{ DynamicList,	"remote",						"1.2.3.4",														translate("Remote host name or ip address"),	{ client="1" } },
 		{ Flag,			"remote_random",				1,																translate("Randomly choose remote server"),	{ client="1" } },
-		{ ListValue,	"proto",						{ "udp", "tcp-client", "tcp-server" },							translate("Use protocol"),	{ client="1" } },
+		{ ListValue,	"proto",						{ "", "udp", "tcp-client", "tcp-server" },						translate("Use protocol"),	{ client="1" } },
 		{ Value,		"connect_retry",				5,																translate("Connection retry interval"),	{ proto="tcp-client" }, { client="1" } },
 		{ Value,		"http_proxy", 					"192.168.1.100 8080",											translate("Connect to remote host through an HTTP proxy"),	{ client="1" } },
 		{ Flag,			"http_proxy_retry",				0,																translate("Retry indefinitely on HTTP proxy errors"),	{ client="1" } },
 		{ Value,		"http_proxy_timeout",			5,																translate("Proxy timeout in seconds"),	{ client="1" } },
-		{ DynamicList,	"http_proxy_option",			{ "VERSION 1.0", "AGENT OpenVPN/2.0.9" },						translate("Set extended HTTP proxy options"),	{ client="1" } },
+		{ DynamicList,	"http_proxy_option",			{ "", "VERSION 1.0", "AGENT OpenVPN/2.0.9" },					translate("Set extended HTTP proxy options"),	{ client="1" } },
 		{ Value,		"socks_proxy", 					"192.168.1.200 1080",											translate("Connect through Socks5 proxy"),	{ client="1" } },
 		{ Value,		"socks_proxy_retry",			5,																translate("Retry indefinitely on Socks proxy errors"),	{ client="1" } },	-- client && socks_proxy
 		{ Value,		"resolv_retry",					"infinite",														translate("If hostname resolve fails, retry"),	{ client="1" } },
@@ -170,7 +170,7 @@ local knownParams = {
 		{ FileUpload,	"cert",							"/etc/easy-rsa/keys/some-client.crt",							translate("Local certificate") },
 		{ FileUpload,	"key",							"/etc/easy-rsa/keys/some-client.key",							translate("Local private key") },
 		{ FileUpload,	"pkcs12",						"/etc/easy-rsa/keys/some-client.pk12",							translate("PKCS#12 file containing keys") },
-		{ ListValue,	"key_method",					{ 1, 2 },														translate("Enable TLS and assume client role") },
+		{ ListValue,	"key_method",					{ "", 1, 2 },													translate("Enable TLS and assume client role") },
 		{ Value,		"tls_cipher",					"DHE-RSA-AES256-SHA:DHE-DSS-AES256-SHA:AES256-SHA:EDH-RSA-DES-CBC3-SHA:EDH-DSS-DES-CBC3-SHA:DES-CBC3-SHA:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA:AES128-SHA:RC4-SHA:RC4-MD5:EDH-RSA-DES-CBC-SHA:EDH-DSS-DES-CBC-SHA:DES-CBC-SHA:EXP-EDH-RSA-DES-CBC-SHA:EXP-EDH-DSS-DES-CBC-SHA:EXP-DES-CBC-SHA:EXP-RC2-CBC-MD5:EXP-RC4-MD5",
 																														translate("TLS cipher") },
 		{ Value,		"tls_timeout",					2,																translate("Retransmit timeout on TLS control channel") },
@@ -185,8 +185,8 @@ local knownParams = {
 		--{ Value,		"askpass",						"[file]",														translate("Get PEM password from controlling tty before we daemonize") },
 		{ Flag,			"auth_nocache",					0,																translate("Don't cache --askpass or --auth-user-pass passwords") },
 		{ Value,		"tls_remote",					"remote_x509_name",												translate("Only accept connections from given X509 name") },
-		{ ListValue,	"ns_cert_type",					{ "client", "server" },											translate("Require explicit designation on certificate") },
-		{ ListValue,	"remote_cert_tls",				{ "client", "server" },											translate("Require explicit key usage on certificate") },
+		{ ListValue,	"ns_cert_type",					{ "", "client", "server" },										translate("Require explicit designation on certificate") },
+		{ ListValue,	"remote_cert_tls",				{ "", "client", "server" },										translate("Require explicit key usage on certificate") },
 		{ Value,		"crl_verify",					"/etc/easy-rsa/keys/crl.pem",									translate("Check peer certificate against a CRL") },
  	} }
 }
@@ -238,7 +238,7 @@ for _, option in ipairs(params) do
 			end
 		end
 
-		o.optional = true
+		--o.optional = true
 
 		if type(option[3]) == "table" then
 			if o.optional then o:value("", "-- remove --") end
@@ -246,17 +246,50 @@ for _, option in ipairs(params) do
 				v = tostring(v)
 				o:value(v)
 			end
-			o.default = tostring(option[3][1])
-		else
-			o.default = tostring(option[3])
-		end
-	end
+            --o.default = tostring(option[3][1])
+        else
+            --o.default = tostring(option[3])
+        end
+    end
 
-	for i=5,#option do
-		if type(option[i]) == "table" then
-			o:depends(option[i])
-		end
-	end
+    for i=5,#option do
+        if type(option[i]) == "table" then
+            o:depends(option[i])
+        end
+    end
+
+    if option[2] == "auth_user_pass" then
+        local userstr = s:option(Value, "", translate("User"))
+        userstr:depends({ client="1" })
+        userstr.cfgvalue = function(self, section)
+        	local up = self.map:get(section, "auth_user_pass") or "dev/null"
+			local handle = io.popen("cat " .. up .. " | head -1")
+            local result = handle:read("*a")
+            handle:close()
+            return result
+        end
+        userstr.write = function(self, section, value)
+        	local up = self.map:get(section, "auth_user_pass") or "dev/null"
+        	nixio.setenv("usrstr", value[1])
+            return luci.sys.call([[echo $usrstr > ]] .. up)
+        end
+
+
+        local passstr = s:option(Value, "", translate("Password"))
+        passstr:depends({ client="1" })
+        passstr.cfgvalue = function(self, section)
+        	local up = self.map:get(section, "auth_user_pass") or "dev/null"
+        	local handle = io.popen("cat " .. up .. " | tail -1")
+            local result = handle:read("*a") 
+            handle:close()
+            return result
+        end
+        passstr.write = function(self, section, value)
+        	local up = self.map:get(section, "auth_user_pass") or "dev/null"
+        	nixio.setenv("pwdstr", value[2])
+            return luci.sys.call([[echo $pwdstr >> ]] .. up)
+        end
+    end
 end
 
 return m
