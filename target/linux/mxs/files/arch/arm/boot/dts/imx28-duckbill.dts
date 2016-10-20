@@ -1,14 +1,6 @@
 /*
- * Copyright (C) 2013-2014 Michael Heimpold <mhei@heimpold.de>
  *
- * The code contained herein is licensed under the GNU General Public
- * License. You may obtain a copy of the GNU General Public License
- * Version 2 or later at the following locations:
- *
- * http://www.opensource.org/licenses/gpl-license.html
- * http://www.gnu.org/copyleft/gpl.html
- *
- * for 0046.1 & 0046.2
+ * Device Tree for rtu968_v1.0.1
  *
  */
 
@@ -35,33 +27,40 @@
 			{
 				pinctrl-names = "default";
 				pinctrl-0 = <&hog_pins>;
-				auart1_pins: auart1-pins@0 				/* RS485 */
+				auart1_pins: auart1-pins@0 
 				{
 					reg = <0>;
 					fsl,pinmux-ids = <
-						/*MX28_PAD_AUART1_RTS__AUART1_RTS*/
 						MX28_PAD_AUART1_RX__AUART1_RX
 						MX28_PAD_AUART1_TX__AUART1_TX
-
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
 					fsl,pull-up = <MXS_PULL_DISABLE>;
 				};
-				auart4_pins: auart4-pins@0 				/* RS232 */
-				{
+				auart2_pins: auart2-pins@0 {			/* RS485 */
 					reg = <0>;
 					fsl,pinmux-ids = <
-						MX28_PAD_SAIF0_MCLK__AUART4_CTS
-						MX28_PAD_SAIF0_LRCLK__AUART4_RTS
-						MX28_PAD_SAIF0_BITCLK__AUART4_RX
-						MX28_PAD_SAIF0_SDATA0__AUART4_TX
+						MX28_PAD_SSP2_SCK__AUART2_RX
+						MX28_PAD_SSP2_MOSI__AUART2_TX
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
 					fsl,pull-up = <MXS_PULL_DISABLE>;
 				};
-				duart_pins: duart-pins@0 {				/* for fake console */
+				auart4_pins: auart4-pins@0 {			/* RS232 */
+					reg = <0>;
+					fsl,pinmux-ids = <
+						MX28_PAD_SSP3_SS0__AUART4_CTS
+						MX28_PAD_SSP3_MISO__AUART4_RTS
+						MX28_PAD_SSP3_MOSI__AUART4_RX
+						MX28_PAD_SSP3_SCK__AUART4_TX
+					>;
+					fsl,drive-strength = <MXS_DRIVE_4mA>;
+					fsl,voltage = <MXS_VOLTAGE_HIGH>;
+					fsl,pull-up = <MXS_PULL_DISABLE>;
+				};
+				duart_pins: duart-pins@0 {				/* for another console */
 					reg = <0>;
 					fsl,pinmux-ids = <
 						MX28_PAD_PWM0__DUART_RX
@@ -74,24 +73,15 @@
 				gpio_pins_3V3: gpio-pins-3V3@0 {
 					reg = <0>;
 					fsl,pinmux-ids = <
-						MX28_PAD_SSP0_DATA5__GPIO_2_5		/* GSM.SIMA */
-						MX28_PAD_SSP1_CMD__GPIO_2_13		/* GSM.SIMDET */
-						MX28_PAD_SSP2_SCK__GPIO_2_16		/* SIMDET.1# */
-						MX28_PAD_SSP3_SCK__GPIO_2_24		/* SIMDET.0# */
-						MX28_PAD_SSP3_SS0__GPIO_2_27		/* GSM.VCCEN# */
-						MX28_PAD_PWM3__GPIO_3_28		/* USBHOST.VCCEN# */
-						MX28_PAD_SSP2_SS0__GPIO_2_19		/* PCI.VCCEN# */
+						MX28_PAD_SSP0_DATA2__GPIO_2_2			/* GSM.SIMA */
+						MX28_PAD_SSP2_MOSI__GPIO_2_17			/* GSM.SIMDET */
+						MX28_PAD_ENET0_RX_CLK__GPIO_4_13		/* SIMDET.1# */
+						MX28_PAD_LCD_D01__GPIO_1_1				/* SIMDET.0# */
+						MX28_PAD_SSP1_DATA0__GPIO_2_14			/* GSM.VCCEN# */
+						MX28_PAD_PWM3__GPIO_3_28				/* USBHOST.VCCEN.C */
+						MX28_PAD_SSP0_DATA3__GPIO_2_3			/* USBHOST.VCCEN.D */
+						/*MX28_PAD_LCD_D22__GPIO_1_22*/		/* PPS */
 						/* ADDITIONAL GPIO */
-						MX28_PAD_I2C0_SDA__GPIO_3_25		
-						MX28_PAD_SAIF1_SDATA0__GPIO_3_26
-						MX28_PAD_SSP0_DATA0__GPIO_2_0	
-						MX28_PAD_SSP0_SCK__GPIO_2_10
-						MX28_PAD_SSP0_DATA6__GPIO_2_6
-						MX28_PAD_SSP0_DATA7__GPIO_2_7
-						MX28_PAD_SSP0_DATA3__GPIO_2_3
-						MX28_PAD_SSP0_DATA4__GPIO_2_4
-						MX28_PAD_SSP1_SCK__GPIO_2_12
-
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
@@ -133,7 +123,7 @@
 				hog_pins: hog-pins-high@0 {
 					reg = <0>;
 					fsl,pinmux-ids = <
-						MX28_PAD_SSP1_DATA0__GPIO_2_14		/* ETH.RES# workaround init*/
+						MX28_PAD_SSP1_DATA3__GPIO_2_15	/* ETH.RES# workaround init */
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
@@ -142,9 +132,18 @@
 				leds_pins: leds-pins@0 {
 					reg = <0>;
 					fsl,pinmux-ids = <
+						MX28_PAD_LCD_D00__GPIO_1_0			/* LED.BOT */
 						MX28_PAD_SSP0_DETECT__GPIO_2_9		/* LED.MID */
-						MX28_PAD_SSP3_MISO__GPIO_2_26		/* LED.BOT */
-						MX28_PAD_PWM4__GPIO_3_29		/* LED.TOP */
+						MX28_PAD_PWM4__GPIO_3_29			/* LED.TOP */
+					>;
+					fsl,drive-strength = <MXS_DRIVE_4mA>;
+					fsl,voltage = <MXS_VOLTAGE_HIGH>;
+					fsl,pull-up = <MXS_PULL_DISABLE>;
+				};
+				pps_pins: pps-pins@0 {
+					reg = <0>;
+					fsl,pinmux-ids = <
+						MX28_PAD_LCD_D22__GPIO_1_22
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
@@ -174,6 +173,11 @@
 				pinctrl-names = "default";
 				pinctrl-0 = <&auart1_pins>;
 				status = "okay";
+			};
+			auart2: serial@8006e000 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&auart2_pins>;
+        status = "okay";
 			};
 			auart4: serial@80072000 {
 				pinctrl-names = "default";
@@ -211,7 +215,7 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&mac0_pins_a>;
 			phy-supply = <&reg_3p3v>;
-			phy-reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
+			phy-reset-gpios = <&gpio2 15 GPIO_ACTIVE_LOW>;
 			phy-reset-duration = <200>;
 			status = "okay";
 		};
@@ -220,8 +224,6 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&mac1_pins_a>;
 			phy-supply = <&reg_3p3v>;
-			/* phy-reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>; */ /*bugfix - rcv is not +last hanging*/
-			/* phy-reset-duration = <200>; */
 			status = "okay";
 		};
 	};
@@ -232,78 +234,38 @@
 		pinctrl-0 = <&gpio_pins_3V3>;
 		gpio_GSM_SIMA {
 			label = "gsm:simnumber";
-			gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio2 2 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 		gpio_GSM_SIMDET {					/* out to modem */
 			label = "gsm:simdet";
-			gpios = <&gpio2 13 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio2 17 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 		gpio_GSM_SIMDET_0 {
 			label = "gsm:simdet0";
 			input;
-			gpios = <&gpio2 24 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
 		};
 		gpio_GSM_SIMDET_1 {
 			label = "gsm:simdet1";
-			gpios = <&gpio2 16 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio4 13 GPIO_ACTIVE_LOW>;
 			input;
 		};
 		gpio_GSM_VCCEN# {
 			label = "gsm:vccen";
-			gpios = <&gpio2 27 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
 			default-state = "on";
 		};
-		gpio_USBHOST_VCCEN {
-			label = "duckbill:usb1:vccen";
+		gpio_USBHOST_VCCEN_C {
+			label = "duckbill:usb1:vccenC";
 			gpios = <&gpio3 28 GPIO_ACTIVE_HIGH>;
 			default-state = "on";
 		};
-		gpio_PCI_VCCEN# {
-			label = "pci:vccen";
-			gpios = <&gpio2 19 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-		gpio_0_PULLUP# {
-			label = "0:pullup";
-			gpios = <&gpio2 7 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-		gpio_0_PULLDOWN {
-			label = "0:pulldown";
-			gpios = <&gpio2 3 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-		gpio_1_PULLUP# {
-			label = "1:pullup";
-			gpios = <&gpio2 4 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-		gpio_1_PULLDOWN {
-			label = "1:pulldown";
-			gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-		gpio_2_PULLUP# {
-			label = "2:pullup";
-			gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-		gpio_2_PULLDOWN {
-			label = "2:pulldown";
-			gpios = <&gpio3 25 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-		gpio_3_PULLUP# {
-			label = "3:pullup";
-			gpios = <&gpio2 0 GPIO_ACTIVE_LOW>;
-			default-state = "off";
-		};
-		gpio_3_PULLDOWN {
-			label = "3:pulldown";
-			gpios = <&gpio3 26 GPIO_ACTIVE_LOW>;
-			default-state = "off";
+		gpio_USBHOST_VCCEN_D {
+			label = "duckbill:usb1:vccenD";
+			gpios = <&gpio2 3 GPIO_ACTIVE_HIGH>;
+			default-state = "on";
 		};
 	};
 	leds {
@@ -322,9 +284,16 @@
 		};
 		status {/* ACT */
 			label = "bottom:act";
-			gpios = <&gpio2 26 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
 			default-state = "on";
 		};
+	};
+	pps {
+		compatible = "pps-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pps_pins>;
+		gpios = <&gpio1 22 GPIO_ACTIVE_HIGH>;
+		status = "okay";
 	};
 	regulators {
 		compatible = "simple-bus";
