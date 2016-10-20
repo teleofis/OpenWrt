@@ -1,9 +1,4 @@
 /*
- * Copyright (C) 2013-2014 Michael Heimpold <mhei@heimpold.de>
- *
- * The code contained herein is licensed under the GNU General Public
- * License. You may obtain a copy of the GNU General Public License
- * Version 2 or later at the following locations:
  *
  * http://www.opensource.org/licenses/gpl-license.html
  * http://www.gnu.org/copyleft/gpl.html
@@ -39,7 +34,6 @@
 				{
 					reg = <0>;
 					fsl,pinmux-ids = <
-						/*MX28_PAD_AUART1_RTS__AUART1_RTS*/
 						MX28_PAD_AUART1_RX__AUART1_RX
 						MX28_PAD_AUART1_TX__AUART1_TX
 
@@ -150,6 +144,15 @@
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
 					fsl,pull-up = <MXS_PULL_DISABLE>;
 				};
+				pps_pins: pps-pins@0 {
+					reg = <0>;
+					fsl,pinmux-ids = <
+						MX28_PAD_LCD_D22__GPIO_1_22
+					>;
+					fsl,drive-strength = <MXS_DRIVE_4mA>;
+					fsl,voltage = <MXS_VOLTAGE_HIGH>;
+					fsl,pull-up = <MXS_PULL_DISABLE>;
+				};
 			};
 			ocotp: ocotp@8002c000 
 			{
@@ -220,8 +223,6 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&mac1_pins_a>;
 			phy-supply = <&reg_3p3v>;
-			/* phy-reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>; */ /*bugfix - rcv is not +last hanging*/
-			/* phy-reset-duration = <200>; */
 			status = "okay";
 		};
 	};
@@ -325,6 +326,13 @@
 			gpios = <&gpio2 26 GPIO_ACTIVE_HIGH>;
 			default-state = "on";
 		};
+	};
+	pps {
+		compatible = "pps-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pps_pins>;
+		gpios = <&gpio1 22 GPIO_ACTIVE_HIGH>;
+		status = "okay";
 	};
 	regulators {
 		compatible = "simple-bus";
