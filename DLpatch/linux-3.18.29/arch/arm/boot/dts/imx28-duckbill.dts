@@ -1,10 +1,5 @@
 /*
- *
- * http://www.opensource.org/licenses/gpl-license.html
- * http://www.gnu.org/copyleft/gpl.html
- *
- * for 0046.1 & 0046.2
- *
+ * Device Tree for RTU968 DAQ
  */
 
 /dts-v1/;
@@ -73,7 +68,7 @@
 						MX28_PAD_SSP2_SCK__GPIO_2_16		/* SIMDET.1# */
 						MX28_PAD_SSP3_SCK__GPIO_2_24		/* SIMDET.0# */
 						MX28_PAD_SSP3_SS0__GPIO_2_27		/* GSM.VCCEN# */
-						MX28_PAD_PWM3__GPIO_3_28		/* USBHOST.VCCEN# */
+						MX28_PAD_PWM3__GPIO_3_28			/* USBHOST.VCCEN# */
 						MX28_PAD_SSP2_SS0__GPIO_2_19		/* PCI.VCCEN# */
 						/* ADDITIONAL GPIO */
 						MX28_PAD_I2C0_SDA__GPIO_3_25		
@@ -147,7 +142,7 @@
 				pps_pins: pps-pins@0 {
 					reg = <0>;
 					fsl,pinmux-ids = <
-						MX28_PAD_LCD_D22__GPIO_1_22
+						MX28_PAD_SSP3_MOSI__GPIO_2_25
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
@@ -331,7 +326,7 @@
 		compatible = "pps-gpio";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pps_pins>;
-		gpios = <&gpio1 22 GPIO_ACTIVE_HIGH>;
+		gpios = <&gpio2 25 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
 	regulators {
