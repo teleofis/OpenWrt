@@ -21,4 +21,6 @@ echo 77 > /sys/class/gpio/export
 echo out > /sys/class/gpio/gpio77/direction
 echo 1 > /sys/class/gpio/gpio77/value
 watchdog -t 30 -T 60 /dev/watchdog0
+echo pcf8563 0x51 > /sys/class/i2c-adapter/i2c-0/new_device
+echo ds2482 0x18 > /sys/class/i2c-adapter/i2c-0/new_device
 exit 0
