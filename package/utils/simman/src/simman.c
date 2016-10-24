@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/reboot.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <stdint.h>
@@ -17,6 +18,7 @@
 #include "log.h"
 
 #define SETSIM_SCRIPT "/etc/simman/setsim.sh"
+#define CHANGES_BEFORE_REBOOT 2 // на 4-й раз перегружаемся
 
 enum {
 	INIT = 0,
@@ -81,6 +83,7 @@ int    sim1_status,        // SIM1 status, 0 - detect, 1 - not detect, -1 - unkn
 	   active_sim;         // active SIM, 0 - SIM1, 1 - SIM2, -1 - unknown
 
 int8_t state,
+	   changeCounter,
 	   retry;	   
 
 int GetSimInfo(char *device)
@@ -296,6 +299,13 @@ int SetSim(uint8_t sim)
 
 	execCommand(cmd);
 
+	changeCounter++;
+	if(changeCounter > CHANGES_BEFORE_REBOOT)
+	{
+		sync();
+		reboot(RB_AUTOBOOT);
+	}
+
 	return 0;
 }
 
@@ -327,6 +337,7 @@ int main(int argc, char **argv)
 	state = -1;
 	first_start = 1;
 	ch_sim = 0;
+	changeCounter = 0;
 
 	LOG("service started\n");
 
@@ -521,7 +532,10 @@ int main(int argc, char **argv)
 
 								if (!ack) settings.serv[i].retry_check++;
 								else
-									settings.serv[i].retry_check = 0;		
+								{
+									settings.serv[i].retry_check = 0;
+									changeCounter = 0;		
+								}
 
 								if (settings.serv[i].retry_check >= settings.retry_num)
 									need_change_sim++;
@@ -590,3 +604,4 @@ int main(int argc, char **argv)
 
 	return 0;
 }
+

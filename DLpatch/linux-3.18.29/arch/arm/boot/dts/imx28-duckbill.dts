@@ -1,15 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Michael Heimpold <mhei@heimpold.de>
- *
- * The code contained herein is licensed under the GNU General Public
- * License. You may obtain a copy of the GNU General Public License
- * Version 2 or later at the following locations:
- *
- * http://www.opensource.org/licenses/gpl-license.html
- * http://www.gnu.org/copyleft/gpl.html
- *
- * for 0046.1 & 0046.2
- *
+ * Device Tree for RTU968 DAQ
  */
 
 /dts-v1/;
@@ -39,7 +29,6 @@
 				{
 					reg = <0>;
 					fsl,pinmux-ids = <
-						/*MX28_PAD_AUART1_RTS__AUART1_RTS*/
 						MX28_PAD_AUART1_RX__AUART1_RX
 						MX28_PAD_AUART1_TX__AUART1_TX
 
@@ -79,7 +68,7 @@
 						MX28_PAD_SSP2_SCK__GPIO_2_16		/* SIMDET.1# */
 						MX28_PAD_SSP3_SCK__GPIO_2_24		/* SIMDET.0# */
 						MX28_PAD_SSP3_SS0__GPIO_2_27		/* GSM.VCCEN# */
-						MX28_PAD_PWM3__GPIO_3_28		/* USBHOST.VCCEN# */
+						MX28_PAD_PWM3__GPIO_3_28			/* USBHOST.VCCEN# */
 						MX28_PAD_SSP2_SS0__GPIO_2_19		/* PCI.VCCEN# */
 						/* ADDITIONAL GPIO */
 						MX28_PAD_I2C0_SDA__GPIO_3_25		
@@ -145,6 +134,15 @@
 						MX28_PAD_SSP0_DETECT__GPIO_2_9		/* LED.MID */
 						MX28_PAD_SSP3_MISO__GPIO_2_26		/* LED.BOT */
 						MX28_PAD_PWM4__GPIO_3_29		/* LED.TOP */
+					>;
+					fsl,drive-strength = <MXS_DRIVE_4mA>;
+					fsl,voltage = <MXS_VOLTAGE_HIGH>;
+					fsl,pull-up = <MXS_PULL_DISABLE>;
+				};
+				pps_pins: pps-pins@0 {
+					reg = <0>;
+					fsl,pinmux-ids = <
+						MX28_PAD_SSP3_MOSI__GPIO_2_25
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
@@ -220,8 +218,6 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&mac1_pins_a>;
 			phy-supply = <&reg_3p3v>;
-			/* phy-reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>; */ /*bugfix - rcv is not +last hanging*/
-			/* phy-reset-duration = <200>; */
 			status = "okay";
 		};
 	};
@@ -325,6 +321,13 @@
 			gpios = <&gpio2 26 GPIO_ACTIVE_HIGH>;
 			default-state = "on";
 		};
+	};
+	pps {
+		compatible = "pps-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pps_pins>;
+		gpios = <&gpio2 25 GPIO_ACTIVE_HIGH>;
+		status = "okay";
 	};
 	regulators {
 		compatible = "simple-bus";
