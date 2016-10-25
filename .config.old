@@ -2516,7 +2516,7 @@ CONFIG_PACKAGE_kmod-iio-core=y
 CONFIG_PACKAGE_kmod-iio-dht11=y
 CONFIG_PACKAGE_kmod-iio-mxs-lradc=y
 # CONFIG_PACKAGE_kmod-ikconfig is not set
-CONFIG_PACKAGE_kmod-mmc=y
+# CONFIG_PACKAGE_kmod-mmc is not set
 # CONFIG_PACKAGE_kmod-mmc-over-gpio is not set
 # CONFIG_PACKAGE_kmod-mtdtests is not set
 CONFIG_PACKAGE_kmod-pps=y
