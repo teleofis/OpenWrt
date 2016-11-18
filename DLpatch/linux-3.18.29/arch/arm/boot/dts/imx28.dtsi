@@ -1022,7 +1022,7 @@
 			};
 
 			power: power@80044000 {
-				compatible = "fsl,imx28-power", "syscon";
+				compatible = "fsl,imx28-power";
 				#address-cells = <1>;
 				#size-cells = <1>;
 				reg = <0x80044000 0x2000>;
