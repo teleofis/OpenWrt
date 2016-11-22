@@ -42,6 +42,9 @@ msgstr "Период переключения на приоритетную СИ
 msgid "AT modem device name"
 msgstr "Имя устройства АТ модема"
 
+msgid "Ping iface name"
+msgstr "Имя интерфейса"
+
 msgid "IP address of remote servers"
 msgstr "Адреса тестовых серверов"
 

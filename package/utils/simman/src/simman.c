@@ -50,6 +50,7 @@ typedef struct settings_s{
 	testip_t serv[5];
 	sim_t sim[2];
 	uint8_t *atdevice;
+	uint8_t *iface;
 	uint8_t *imei;
 	uint8_t *ccid;
 	uint16_t gsmpow_pin;
@@ -208,6 +209,13 @@ int ReadConfiguration(settings_t *set)
 		return -1;
 	}	
 	settings.atdevice = p;
+
+	if ((p = GetUCIParam("simman.core.iface")) == NULL)
+	{
+		fprintf(stderr,"Error reading interface\n");
+		return -1;
+	}	
+	settings.iface = p;
 
 	if ((p = GetUCIParam("simman.core.gsmpow_gpio_pin")) == NULL)
 	{
@@ -527,7 +535,7 @@ int main(int argc, char **argv)
 								int ack, cnt = 0;
 
 								do{
-								 ack = ping((char*)settings.serv[i].ip, NULL);
+								 ack = ping((char*)settings.serv[i].ip, (char*)settings.iface);
 								}while(!ack && (++cnt < 3));
 
 								if (!ack) settings.serv[i].retry_check++;

@@ -8,7 +8,7 @@ PKG_NAME:=luci-app-simman
 LUCI_DEPENDS:=+simman
 
 # Version: <major>.<minor>.<patch>
-PKG_VERSION:=0.2.0
+PKG_VERSION:=0.2.1
 
 PKG_RELEASE:=1
 
