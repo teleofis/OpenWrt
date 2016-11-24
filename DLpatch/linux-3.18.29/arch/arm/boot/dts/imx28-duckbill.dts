@@ -39,7 +39,6 @@
 				{
 					reg = <0>;
 					fsl,pinmux-ids = <
-						/*MX28_PAD_AUART1_RTS__AUART1_RTS*/
 						MX28_PAD_AUART1_RX__AUART1_RX
 						MX28_PAD_AUART1_TX__AUART1_TX
 
@@ -79,7 +78,7 @@
 						MX28_PAD_SSP2_SCK__GPIO_2_16		/* SIMDET.1# */
 						MX28_PAD_SSP3_SCK__GPIO_2_24		/* SIMDET.0# */
 						MX28_PAD_SSP3_SS0__GPIO_2_27		/* GSM.VCCEN# */
-						MX28_PAD_PWM3__GPIO_3_28		/* USBHOST.VCCEN# */
+						MX28_PAD_PWM3__GPIO_3_28			/* USBHOST.VCCEN# */
 						MX28_PAD_SSP2_SS0__GPIO_2_19		/* PCI.VCCEN# */
 						/* ADDITIONAL GPIO */
 						MX28_PAD_I2C0_SDA__GPIO_3_25		
@@ -220,8 +219,6 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&mac1_pins_a>;
 			phy-supply = <&reg_3p3v>;
-			/* phy-reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>; */ /*bugfix - rcv is not +last hanging*/
-			/* phy-reset-duration = <200>; */
 			status = "okay";
 		};
 	};
