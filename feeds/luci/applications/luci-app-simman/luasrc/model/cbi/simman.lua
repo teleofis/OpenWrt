@@ -50,9 +50,15 @@ delay = section_gen:option(Value, "delay",  translate("Return to priority SIM, s
 
 atdevice = section_gen:option(Value, "atdevice",  translate("AT modem device name"))
   atdevice.default = "/dev/ttyACM3"
-  atdevice.datatype = "device"
+  atdevice.datatype = "network"
   atdevice.rmempty = false
   atdevice.optional = false
+
+iface = section_gen:option(Value, "iface",  translate("Ping iface name"))
+  atdevice.default = "wan2"
+  iface.datatype = "device"
+  iface.rmempty = false
+  iface.optional = false
 
 testip = section_gen:option(DynamicList, "testip",  translate("IP address of remote servers"))
   testip.datatype = "ipaddr"

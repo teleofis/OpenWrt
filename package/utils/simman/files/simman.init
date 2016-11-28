@@ -30,7 +30,7 @@ start_service_daemon(){
 	uci set simman.core.sim='0'
 	uci set simman.core.imei='NONE'
 	uci set simman.core.ccid='NONE'
-
+	uci set simman.info.iface='wan2'
 	uci set simman.info.atdevice='/dev/ttyACM4'
 	uci set simman.info.sim='NONE'
 	uci set simman.info.imei='NONE'

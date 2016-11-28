@@ -49,7 +49,7 @@ end
 
 function interfaceWarnings() -- display warning messages at the top of the page
 	local warns, lineBreak = "", ""
-	if errorReliability == 1 then
+--[[	if errorReliability == 1 then
 		warns = "<font color=\"ff0000\"><strong>WARNING: this interface has a higher reliability requirement than there are tracking IP addresses!</strong></font>"
 		lineBreak = "<br /><br />"
 	end
@@ -65,7 +65,7 @@ function interfaceWarnings() -- display warning messages at the top of the page
 		warns = warns .. lineBreak .. "<font color=\"ff0000\"><strong>WARNING: this interface has no metric configured in /etc/config/network!</strong></font>"
 	elseif errorDuplicateMetric == 1 then
 		warns = warns .. lineBreak .. "<font color=\"ff0000\"><strong>WARNING: this and other interfaces have duplicate metrics configured in /etc/config/network!</strong></font>"
-	end
+	end]]
 	return warns
 end
 
