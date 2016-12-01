@@ -54,6 +54,9 @@ msgstr "Переключений до сброса модема"
 msgid "Switches before reboot"
 msgstr "Переключений до перезагрузки"
 
+msgid "0 - not used"
+msgstr "0 - не применяется"
+
 msgid "SIM1 settings"
 msgstr "Параметры СИМ карты 1"
 
