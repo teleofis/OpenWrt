@@ -48,6 +48,12 @@ msgstr "Имя интерфейса"
 msgid "IP address of remote servers"
 msgstr "Адреса тестовых серверов"
 
+msgid "Switches before modem reset"
+msgstr "Переключений до сброса модема"
+
+msgid "Switches before reboot"
+msgstr "Переключений до перезагрузки"
+
 msgid "SIM1 settings"
 msgstr "Параметры СИМ карты 1"
 
