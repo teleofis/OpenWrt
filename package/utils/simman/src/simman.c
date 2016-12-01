@@ -18,7 +18,6 @@
 #include "log.h"
 
 #define SETSIM_SCRIPT "/etc/simman/setsim.sh"
-#define CHANGES_BEFORE_REBOOT 2 // на 4-й раз перегружаемся
 
 enum {
 	INIT = 0,
@@ -51,6 +50,8 @@ typedef struct settings_s{
 	sim_t sim[2];
 	uint8_t *atdevice;
 	uint8_t *iface;
+	uint16_t sw_before_modres;
+	uint16_t sw_before_sysres;
 	uint8_t *imei;
 	uint8_t *ccid;
 	uint16_t gsmpow_pin;
@@ -85,6 +86,7 @@ int    sim1_status,        // SIM1 status, 0 - detect, 1 - not detect, -1 - unkn
 
 int8_t state,
 	   changeCounter,
+	   resetDelayer=0,	// костыль для отсрочки презагрузки на 1 цикл
 	   retry;	   
 
 int GetSimInfo(char *device)
@@ -128,6 +130,31 @@ int ReadConfiguration(settings_t *set)
 		return -1;
 	}	
 	settings.delay = atoi(p);
+
+	if ((p = GetUCIParam("simman.core.sw_before_modres")) == NULL)
+	{
+		fprintf(stderr,"Error reading sw_before_modres\n");
+		settings.sw_before_modres = 0;
+		return -1;
+	}	
+	settings.sw_before_modres = atoi(p);
+
+	if(settings.sw_before_modres > 100)
+		settings.sw_before_modres = 100;
+	else if(settings.sw_before_modres < 0)
+		settings.sw_before_modres = 0;
+
+	if ((p = GetUCIParam("simman.core.sw_before_sysres")) == NULL)
+	{
+		fprintf(stderr,"Error reading sw_before_sysres\n");
+		settings.sw_before_sysres = 0;
+		return -1;
+	}	
+	settings.sw_before_sysres = atoi(p);
+	if(settings.sw_before_sysres > 100)
+		settings.sw_before_sysres = 100;
+	else if(settings.sw_before_sysres < 0)
+		settings.sw_before_sysres = 0;
 
 	if ((p = GetUCIParam("simman.core.testip")) == NULL)
 	{
@@ -308,10 +335,43 @@ int SetSim(uint8_t sim)
 	execCommand(cmd);
 
 	changeCounter++;
-	if(changeCounter > CHANGES_BEFORE_REBOOT)
+
+	if(settings.sw_before_sysres != 0)
 	{
-		sync();
-		reboot(RB_AUTOBOOT);
+		if(changeCounter > settings.sw_before_sysres)
+		{
+			LOG("Sim switched %d times\n", changeCounter);
+			LOG("Reboot...\n");
+			sync();
+			reboot(RB_AUTOBOOT);
+		}
+
+	}
+
+	if(settings.sw_before_modres != 0)
+	{
+		if(changeCounter > settings.sw_before_modres)
+		{
+			if(resetDelayer == 0)	// нужно отсрочить переключение симок на 1,
+			{						// чтобы посмотреть обе, иначе все время на первой
+				resetDelayer = 1;
+
+				LOG("Sim switched %d times\n", changeCounter);
+				if (access(SETSIM_SCRIPT, 0) != 0)
+				{
+					LOG("not found %s\n", SETSIM_SCRIPT);
+					return -1;
+				}
+
+				char *cmd1[] = {strdup(SETSIM_SCRIPT), "-p" };
+
+				LOG("Modem reset...\n");
+				execCommand(cmd1);
+			}
+			else
+				resetDelayer = 0;
+		}
+
 	}
 
 	return 0;

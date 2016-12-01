@@ -64,6 +64,19 @@ testip = section_gen:option(DynamicList, "testip",  translate("IP address of rem
   testip.datatype = "ipaddr"
   testip.cast = "string"
 
+sw_before_modres = section_gen:option(Value, "sw_before_modres",  translate("Switches before modem reset"))
+  sw_before_modres.default = 0
+  sw_before_modres.datatype = "and(uinteger, min(0), max(100))"
+  sw_before_modres.rmempty = false
+  sw_before_modres.optional = false
+
+sw_before_sysres = section_gen:option(Value, "sw_before_sysres",  translate("Switches before reboot"))
+  sw_before_sysres.default = 0
+  sw_before_sysres.datatype = "and(uinteger, min(0), max(100))"
+  sw_before_sysres.rmempty = false
+  sw_before_sysres.optional = false
+
+
 --- SIM info ---
 section_info = m:section(NamedSection, "info", "simman", translate("SIM Info"))
 
