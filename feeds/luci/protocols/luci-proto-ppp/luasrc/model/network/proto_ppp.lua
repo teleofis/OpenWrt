@@ -14,7 +14,7 @@ for _, p in ipairs({"ppp", "pptp", "pppoe", "pppoa", "3g", "l2tp"}) do
 		elseif p == "pptp" then
 			return luci.i18n.translate("PPtP")
 		elseif p == "3g" then
-			return luci.i18n.translate("UMTS/GPRS/EV-DO")
+			return luci.i18n.translate("UMTS/GPRS")
 		elseif p == "pppoe" then
 			return luci.i18n.translate("PPPoE")
 		elseif p == "pppoa" then

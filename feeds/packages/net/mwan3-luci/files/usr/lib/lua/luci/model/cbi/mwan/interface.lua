@@ -58,7 +58,7 @@ end
 
 function interfaceWarnings() -- display status and warning messages at the top of the page
 	local warnings = ""
-	if interfaceNumber <= 250 then
+--[[	if interfaceNumber <= 250 then
 		warnings = "<strong>There are currently " .. interfaceNumber .. " of 250 supported interfaces configured</strong>"
 	else
 		warnings = "<font color=\"ff0000\"><strong>WARNING: " .. interfaceNumber .. " interfaces are configured exceeding the maximum of 250!</strong></font>"
@@ -77,7 +77,7 @@ function interfaceWarnings() -- display status and warning messages at the top o
 	end
 	if errorDuplicateMetricList ~= " " then
 		warnings = warnings .. "<br /><br /><font color=\"ff0000\"><strong>WARNING: some interfaces have duplicate metrics configured in /etc/config/network!</strong></font>"
-	end
+	end]]
 	return warnings
 end
 
@@ -103,12 +103,13 @@ m5 = Map("mwan3", translate("MWAN Interface Configuration"),
 	m5:append(Template("mwan/config_css"))
 
 
-mwan_interface = m5:section(TypedSection, "interface", translate("Interfaces"),
+mwan_interface = m5:section(TypedSection, "interface", translate("Interfaces")
+	--[[,
 	translate("MWAN supports up to 250 physical and/or logical interfaces<br />" ..
 	"MWAN requires that all interfaces have a unique metric configured in /etc/config/network<br />" ..
 	"Names must match the interface name found in /etc/config/network (see advanced tab)<br />" ..
 	"Names may contain characters A-Z, a-z, 0-9, _ and no spaces<br />" ..
-	"Interfaces may not share the same name as configured members, policies or rules"))
+	"Interfaces may not share the same name as configured members, policies or rules")]])
 	mwan_interface.addremove = true
 	mwan_interface.dynamic = false
 	mwan_interface.sectionhead = "Interface"

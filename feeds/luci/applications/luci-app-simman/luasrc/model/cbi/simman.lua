@@ -54,9 +54,28 @@ atdevice = section_gen:option(Value, "atdevice",  translate("AT modem device nam
   atdevice.rmempty = false
   atdevice.optional = false
 
+iface = section_gen:option(Value, "iface",  translate("Ping iface name"))
+  atdevice.default = "wan2"
+  iface.datatype = "network"
+  iface.rmempty = false
+  iface.optional = false
+
 testip = section_gen:option(DynamicList, "testip",  translate("IP address of remote servers"))
   testip.datatype = "ipaddr"
   testip.cast = "string"
+
+sw_before_modres = section_gen:option(Value, "sw_before_modres",  translate("Switches before modem reset"),  translate("0 - not used"))
+  sw_before_modres.default = 0
+  sw_before_modres.datatype = "and(uinteger, min(0), max(100))"
+  sw_before_modres.rmempty = false
+  sw_before_modres.optional = false
+
+sw_before_sysres = section_gen:option(Value, "sw_before_sysres",  translate("Switches before reboot"),  translate("0 - not used"))
+  sw_before_sysres.default = 0
+  sw_before_sysres.datatype = "and(uinteger, min(0), max(100))"
+  sw_before_sysres.rmempty = false
+  sw_before_sysres.optional = false
+
 
 --- SIM info ---
 section_info = m:section(NamedSection, "info", "simman", translate("SIM Info"))

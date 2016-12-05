@@ -7,10 +7,11 @@ m5 = Map("mwan3", translate("MWAN Member Configuration"))
 	m5:append(Template("mwan/config_css"))
 
 
-mwan_member = m5:section(TypedSection, "member", translate("Members"),
+mwan_member = m5:section(TypedSection, "member", translate("Members")
+	--[[,
 	translate("Members are profiles attaching a metric and weight to an MWAN interface<br />" ..
 	"Names may contain characters A-Z, a-z, 0-9, _ and no spaces<br />" ..
-	"Members may not share the same name as configured interfaces, policies or rules"))
+	"Members may not share the same name as configured interfaces, policies or rules")]])
 	mwan_member.addremove = true
 	mwan_member.dynamic = false
 	mwan_member.sectionhead = "Member"

@@ -27,7 +27,6 @@ service:value("", translate("-- Please choose --"))
 service:value("umts", "UMTS/GPRS")
 service:value("umts_only", translate("UMTS only"))
 service:value("gprs_only", translate("GPRS only"))
-service:value("evdo", "CDMA/EV-DO")
 
 
 apn = section:taboption("general", Value, "apn", translate("APN"))
