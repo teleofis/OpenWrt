@@ -350,7 +350,6 @@ int ping(char *ip, char *iface)
  	FILE *fp;
     char b[128];
 	char path[128] = {0};
-	char pingRes;
 
 	if(iface == NULL)
 		sprintf(path,"/bin/ping -w1 -c2 %s | grep 'rec' | awk -F'[ ]' '{print $4}'",ip);
