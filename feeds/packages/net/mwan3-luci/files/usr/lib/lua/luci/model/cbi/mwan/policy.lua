@@ -34,12 +34,13 @@ m5 = Map("mwan3", translate("MWAN Policy Configuration"),
 	m5:append(Template("mwan/config_css"))
 
 
-mwan_policy = m5:section(TypedSection, "policy", translate("Policies"),
+mwan_policy = m5:section(TypedSection, "policy", translate("Policies"))
+--[[,
 	translate("Policies are profiles grouping one or more members controlling how MWAN distributes traffic<br />" ..
 	"Member interfaces with lower metrics are used first. Interfaces with the same metric load-balance<br />" ..
 	"Load-balanced member interfaces distribute more traffic out those with higher weights<br />" ..
 	"Names may contain characters A-Z, a-z, 0-9, _ and no spaces. Names must be 15 characters or less<br />" ..
-	"Policies may not share the same name as configured interfaces, members or rules"))
+	"Policies may not share the same name as configured interfaces, members or rules")]]
 	mwan_policy.addremove = true
 	mwan_policy.dynamic = false
 	mwan_policy.sectionhead = "Policy"

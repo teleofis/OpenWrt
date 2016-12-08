@@ -167,6 +167,18 @@
 			};
 		};
 		apbx@80040000 {
+			power@80044000 {
+				status = "okay";
+				reg_vddd: regulator@80044040 {
+					status = "okay";
+				};
+				reg_vdda: regulator@80044050 {
+					status = "okay";
+				};
+				reg_vddio: regulator@80044060 {
+					status = "okay";
+				};
+			};
 			lradc@80050000 {
 				fsl,lradc-touchscreen-wires = <4>;
 				status = "okay";

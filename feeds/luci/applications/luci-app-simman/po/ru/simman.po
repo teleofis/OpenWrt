@@ -42,8 +42,20 @@ msgstr "Период переключения на приоритетную СИ
 msgid "AT modem device name"
 msgstr "Имя устройства АТ модема"
 
+msgid "Ping iface name"
+msgstr "Имя интерфейса"
+
 msgid "IP address of remote servers"
 msgstr "Адреса тестовых серверов"
+
+msgid "Switches before modem reset"
+msgstr "Переключений до сброса модема"
+
+msgid "Switches before reboot"
+msgstr "Переключений до перезагрузки"
+
+msgid "0 - not used"
+msgstr "0 - не применяется"
 
 msgid "SIM1 settings"
 msgstr "Параметры СИМ карты 1"

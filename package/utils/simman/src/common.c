@@ -351,22 +351,26 @@ int ping(char *ip, char *iface)
     char b[128];
 	char path[128] = {0};
 
-	sprintf(path,"/bin/ping -w1 -c2 %s | grep 'rec' | awk -F'[ ]' '{print $4}'",ip);
+	if(iface == NULL)
+		sprintf(path,"/bin/ping -w1 -c2 %s | grep 'rec' | awk -F'[ ]' '{print $4}'",ip);
+	else
+		sprintf(path,"/bin/ping -w1 -c2 -I 3g-%s %s | grep 'rec' | awk -F'[ ]' '{print $4}'", iface, ip);
 
 	fp = popen(path,"r");
 
 	if (fp == NULL)
 	{
+		pclose(fp);
 		return 0;
 	}
 
 	if ( fgets(b,sizeof(b)-1, fp) == NULL )
 	{
+		pclose(fp);
 		return 0;
 	}
-	pclose(fp);
 
-  // fprintf(stderr,"%s",b);
+	pclose(fp);
 
    return atoi(b);
 }

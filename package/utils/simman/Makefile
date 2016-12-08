@@ -3,11 +3,11 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=simman
 PKG_VERSION:=2
-PKG_RELEASE:=2
+PKG_RELEASE:=5
 PKG_BUILD_DIR:=$(BUILD_DIR)/simman
 #CMAKE_INSTALL:=1
 
-PKG_MAINTAINER:=Konstantin Sklyarec <atskyua@gmail.com>
+PKG_MAINTAINER:=Konstantin Sklyarec <atskyua@gmail.com> Vladimir Ovseychuk <vgovseychuk@gmail.com>
 
 include $(INCLUDE_DIR)/package.mk
 #include $(INCLUDE_DIR)/cmake.mk
