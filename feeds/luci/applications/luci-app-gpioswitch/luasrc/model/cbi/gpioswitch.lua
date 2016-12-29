@@ -5,7 +5,7 @@ local sys = require "luci.sys"
 
 local gpios = { }
 
-gpios[1] = {name =  "0 PULLUP",
+gpios[1] = {name =  "0 PULLUP#",
             on0 = "echo 71 > /sys/class/gpio/export", 
             on1 = "echo out > /sys/class/gpio/gpio71/direction", 
             on2 = "echo 0 > /sys/class/gpio/gpio71/value",
@@ -21,7 +21,7 @@ gpios[2] = {name = "0 PULLDOWN",
             off1 = "echo out > /sys/class/gpio/gpio67/direction", 
             off2 = "echo 0 > /sys/class/gpio/gpio67/value" }
 
-gpios[3] = {name = "1 PULLUP",
+gpios[3] = {name = "1 PULLUP#",
             on0 = "echo 68 > /sys/class/gpio/export", 
             on1 = "echo out > /sys/class/gpio/gpio68/direction", 
             on2 = "echo 0 > /sys/class/gpio/gpio68/value",
@@ -37,7 +37,7 @@ gpios[4] = {name = "1 PULLDOWN",
             off1 = "echo out > /sys/class/gpio/gpio70/direction", 
             off2 = "echo 0 > /sys/class/gpio/gpio70/value" }
 
-gpios[5] = {name = "2 PULLUP",
+gpios[5] = {name = "2 PULLUP#",
             on0 = "echo 74 > /sys/class/gpio/export", 
             on1 = "echo out > /sys/class/gpio/gpio74/direction", 
             on2 = "echo 0 > /sys/class/gpio/gpio74/value",
@@ -53,7 +53,7 @@ gpios[6] = {name = "2 PULLDOWN",
             off1 = "echo out > /sys/class/gpio/gpio121/direction", 
             off2 = "echo 0 > /sys/class/gpio/gpio121/value" }
 
-gpios[7] = {name = "3 PULLUP",
+gpios[7] = {name = "3 PULLUP#",
             on0 = "echo 64 > /sys/class/gpio/export", 
             on1 = "echo out > /sys/class/gpio/gpio64/direction", 
             on2 = "echo 0 > /sys/class/gpio/gpio64/value",

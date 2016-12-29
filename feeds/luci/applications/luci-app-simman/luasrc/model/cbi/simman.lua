@@ -27,7 +27,7 @@ m = Map("simman", "Simman", translate("SIM manager for 3g modem"))
 --- General settings ---
 section_gen = m:section(NamedSection, "core", "simman", translate("General settings"))  -- create general section
 
-enabled = section_gen:option(Flag, "enabled", translate("Enabled"), translate("Enable Simman"), translate("Enabled"))  -- create enable checkbox
+enabled = section_gen:option(Flag, "enabled", translate("Enabled"), translate("To switch on/off require a reboot"), translate("Enabled"))  -- create enable checkbox
   enabled.rmempty = false
 
 retry_num = section_gen:option(Value, "retry_num",  translate("Number of failed attempts"))

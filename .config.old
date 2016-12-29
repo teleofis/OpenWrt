@@ -2260,15 +2260,9 @@ CONFIG_PACKAGE_kmod-fs-ext4=y
 #
 # I2C support
 #
-CONFIG_PACKAGE_kmod-i2c-core=y
-# CONFIG_PACKAGE_kmod-i2c-algo-bit is not set
-# CONFIG_PACKAGE_kmod-i2c-algo-pca is not set
-# CONFIG_PACKAGE_kmod-i2c-algo-pcf is not set
-# CONFIG_PACKAGE_kmod-i2c-gpio is not set
+# CONFIG_PACKAGE_kmod-i2c-core is not set
 # CONFIG_PACKAGE_kmod-i2c-gpio-custom is not set
-# CONFIG_PACKAGE_kmod-i2c-mux is not set
-CONFIG_PACKAGE_kmod-i2c-mxs=y
-# CONFIG_PACKAGE_kmod-i2c-tiny-usb is not set
+# CONFIG_PACKAGE_kmod-i2c-mxs is not set
 
 #
 # Input modules
@@ -2512,15 +2506,14 @@ CONFIG_PACKAGE_kmod-udptunnel6=y
 # CONFIG_PACKAGE_kmod-gpio-pca953x is not set
 # CONFIG_PACKAGE_kmod-gpio-pcf857x is not set
 CONFIG_PACKAGE_kmod-iio-core=y
-# CONFIG_PACKAGE_kmod-iio-ad799x is not set
 CONFIG_PACKAGE_kmod-iio-dht11=y
 CONFIG_PACKAGE_kmod-iio-mxs-lradc=y
 # CONFIG_PACKAGE_kmod-ikconfig is not set
 # CONFIG_PACKAGE_kmod-mmc is not set
 # CONFIG_PACKAGE_kmod-mmc-over-gpio is not set
 # CONFIG_PACKAGE_kmod-mtdtests is not set
-CONFIG_PACKAGE_kmod-pps=y
-CONFIG_PACKAGE_kmod-pps-gpio=y
+# CONFIG_PACKAGE_kmod-pps is not set
+# CONFIG_PACKAGE_kmod-pps-gpio is not set
 # CONFIG_PACKAGE_kmod-ptp is not set
 # CONFIG_PACKAGE_kmod-random-core is not set
 # CONFIG_PACKAGE_kmod-regmap is not set
@@ -2529,7 +2522,7 @@ CONFIG_PACKAGE_kmod-pps-gpio=y
 # CONFIG_PACKAGE_kmod-rtc-ds1672 is not set
 # CONFIG_PACKAGE_kmod-rtc-isl1208 is not set
 # CONFIG_PACKAGE_kmod-rtc-pcf2123 is not set
-CONFIG_PACKAGE_kmod-rtc-pcf8563=y
+# CONFIG_PACKAGE_kmod-rtc-pcf8563 is not set
 # CONFIG_PACKAGE_kmod-rtc-pt7c4338 is not set
 # CONFIG_PACKAGE_kmod-rtc-stmp3xxx is not set
 # CONFIG_PACKAGE_kmod-sdhci is not set
@@ -4640,7 +4633,7 @@ CONFIG_PACKAGE_libjson-script=y
 # CONFIG_PACKAGE_mc is not set
 # CONFIG_PACKAGE_mcookie is not set
 # CONFIG_PACKAGE_mdadm is not set
-CONFIG_PACKAGE_mmc-utils=y
+# CONFIG_PACKAGE_mmc-utils is not set
 CONFIG_PACKAGE_mount-utils=y
 # CONFIG_PACKAGE_mountd is not set
 # CONFIG_PACKAGE_mpack is not set

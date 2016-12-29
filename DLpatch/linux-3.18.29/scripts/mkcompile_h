@@ -44,7 +44,7 @@ else
 fi
 if test -z "$KBUILD_BUILD_USER"; then
 	#LINUX_COMPILE_BY=$(whoami | sed 's/\\/\\\\/')
-	LINUX_COMPILE_BY=`echo RTU968v2`
+	LINUX_COMPILE_BY=`echo RTU968v1`
 else
 	LINUX_COMPILE_BY=$KBUILD_BUILD_USER
 fi

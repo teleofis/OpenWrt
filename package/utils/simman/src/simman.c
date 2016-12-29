@@ -466,7 +466,7 @@ int main(int argc, char **argv)
 				{
 					if (active_sim == 0)
 					{
-						if (sim1_status)
+						if (sim2_status==0) //если SIM2 обнаружена
 						{
 							ch_sim = 1;
 							LOG("SIM2 has the highest priority\n");
@@ -477,7 +477,10 @@ int main(int argc, char **argv)
 					else
 					{
 						if (active_sim == 1)
+						{
 							LOG("SIM2 is active\n");
+							SetSim(active_sim);
+						}
 						else
 							LOG("No one SIM is available\n");
 					}
@@ -486,7 +489,7 @@ int main(int argc, char **argv)
 				{
 					if (active_sim == 1)
 					{
-						if (sim2_status)
+						if (sim1_status==0) //Если SIM1 обнаружена
 						{
 							ch_sim = 1;
 							LOG("SIM1 has the highest priority\n");
@@ -497,7 +500,10 @@ int main(int argc, char **argv)
 					else
 					{
 						if (active_sim == 0)
+						{
 							LOG("SIM1 is active\n");
+							SetSim(active_sim);
+						}
 						else
 							LOG("No one SIM is available\n");
 					}

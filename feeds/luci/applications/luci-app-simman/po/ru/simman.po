@@ -24,8 +24,8 @@ msgstr "Менеджер СИМ карт 3G модема"
 msgid "General settings"
 msgstr "Настройки"
 
-msgid "Enable Simman"
-msgstr "Разрешить работу сервиса"
+msgid "To switch on/off require a reboot"
+msgstr "Для переключения необходима перезагрузка"
 
 msgid "Enabled"
 msgstr "Включить"
