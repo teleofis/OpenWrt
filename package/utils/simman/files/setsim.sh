@@ -223,7 +223,10 @@ fi
 # store uci changes
 uci commit 
 
-# reload 
+# network reload
+ubus call network reload
+
+# interface internet up 
 ubus call network.interface.$iface up
 
 exit 0
