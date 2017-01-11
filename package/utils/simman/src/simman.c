@@ -601,7 +601,8 @@ int main(int argc, char **argv)
 								int ack, cnt = 0;
 
 								do{
-								 ack = ping((char*)settings.serv[i].ip, (char*)settings.iface);
+									//ack = ping((char*)settings.serv[i].ip, (char*)settings.iface);
+									ack = ping((char*)settings.serv[i].ip);
 								}while(!ack && (++cnt < 3));
 
 								if (!ack) settings.serv[i].retry_check++;

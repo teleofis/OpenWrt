@@ -345,16 +345,17 @@ char *GetUCIParam(char *uci_path)
    return strdup(buffer);
 }
 
-int ping(char *ip, char *iface)
+//int ping(char *ip, char *iface)
+int ping(char *ip)
 {
  	FILE *fp;
     char b[128];
 	char path[128] = {0};
 
-	if(iface == NULL)
+	//if(iface == NULL)
 		sprintf(path,"/bin/ping -w1 -c2 %s | grep 'rec' | awk -F'[ ]' '{print $4}'",ip);
-	else
-		sprintf(path,"/bin/ping -w1 -c2 -I 3g-%s %s | grep 'rec' | awk -F'[ ]' '{print $4}'", iface, ip);
+	//else
+		//sprintf(path,"/bin/ping -w1 -c2 -I 3g-%s %s | grep 'rec' | awk -F'[ ]' '{print $4}'", iface, ip);
 
 	fp = popen(path,"r");
 
