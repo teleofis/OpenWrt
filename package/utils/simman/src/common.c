@@ -353,7 +353,7 @@ int ping(char *ip)
 	char path[128] = {0};
 
 	//if(iface == NULL)
-		sprintf(path,"/bin/ping -w1 -c2 %s | grep 'rec' | awk -F'[ ]' '{print $4}'",ip);
+		sprintf(path,"/bin/ping -w10 -c2 %s | grep 'rec' | awk -F'[ ]' '{print $4}'",ip);
 	//else
 		//sprintf(path,"/bin/ping -w1 -c2 -I 3g-%s %s | grep 'rec' | awk -F'[ ]' '{print $4}'", iface, ip);
 

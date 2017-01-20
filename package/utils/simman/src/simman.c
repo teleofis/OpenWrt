@@ -443,7 +443,11 @@ int main(int argc, char **argv)
 				if (((tmp > 0)&&(active_sim == 0)) // вытянули сим 1
 				   ||((tmp == 0)&&(settings.sim[0].prio > settings.sim[1].prio))) // вставили сим 1 и приоритет у нее выше   
 				   {
-					ch_sim = 1;
+						for (i = 0; i < sizeof(settings.serv)/sizeof(settings.serv[0]); i++)
+							{
+								settings.serv[i].retry_check = 0;
+							}
+						ch_sim = 1;
 					}
 			}	
 			sim1_status = tmp;
@@ -455,7 +459,11 @@ int main(int argc, char **argv)
 				if (((tmp > 0)&&(active_sim > 0)) // вытянули сим 2
 				    ||((tmp == 0)&&(settings.sim[0].prio < settings.sim[1].prio))) // вставили сим 2 и приоритет у нее выше
 					{
-					 ch_sim = 1;
+						for (i = 0; i < sizeof(settings.serv)/sizeof(settings.serv[0]); i++)
+							{
+								settings.serv[i].retry_check = 0;
+							}
+					 	ch_sim = 1;
 					 }
 			}
 			sim2_status = tmp;
@@ -472,7 +480,10 @@ int main(int argc, char **argv)
 							LOG("SIM2 has the highest priority\n");
 						}
 						else
+						{
 							LOG("SIM2 is not available\n");
+							SetSim(0);
+						}
 					}
 					else
 					{
@@ -495,7 +506,10 @@ int main(int argc, char **argv)
 							LOG("SIM1 has the highest priority\n");
 						}
 						else
+						{
 							LOG("SIM1 is not available\n");
+							SetSim(1);
+						}
 					}
 					else
 					{
