@@ -27,8 +27,8 @@ msgstr "General settings"
 msgid "Main module options"
 msgstr "Main module options"
 
-msgid "Enable Simman"
-msgstr "Enable Simman"
+msgid "To switch on/off require a reboot"
+msgstr "To switch on/off require a reboot"
 
 msgid "Number of failed attempts"
 msgstr "Number of failed attempts"

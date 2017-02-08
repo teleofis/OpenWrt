@@ -443,7 +443,11 @@ int main(int argc, char **argv)
 				if (((tmp > 0)&&(active_sim == 0)) // вытянули сим 1
 				   ||((tmp == 0)&&(settings.sim[0].prio > settings.sim[1].prio))) // вставили сим 1 и приоритет у нее выше   
 				   {
-					ch_sim = 1;
+						for (i = 0; i < sizeof(settings.serv)/sizeof(settings.serv[0]); i++)
+							{
+								settings.serv[i].retry_check = 0;
+							}
+						ch_sim = 1;
 					}
 			}	
 			sim1_status = tmp;
@@ -455,7 +459,11 @@ int main(int argc, char **argv)
 				if (((tmp > 0)&&(active_sim > 0)) // вытянули сим 2
 				    ||((tmp == 0)&&(settings.sim[0].prio < settings.sim[1].prio))) // вставили сим 2 и приоритет у нее выше
 					{
-					 ch_sim = 1;
+						for (i = 0; i < sizeof(settings.serv)/sizeof(settings.serv[0]); i++)
+							{
+								settings.serv[i].retry_check = 0;
+							}
+					 	ch_sim = 1;
 					 }
 			}
 			sim2_status = tmp;
@@ -466,18 +474,24 @@ int main(int argc, char **argv)
 				{
 					if (active_sim == 0)
 					{
-						if (sim1_status)
+						if (sim2_status==0) //если SIM2 обнаружена
 						{
 							ch_sim = 1;
 							LOG("SIM2 has the highest priority\n");
 						}
 						else
+						{
 							LOG("SIM2 is not available\n");
+							SetSim(0);
+						}
 					}
 					else
 					{
 						if (active_sim == 1)
+						{
 							LOG("SIM2 is active\n");
+							SetSim(active_sim);
+						}
 						else
 							LOG("No one SIM is available\n");
 					}
@@ -486,18 +500,24 @@ int main(int argc, char **argv)
 				{
 					if (active_sim == 1)
 					{
-						if (sim2_status)
+						if (sim1_status==0) //Если SIM1 обнаружена
 						{
 							ch_sim = 1;
 							LOG("SIM1 has the highest priority\n");
 						}
 						else
+						{
 							LOG("SIM1 is not available\n");
+							SetSim(1);
+						}
 					}
 					else
 					{
 						if (active_sim == 0)
+						{
 							LOG("SIM1 is active\n");
+							SetSim(active_sim);
+						}
 						else
 							LOG("No one SIM is available\n");
 					}
@@ -595,7 +615,8 @@ int main(int argc, char **argv)
 								int ack, cnt = 0;
 
 								do{
-								 ack = ping((char*)settings.serv[i].ip, (char*)settings.iface);
+									//ack = ping((char*)settings.serv[i].ip, (char*)settings.iface);
+									ack = ping((char*)settings.serv[i].ip);
 								}while(!ack && (++cnt < 3));
 
 								if (!ack) settings.serv[i].retry_check++;

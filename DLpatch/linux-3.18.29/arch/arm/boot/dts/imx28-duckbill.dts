@@ -52,13 +52,13 @@
 				gpio_pins_3V3: gpio-pins-3V3@0 {
 					reg = <0>;
 					fsl,pinmux-ids = <
-						MX28_PAD_SSP3_MOSI__GPIO_2_25			/* GSM.SIMA */
-						MX28_PAD_SSP1_DATA0__GPIO_2_14			/* GSM.SIMDET */
-						MX28_PAD_SSP2_SCK__GPIO_2_16			/* SIMDET.1# */
+						MX28_PAD_SSP2_MISO__GPIO_2_18			/* GSM.SIMA */
+
+						MX28_PAD_AUART2_RX__GPIO_3_8			/* SIMDET.1# */
 						MX28_PAD_SSP1_DATA3__GPIO_2_15			/* SIMDET.0# */
 						MX28_PAD_AUART2_TX__GPIO_3_9			/* GSM.PWRKEY */
 						MX28_PAD_SSP2_SS0__GPIO_2_19			/* GSM.VCCEN# */
-
+						
 						MX28_PAD_I2C0_SDA__GPIO_3_25		/* USBHOST.VCCEN.TRIG.STATE C*/
 						MX28_PAD_SAIF1_SDATA0__GPIO_3_26		/* USBHOST.VCCEN.TRIG.CLK D*/
 						MX28_PAD_PWM3__GPIO_3_28				/* USBHOST.MODE.SWITCHER */
@@ -80,7 +80,15 @@
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
 					fsl,pull-up = <MXS_PULL_DISABLE>;
 				};
-
+				gpio_pins_1V8: gpio-pins-1V8@0 {
+					reg = <0>;
+					fsl,pinmux-ids = <
+						MX28_PAD_SSP1_DATA0__GPIO_2_14			/* GSM.SIMDET */
+						>;
+					fsl,drive-strength = <MXS_DRIVE_4mA>;
+					fsl,voltage = <MXS_VOLTAGE_LOW>;
+					fsl,pull-up = <MXS_PULL_DISABLE>;
+				};
 				/* NAND */
 				gpmi_pins_0: gpmi-pins-0@0 {
 					reg = <0>;
@@ -271,12 +279,7 @@
 		pinctrl-0 = <&gpio_pins_3V3>;
 		gpio_GSM_SIMA {
 			label = "gsm:simnumber";
-			gpios = <&gpio2 25 GPIO_ACTIVE_HIGH>;
-			default-state = "off";
-		};
-		gpio_GSM_SIMDET {
-			label = "gsm:simdet";
-			gpios = <&gpio2 14 GPIO_ACTIVE_HIGH>;
+			gpios = <&gpio2 18 GPIO_ACTIVE_HIGH>;
 			default-state = "off";
 		};
 		gpio_GSM_SIMDET_0 {
@@ -286,7 +289,7 @@
 		};
 		gpio_GSM_SIMDET_1 {
 			label = "gsm:simdet1";
-			gpios = <&gpio2 16 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio3 8 GPIO_ACTIVE_LOW>;
 			input;
 		};
 		gpio_GSM_PWRKEY {
@@ -313,6 +316,16 @@
 			label = "usb1:modesw";
 			gpios = <&gpio3 28 GPIO_ACTIVE_HIGH>;
 			default-state = "on";
+		};
+	};
+	gpio1V8 {
+		compatible = "fsl,imx28-gpio";
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_pins_1V8>;
+			gpio_GSM_SIMDET {
+		label = "gsm:simdet";
+		gpios = <&gpio2 14 GPIO_ACTIVE_HIGH>;
+		default-state = "off";
 		};
 	};
 	leds {

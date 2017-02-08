@@ -1,0 +1,2 @@
+KERNEL=="pps0",SYMLINK+="gpspps0",GROUP="root", MODE="0660"
+KERNEL=="ttyAPP1", SYMLINK+="gps0",GROUP="root", MODE="0660",RUN+="/etc/initscripts/gpsinit"
