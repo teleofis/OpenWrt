@@ -4335,3 +4335,177 @@ msgstr "« Назад"
 
 #~ msgid "zone"
 #~ msgstr "Зона"
+
+msgid "Load Balancing"
+msgstr "Резервирование WAN"
+
+msgid "MWAN Interface Live Status"
+msgstr "Текущие статусы интерфейсов"
+
+msgid "MWAN Interface Systemlog"
+msgstr "Системный журнал интерфейсов"
+
+msgid "Interface Status"
+msgstr "Статус интерфейсов"
+
+msgid "Detailed Status"
+msgstr "Подробный статус"
+
+msgid "MWAN Detailed Status"
+msgstr "Подробный статус MWAN"
+
+msgid "Interface"
+msgstr "Интерфейс"
+
+msgid "Errors"
+msgstr "Ошибки"
+
+msgid "MWAN Interface Configuration"
+msgstr "Конфигурация интерфейсов MWAN"
+
+msgid "Rules"
+msgstr "Правила"
+
+msgid "Rule"
+msgstr "Правило"
+
+msgid "Weight"
+msgstr "Вес"
+
+msgid "Member"
+msgstr "Участник"
+
+msgid "Members"
+msgstr "Участники"
+
+msgid "MWAN Member Configuration"
+msgstr "Конфигурация участников MWAN"
+
+msgid "Poliсy"
+msgstr "Политика"
+
+msgid "Policies"
+msgstr "Политики"
+
+msgid "MWAN Policy Configuration"
+msgstr "Конфигурация политик MWAN"
+
+msgid "MWAN Rule Configuration"
+msgstr "Конфигурация правил MWAN"
+
+msgid "Advanced"
+msgstr "Дополнительно"
+
+msgid "Troubleshooting"
+msgstr "Отладка"
+
+msgid "Troubleshooting Data"
+msgstr "Отладочная информация"
+
+msgid "MWAN Interface Diagnostics"
+msgstr "Диагностика интерфейсов"
+
+msgid "MWAN Service Control"
+msgstr "Управление сервисным процессом MWAN"
+
+msgid "Hotplug Script"
+msgstr "Скрипт Hotplug"
+
+msgid "Restore default hotplug script"
+msgstr "Восстановить по умолчанию"
+
+msgid "MWAN Config"
+msgstr "Конфигурация MWAN"
+
+msgid "Network Config"
+msgstr "Конфигурация сети"
+
+msgid "Members used"
+msgstr "Связанные участники"
+
+msgid "Members assigned"
+msgstr "Связанные участники"
+
+msgid "When all policy members are offline use this behavior for matched traffic"
+msgstr "Когда все участники политики находятся оффлайн, используется это поведение для соответствующего трафика"
+
+msgid "Currently Configured Members"
+msgstr "Текущие участники"
+
+msgid "Restore..."
+msgstr "Восстановить..."
+
+msgid "Collecting data..."
+msgstr "Сбор данных..."
+
+msgid "Tracking IP"
+msgstr "Отслеживаемые IP"
+
+msgid "This IP address will be pinged to dermine if the link is up or down. Leave blank to assume interface is always online"
+msgstr "По пингу данных IP определяется, рабочий интерфейс или нет. Если их нет, интерфейс считается рабочим всегда"
+
+msgid "Acceptable values: 1-100. This many Tracking IP addresses must respond for the link to be deemed up"
+msgstr "1..100. Столько раз должен успешно пройти пинг, чтобы интерфейс считался рабочим"
+
+msgid "Interface will be deemed down after this many failed ping tests"
+msgstr "После стольких пингов с ошибкой интерфейс считается нерабочим"
+
+msgid "Downed interface will be deemed up after this many successful ping tests"
+msgstr "Упавший интерфейс считается вновь рабочим после стольких успешных пингов"
+
+msgid "This displays the metric assigned to this interface in /etc/config/network"
+msgstr "Тут отображается метрика для данного интерфейса"
+
+msgid "Acceptable values: 1-1000. Defaults to 1 if not set"
+msgstr "1..1000. Если не указано, то 1"
+
+msgid "Currently Configured Interfaces"
+msgstr "Текущие интерфейсы"
+
+msgid "MWAN Member Configuration - "
+msgstr "Конфигурация участника - "
+
+msgid "MWAN Interface Configuration - "
+msgstr "Конфигурация интерфейса - "
+
+msgid "Policies"
+msgstr "Политики"
+
+msgid "Policy"
+msgstr "Политика"
+
+msgid "Supports CIDR notation (eg \"192.168.100.0/24\") without quotes"
+msgstr "Поддерживается бесклассовая адресация, например, 192.168.100.0/24"
+
+msgid "May be entered as a single or multiple port(s) (eg \"22\" or \"80,443\") or as a portrange (eg \"1024:2048\") without quotes"
+msgstr "Один, несколько или диапазон портов(22 или 80,433 или 1024:2048)"
+
+msgid "View the contents of /etc/protocols for protocol descriptions"
+msgstr "см. /etc/protocols"
+
+msgid "Traffic from the same source IP address that previously matched this rule within the sticky timeout period will use the same WAN interface"
+msgstr "Трафик одного IP, что соответствует текущему правилу, в течение sticky таймаута будет использовать один WAN интерфейс"
+
+msgid "Seconds. Acceptable values: 1-1000000. Defaults to 600 if not set"
+msgstr "Секунды. 1..1000000. 600 - по умолчанию"
+
+msgid "Name of IPset rule. Requires IPset rule in /etc/dnsmasq.conf (eg \"ipset=/youtube.com/youtube\")"
+msgstr "Имя правила IPset. Требует правило в /etc/dnsmasq.conf"
+
+msgid "MWAN Rule Configuration - "
+msgstr "Конфигурация правила MWAN - "
+
+msgid "Currently Configured Policies"
+msgstr "Текущие сконфигурированные политики"
+
+msgid "Rules"
+msgstr "Правила"
+
+msgid "Rule"
+msgstr "Правило"
+
+msgid "Policy assigned"
+msgstr "Назначенная политика"
+
+msgid "Member"
+msgstr "Участник"

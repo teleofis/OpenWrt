@@ -122,13 +122,13 @@ fi
 
 [ "$sim" == "0" ] && {
 	[ "$sim1" == "1" ] && logger -t $tag "Not inserted sim 1" && exit 0 
-	[ "$ac_sim" == "1" ] && logger -t $tag "SIM 1 is already active" && exit 0
+	[ "$ac_sim" == "1" ] && [ "$pow" != "1" ]  && ubus call network.interface.$iface down && logger -t $tag "SIM 1 is already active" && ubus call network.interface.$iface up && exit 0
 	logger -t $tag "Set SIM card 1"
 }
 
 [ "$sim" == "1" ] && {
 	[ "$sim2" == "1" ] && logger -t $tag "Not inserted sim 2" && exit 0 
-	[ "$ac_sim" == "2" ] && logger -t $tag "SIM 2 is already active" && exit 0
+	[ "$ac_sim" == "2" ] && [ "$pow" != "1" ] && ubus call network.interface.$iface down && logger -t $tag "SIM 2 is already active" && ubus call network.interface.$iface up && exit 0
 	logger -t $tag "Set SIM card 2"
 }
 
@@ -172,6 +172,8 @@ if [ "$mode" == "0" ]; then
 
  # Power switch
  if [ "$pow" == "1" ]; then
+
+  logger -t $tag "Reset pin toggle"
   # release SIMADDR
   echo "0" > $GPIO_PATH/gpio$SIMADDR_PIN/value  
 
@@ -220,6 +222,9 @@ fi
 
 # store uci changes
 uci commit 
+
+# network reload
+ubus call network reload
 
 # reload 
 ubus call network.interface.$iface up

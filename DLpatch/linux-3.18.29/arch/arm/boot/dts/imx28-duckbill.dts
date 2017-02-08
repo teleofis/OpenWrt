@@ -160,6 +160,18 @@
 			};
 		};
 		apbx@80040000 {
+			power@80044000 {
+				status = "okay";
+				reg_vddd: regulator@80044040 {
+					status = "okay";
+				};
+				reg_vdda: regulator@80044050 {
+					status = "okay";
+				};
+				reg_vddio: regulator@80044060 {
+					status = "okay";
+				};
+			};
 			lradc@80050000 {
 				fsl,lradc-touchscreen-wires = <4>;
 				status = "okay";
@@ -329,6 +341,18 @@
 		gpios = <&gpio2 25 GPIO_ACTIVE_HIGH>;
 		status = "okay";
 	};
+	i2c@cp2112 {
+            #address-cells = <1>;
+            #size-cells = <0>;            
+			pcf8563: rtc@51 {                    
+				compatible = "phg,pcf8563";
+				reg = <0x51>;
+			};
+			w1: ds2482@18 {
+            compatible = "dallas,ds2482";
+            reg = <0x18>;
+      	};
+    };
 	regulators {
 		compatible = "simple-bus";
 		reg_3p3v: 3p3v {

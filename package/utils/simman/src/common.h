@@ -32,8 +32,8 @@ int GetSIG(void);
 * @return Return string parameter value or null if parameter not exists
 */
 char *GetUCIParam(char *path);
-
-int ping(char *ip, char *iface);
+//int ping(char *ip, char *iface);
+int ping(char *ip);
 int gpioRead(int gpio);
 int gpioSet(int gpio, int value);
 #endif

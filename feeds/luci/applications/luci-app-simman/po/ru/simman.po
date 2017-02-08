@@ -16,37 +16,49 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 
 msgid "Simman"
-msgstr "Менеджер СИМ"
+msgstr "Менеджер SIM"
 
 msgid "SIM manager for 3g modem"
-msgstr "Менеджер СИМ карт 3G модема"
+msgstr "Менеджер SIM-карт 3G модема"
 
 msgid "General settings"
 msgstr "Настройки"
 
-msgid "Enable Simman"
-msgstr "Разрешить работу сервиса"
+msgid "To switch on/off require a reboot"
+msgstr "Для переключения необходима перезагрузка"
 
 msgid "Enabled"
 msgstr "Включить"
 
 msgid "Number of failed attempts"
-msgstr "Число неудачных попыток"
+msgstr "Число неудачных попыток пинга"
 
 msgid "Period of check, sec"
-msgstr "Период опроса, сек"
+msgstr "Период между попытками пинга, сек"
 
 msgid "Return to priority SIM, sec"
-msgstr "Период переключения на приоритетную СИМ карту, сек"
+msgstr "Период переключения на приоритетную SIM-карту, сек"
 
 msgid "AT modem device name"
 msgstr "Имя устройства АТ модема"
 
+msgid "Ping iface name"
+msgstr "Имя интерфейса"
+
 msgid "IP address of remote servers"
-msgstr "Адреса тестовых серверов"
+msgstr "Адреса тестовых серверов для пинга"
+
+msgid "Switches before modem reset"
+msgstr "Переключений SIM-карт до сброса модема"
+
+msgid "Switches before reboot"
+msgstr "Переключений SIM-карт до перезагрузки роутера"
+
+msgid "0 - not used"
+msgstr "0 - не применяется"
 
 msgid "SIM1 settings"
-msgstr "Параметры СИМ карты 1"
+msgstr "Параметры SIM-карты 1"
 
 msgid "Priority"
 msgstr "Приоритет"
@@ -64,7 +76,7 @@ msgid "Password"
 msgstr "Пароль"
 
 msgid "SIM2 settings"
-msgstr "Параметры СИМ карты 2"
+msgstr "Параметры SIM-карты 2"
 
 msgid "SIM Info"
 msgstr "Информация по подключению"
