@@ -124,7 +124,7 @@
 				hog_pins: hog-pins-high@0 {
 					reg = <0>;
 					fsl,pinmux-ids = <
-						MX28_PAD_LCD_D00__GPIO_1_0		/* ETH.RES# workaround init */
+						MX28_PAD_ENET0_RX_CLK__GPIO_4_13		/* ETH.RES# workaround init */
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
@@ -261,7 +261,7 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&mac0_pins_a>;
 			phy-supply = <&reg_3p3v>;
-			phy-reset-gpios = <&gpio1 0 GPIO_ACTIVE_LOW>;
+			phy-reset-gpios = <&gpio4 13 GPIO_ACTIVE_LOW>;
 			phy-reset-duration = <200>;
 			status = "okay";
 		};
