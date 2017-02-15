@@ -2,15 +2,24 @@ case "$ACTION" in
     add)
         # start process
         # only pl2303 devices are handled
-        if [ "$PRODUCT" = "67b/2303/300" ] && [ "$TYPE" = "0/0/0" ] && [ "$INTERFACE" = "255/0/0" ]; then
-            sleep 3 && /etc/init.d/gpsd start
+        GPS=$(echo $DEVPATH | grep "1-1.1.4:1.1")
+        if [ "$PRODUCT" = "10c4/ea70/100" ] && [ "$TYPE" = "0/0/0" ] && [ "$INTERFACE" = "255/0/0" ] && [ "$MODALIAS"="usb:v10C4pEA70d0100dc00dsc00dp00icFFisc00ip00in01" ] && [ ! -z "$GPS" ]; then
+            DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+            ln -s /dev/$DEVICE_NAME /dev/gps0
+            ln -s /dev/pps0 /dev/gpspps0
+            sleep 3
+            /usr/sbin/gpsd -n -P /var/run/gpsd.pid -S 2947 -G /dev/$DEVICE_NAME
+            /etc/init.d/ntpd restart
         fi
         ;;
     remove)
         # stop process
         # only pl2303 devices are handled
-        if [ "$PRODUCT" = "67b/2303/300" ] && [ "$TYPE" = "0/0/0" ] && [ "$INTERFACE" = "255/0/0" ]; then
+        GPS=$(echo $DEVPATH | grep "1-1.1.4:1.1")
+        if [ "$PRODUCT" = "10c4/ea70/100" ] && [ "$TYPE" = "0/0/0" ] && [ "$INTERFACE" = "255/0/0" ] && [ "$MODALIAS"="usb:v10C4pEA70d0100dc00dsc00dp00icFFisc00ip00in01" ] && [ ! -z "$GPS" ]; then
             /etc/init.d/gpsd stop
+            rm /dev/gps0
+            rm /dev/gpspps0
         fi
         ;;
 esac

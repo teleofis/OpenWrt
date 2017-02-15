@@ -1,0 +1,5 @@
+echo 124 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio124/direction
+echo 1 > /sys/class/gpio/gpio124/value
+
+echo "1" > /sys/bus/usb/devices/usb1/1-1/1-1.1/1-1.1.4/bConfigurationValue
