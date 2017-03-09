@@ -1,8 +1,6 @@
-/etc/initscripts/rtcinit &
-/etc/initscripts/ethinit &
-/etc/initscripts/usbhost &
-/etc/initscripts/modeminit &
-/etc/initscripts/pciinit &
+/etc/initscripts/usbhost 
+/etc/initscripts/ethinit 
+/etc/initscripts/modeminit 
 
 watchdog -t 30 -T 60 /dev/watchdog0
 
