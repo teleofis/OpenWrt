@@ -43,6 +43,7 @@ typedef struct sim_s
 }sim_t;
 
 typedef struct settings_s{
+	uint8_t only_first_sim;
 	uint8_t retry_num;
 	uint16_t check_period;
 	uint16_t delay;
@@ -82,11 +83,12 @@ static current_info_t siminfo;
 
 int    sim1_status,        // SIM1 status, 0 - detect, 1 - not detect, -1 - unknown
 	   sim2_status,        // SIM2 status
+	   first_start,
 	   active_sim;         // active SIM, 0 - SIM1, 1 - SIM2, -1 - unknown
 
 int8_t state,
 	   changeCounter,
-	   resetDelayer=0,	// костыль для отсрочки презагрузки на 1 цикл
+	   changeCounterForReboot,
 	   retry;	   
 
 int GetSimInfo(char *device)
@@ -109,6 +111,13 @@ int ReadConfiguration(settings_t *set)
 {
 	char * p, path[128];
 	char i;
+
+	if ((p = GetUCIParam("simman.core.only_first_sim")) == NULL)
+	{
+		fprintf(stderr,"Error reading only_first_sim\n");
+		return -1;
+	}
+	settings.only_first_sim = atoi(p);
 
 	if ((p = GetUCIParam("simman.core.retry_num")) == NULL)
 	{
@@ -319,60 +328,84 @@ int ModemStarted(char *atdevice)
 
 int SetSim(uint8_t sim)
 {
-	if (access(SETSIM_SCRIPT, 0) != 0)
-	{
-		LOG("not found %s\n", SETSIM_SCRIPT);
-		return -1;
-	}
-
-	char *cmd[] = {strdup(SETSIM_SCRIPT), 
-		"-s", (sim)?"1":"0",
-		0, 0};
-
-	//LOG("execute %s %s %s\n", cmd[0],
-	//		cmd[1], cmd[2]);
-
-	execCommand(cmd);
-
+	changeCounterForReboot++;
 	changeCounter++;
+	//LOG("changeCounter now %d and changeCounterForReboot %d \n", changeCounter, changeCounterForReboot);
+	if ((settings.only_first_sim == 0) || (first_start == 1))
+	{
+		if (access(SETSIM_SCRIPT, 0) != 0)
+		{
+			LOG("not found %s\n", SETSIM_SCRIPT);
+			return -1;
+		}
+
+		char *cmd[] = {strdup(SETSIM_SCRIPT), 
+			"-s", (sim)?"1":"0",
+			0, 0};
+
+		//LOG("execute %s %s %s\n", cmd[0],
+		//cmd[1], cmd[2]);
+
+		execCommand(cmd);
+		first_start = 0;
+
+	}
+	else
+	{	
+		LOG("switching to over SIM is not necessary");	
+		if (access(SETSIM_SCRIPT, 0) != 0)
+		{
+			LOG("not found %s\n", SETSIM_SCRIPT);
+			return -1;
+		}
+
+		char *cmd[] = {strdup(SETSIM_SCRIPT), 
+			"-s", (!sim)?"1":"0",
+			0, 0};
+
+		//LOG("execute %s %s %s\n", cmd[0],
+		//cmd[1], cmd[2]);
+
+		execCommand(cmd);
+	}
 
 	if(settings.sw_before_sysres != 0)
 	{
-		if(changeCounter > settings.sw_before_sysres)
+		if(changeCounterForReboot > settings.sw_before_sysres)
 		{
-			LOG("Sim switched %d times\n", changeCounter);
+			LOG("Sim switched %d times\n", changeCounterForReboot);
 			LOG("Reboot...\n");
 			sync();
 			reboot(RB_AUTOBOOT);
 		}
-
 	}
 
 	if(settings.sw_before_modres != 0)
 	{
 		if(changeCounter > settings.sw_before_modres)
 		{
-			if(resetDelayer == 0)	// нужно отсрочить переключение симок на 1,
-			{						// чтобы посмотреть обе, иначе все время на первой
-				resetDelayer = 1;
-
-				LOG("Sim switched %d times\n", changeCounter);
-				if (access(SETSIM_SCRIPT, 0) != 0)
-				{
-					LOG("not found %s\n", SETSIM_SCRIPT);
-					return -1;
-				}
-
-				char *cmd1[] = {strdup(SETSIM_SCRIPT), "-p" };
-
-				LOG("Modem reset...\n");
-				execCommand(cmd1);
+			LOG("Sim switched %d times\n", changeCounter);
+			if (access(SETSIM_SCRIPT, 0) != 0)
+			{
+				LOG("not found %s\n", SETSIM_SCRIPT);
+				return -1;
 			}
-			else
-				resetDelayer = 0;
+
+			char *cmd1[] = {strdup(SETSIM_SCRIPT), "-p" };
+
+			LOG("Modem reset...\n");
+			execCommand(cmd1);
+			changeCounter = 0;
+			changeCounterForReboot--;
+			first_start = 1;
 		}
 
 	}
+
+	if(changeCounter>101)
+		changeCounter=0;
+	if(changeCounterForReboot>101)
+		changeCounterForReboot=0;
 
 	return 0;
 }
@@ -384,7 +417,7 @@ int main(int argc, char **argv)
 		tmp, 
 		ch_sim,
 		num_sim,
-		first_start;
+		hot_change;
 
 	time_t now_time, prev_time, prev_delay_time;
 	double diff, diff_delay;
@@ -404,8 +437,10 @@ int main(int argc, char **argv)
 
 	state = -1;
 	first_start = 1;
+	hot_change = 1;
 	ch_sim = 0;
 	changeCounter = 0;
+	changeCounterForReboot = 0;
 
 	LOG("service started\n");
 
@@ -447,7 +482,8 @@ int main(int argc, char **argv)
 							{
 								settings.serv[i].retry_check = 0;
 							}
-						ch_sim = 1;
+						hot_change = 1;
+						state = CH_SIM;
 					}
 			}	
 			sim1_status = tmp;
@@ -463,7 +499,8 @@ int main(int argc, char **argv)
 							{
 								settings.serv[i].retry_check = 0;
 							}
-					 	ch_sim = 1;
+						hot_change = 1;
+					 	state = CH_SIM;
 					 }
 			}
 			sim2_status = tmp;
@@ -476,7 +513,7 @@ int main(int argc, char **argv)
 					{
 						if (sim2_status==0) //если SIM2 обнаружена
 						{
-							ch_sim = 1;
+							SetSim(1);
 							LOG("SIM2 has the highest priority\n");
 						}
 						else
@@ -502,7 +539,7 @@ int main(int argc, char **argv)
 					{
 						if (sim1_status==0) //Если SIM1 обнаружена
 						{
-							ch_sim = 1;
+							SetSim(0);
 							LOG("SIM1 has the highest priority\n");
 						}
 						else
@@ -522,8 +559,10 @@ int main(int argc, char **argv)
 							LOG("No one SIM is available\n");
 					}
 				}
-				first_start = 0;	  
+				hot_change = 0;
 			}
+			first_start = hot_change;
+			hot_change = 0;
 
 			// Если работаем на карте с низким приоритетом,
 			// пробуем переключится на карту с высшим приоритетом
@@ -624,6 +663,7 @@ int main(int argc, char **argv)
 								{
 									settings.serv[i].retry_check = 0;
 									changeCounter = 0;		
+									changeCounterForReboot = 0;
 								}
 
 								if (settings.serv[i].retry_check >= settings.retry_num)
@@ -663,15 +703,19 @@ int main(int argc, char **argv)
 								if (active_sim == 0)
 								{
 									if (sim2_status == 0)
+									{
 										num_sim = 1;
+										LOG("attempt to switch to SIM%d\n", num_sim+1);
+									}
 								}
 								else
 								{
 									if (sim1_status == 0)
+									{
 										num_sim = 0;
-								}
-
-								LOG("attempt to switch to SIM%d\n", num_sim+1);
+										LOG("attempt to switch to SIM%d\n", num_sim+1);
+									}
+								}								
 
 								SetSim(num_sim);
 							}

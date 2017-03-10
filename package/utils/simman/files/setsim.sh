@@ -120,17 +120,22 @@ if [ "$sim1" == "1" ] && [ "$sim2" == "1" ]; then
 	exit 0
 fi
 
+if [ "$pow" != "1" ]; then
 [ "$sim" == "0" ] && {
 	[ "$sim1" == "1" ] && logger -t $tag "Not inserted sim 1" && exit 0 
-	[ "$ac_sim" == "1" ] && [ "$pow" != "1" ]  && ubus call network.interface.$iface down && logger -t $tag "SIM 1 is already active" && ubus call network.interface.$iface up && exit 0
+	[ "$ac_sim" == "1" ] && ubus call network.interface.$iface down && logger -t $tag "SIM 1 is already active" && ubus call network.interface.$iface up && exit 0
 	logger -t $tag "Set SIM card 1"
 }
 
 [ "$sim" == "1" ] && {
 	[ "$sim2" == "1" ] && logger -t $tag "Not inserted sim 2" && exit 0 
-	[ "$ac_sim" == "2" ] && [ "$pow" != "1" ] && ubus call network.interface.$iface down && logger -t $tag "SIM 2 is already active" && ubus call network.interface.$iface up && exit 0
+	[ "$ac_sim" == "2" ] && ubus call network.interface.$iface down && logger -t $tag "SIM 2 is already active" && ubus call network.interface.$iface up && exit 0
 	logger -t $tag "Set SIM card 2"
 }
+else 
+	[ "$sim" == "0" ] && [ "$sim1" == "1" ] && sim="1"  
+	[ "$sim" == "1" ] && [ "$sim2" == "1" ] && sim="0" 
+fi
 
 # set down 3g interface
 ubus call network.interface.$iface down
