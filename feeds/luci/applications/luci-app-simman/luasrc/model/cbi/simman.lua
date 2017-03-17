@@ -57,11 +57,11 @@ atdevice = section_gen:option(Value, "atdevice",  translate("AT modem device nam
   atdevice.rmempty = false
   atdevice.optional = false
 
---iface = section_gen:option(Value, "iface",  translate("Ping iface name"))
---  atdevice.default = "wan2"
---  iface.datatype = "network"
---  iface.rmempty = false
---  iface.optional = false
+iface = section_gen:option(Value, "iface",  translate("Ping iface name"))
+  iface.default = "internet"
+  iface.datatype = "network"
+  iface.rmempty = false
+  iface.optional = false
 
 testip = section_gen:option(DynamicList, "testip",  translate("IP address of remote servers"))
   testip.datatype = "ipaddr"
