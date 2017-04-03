@@ -70,6 +70,15 @@
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
 					fsl,pull-up = <MXS_PULL_DISABLE>;
 				};
+				watchdog: watchdog@0 {
+					reg = <0>;
+					fsl,pinmux-ids = <
+						MX28_PAD_PWM4__GPIO_3_29		/* LED.TOP/WATCHDOG*/
+					>;
+					fsl,drive-strength = <MXS_DRIVE_4mA>;
+					fsl,voltage = <MXS_VOLTAGE_HIGH>;
+					fsl,pull-up = <MXS_PULL_DISABLE>;
+				};
 				gpio_pins_3V3: gpio-pins-3V3@0 {
 					reg = <0>;
 					fsl,pinmux-ids = <
@@ -90,7 +99,6 @@
 						MX28_PAD_SSP0_DATA3__GPIO_2_3
 						MX28_PAD_SSP0_DATA4__GPIO_2_4
 						MX28_PAD_SSP1_SCK__GPIO_2_12
-
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
@@ -133,17 +141,6 @@
 					reg = <0>;
 					fsl,pinmux-ids = <
 						MX28_PAD_SSP1_DATA0__GPIO_2_14		/* ETH.RES# workaround init*/
-					>;
-					fsl,drive-strength = <MXS_DRIVE_4mA>;
-					fsl,voltage = <MXS_VOLTAGE_HIGH>;
-					fsl,pull-up = <MXS_PULL_DISABLE>;
-				};
-				leds_pins: leds-pins@0 {
-					reg = <0>;
-					fsl,pinmux-ids = <
-						MX28_PAD_SSP0_DETECT__GPIO_2_9		/* LED.MID */
-						MX28_PAD_SSP3_MISO__GPIO_2_26		/* LED.BOT */
-						MX28_PAD_PWM4__GPIO_3_29		/* LED.TOP */
 					>;
 					fsl,drive-strength = <MXS_DRIVE_4mA>;
 					fsl,voltage = <MXS_VOLTAGE_HIGH>;
@@ -235,10 +232,12 @@
 		};
 	};
 	gpio {
-		compatible = "gpio-router";
+		compatible = "fsl,imx28-gpio", "fsl,mxs-gpio";
 		pinctrl-names = "default";
 		/*pinctrl-0 = <&gpio_pins_1V8 &gpio_pins_3V3>;*/
 		pinctrl-0 = <&gpio_pins_3V3>;
+		gpio-controller;
+		#gpio-cells = <2>;
 		gpio_GSM_SIMA {
 			label = "gsm:simnumber";
 			gpios = <&gpio2 5 GPIO_ACTIVE_HIGH>;
@@ -262,12 +261,14 @@
 		gpio_GSM_VCCEN# {
 			label = "gsm:vccen";
 			gpios = <&gpio2 27 GPIO_ACTIVE_LOW>;
-			default-state = "on";
+			output-low;
 		};
 		gpio_USBHOST_VCCEN {
-			label = "duckbill:usb1:vccen";
+			gpio-hog;
+			label = "usb1:vccen";
 			gpios = <&gpio3 28 GPIO_ACTIVE_HIGH>;
-			default-state = "on";
+			output-high;
+			line-name = "usbhost_vccen";
 		};
 		gpio_PCI_VCCEN# {
 			label = "pci:vccen";
@@ -315,25 +316,15 @@
 			default-state = "off";
 		};
 	};
-	leds {
-		compatible = "gpio-leds";
+	watchdog {
+		/* ADM706 */
+		compatible = "linux,wdt-gpio";
 		pinctrl-names = "default";
-		pinctrl-0 = <&leds_pins>;
-		failure {/* NET */
-			label = "middle:net";
-			gpios = <&gpio2 9 GPIO_ACTIVE_HIGH>;
-			default-state = "on";
-		};
-		power {/* POWER */
-			label = "top:power";
-			gpios = <&gpio3 29 GPIO_ACTIVE_HIGH>;
-			default-state = "on";
-		};
-		status {/* ACT */
-			label = "bottom:act";
-			gpios = <&gpio2 26 GPIO_ACTIVE_HIGH>;
-			default-state = "on";
-		};
+		pinctrl-0 = <&watchdog>;
+		gpios = <&gpio3 29 GPIO_ACTIVE_HIGH>;
+		hw_algo = "toggle";
+		hw_margin_ms = <8000>;
+		always-running = <1>;
 	};
 	regulators {
 		compatible = "simple-bus";
