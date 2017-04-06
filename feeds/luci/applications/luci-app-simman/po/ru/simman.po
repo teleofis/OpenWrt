@@ -30,6 +30,12 @@ msgstr "Для переключения необходима перезагру�
 msgid "Enabled"
 msgstr "Включить"
 
+msgid "Use only high priority SIM"
+msgstr "Использовать только SIM с высоким приоритетом"
+
+msgid "If you use only one SIM, the remaining SIM will be considered a priority"
+msgstr "Если вставлен только один SIM-холдер, то SIM карта в нем будет считаться приоритетной"
+
 msgid "Number of failed attempts"
 msgstr "Число неудачных попыток пинга"
 
