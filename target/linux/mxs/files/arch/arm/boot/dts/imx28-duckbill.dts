@@ -89,6 +89,15 @@
 					fsl,voltage = <MXS_VOLTAGE_LOW>;
 					fsl,pull-up = <MXS_PULL_DISABLE>;
 				};
+				usb0_id_pins_cust: usb0id@0 {
+					reg = <0>;
+					fsl,pinmux-ids = <
+						MX28_PAD_GPMI_RDY3__GPIO_0_23
+					>;
+					fsl,drive-strength = <MXS_DRIVE_12mA>;
+					fsl,voltage = <MXS_VOLTAGE_HIGH>;
+					fsl,pull-up = <MXS_PULL_ENABLE>;
+				};
 				/* NAND */
 				gpmi_pins_0: gpmi-pins-0@0 {
 					reg = <0>;
@@ -246,7 +255,7 @@
 	ahb@80080000 {
 		usb0: usb@80080000 {
 			pinctrl-names = "default";
-			pinctrl-0 = <&usb0_pins_a &usb0_id_pins_b>;	/* HOST */
+			pinctrl-0 = <&usb0_id_pins_b>;	/* HOST */
 			vbus-supply = <&reg_usb0_vbus>;
 			status = "okay";
 		};
