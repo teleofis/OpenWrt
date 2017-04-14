@@ -352,7 +352,7 @@
 		pinctrl-0 = <&watchdog>;
 		gpios = <&gpio1 13 GPIO_ACTIVE_HIGH>;
 		hw_algo = "toggle";
-		hw_margin_ms = <8000>;
+		hw_margin_ms = <4000>;
 		always-running = <1>;
 	};
 	leds {
