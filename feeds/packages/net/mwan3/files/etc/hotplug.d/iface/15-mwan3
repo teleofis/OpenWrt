@@ -398,30 +398,34 @@ mwan3_ifupdown()
 	config_foreach mwan3_set_user_rules_iptables rule
 }
 
-[ -n "$ACTION" ] || exit 0
-[ -n "$INTERFACE" ] || exit 0
+DISABL=$(grep "option enabled '1'" /etc/config/mwan3)
+if [ ! -z "$DISABL" ]; then
 
-if [ $ACTION == "ifup" ]; then
-	[ -n "$DEVICE" ] || exit 0
+	[ -n "$ACTION" ] || exit 0
+	[ -n "$INTERFACE" ] || exit 0
+
+	if [ $ACTION == "ifup" ]; then
+		[ -n "$DEVICE" ] || exit 0
+	fi
+
+	[ -x /usr/sbin/ip ] || exit 1
+	[ -x /usr/sbin/ipset ] || exit 1
+	[ -x /usr/sbin/iptables ] || exit 1
+	[ -x /usr/bin/logger ] || exit 1
+
+	local IP IPS IPT LOG
+
+	IP="/usr/sbin/ip -4"
+	IPS="/usr/sbin/ipset"
+	IPT="/usr/sbin/iptables -t mangle -w"
+	LOG="/usr/bin/logger -t mwan3 -p"
+
+	case "$ACTION" in
+		ifup|ifdown)
+			mwan3_ifupdown
+			mwan3_set_connected_iptables
+		;;
+	esac
 fi
-
-[ -x /usr/sbin/ip ] || exit 1
-[ -x /usr/sbin/ipset ] || exit 1
-[ -x /usr/sbin/iptables ] || exit 1
-[ -x /usr/bin/logger ] || exit 1
-
-local IP IPS IPT LOG
-
-IP="/usr/sbin/ip -4"
-IPS="/usr/sbin/ipset"
-IPT="/usr/sbin/iptables -t mangle -w"
-LOG="/usr/bin/logger -t mwan3 -p"
-
-case "$ACTION" in
-	ifup|ifdown)
-		mwan3_ifupdown
-		mwan3_set_connected_iptables
-	;;
-esac
 
 exit 0

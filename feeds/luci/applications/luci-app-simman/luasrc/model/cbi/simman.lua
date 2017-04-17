@@ -30,6 +30,9 @@ section_gen = m:section(NamedSection, "core", "simman", translate("General setti
 enabled = section_gen:option(Flag, "enabled", translate("Enabled"), translate("To switch on/off require a reboot"), translate("Enabled"))  -- create enable checkbox
   enabled.rmempty = false
 
+enabled = section_gen:option(Flag, "only_first_sim", translate("Use only high priority SIM"), translate("If you use only one SIM, the remaining SIM will be considered a priority"), translate("Enabled"))
+  enabled.rmempty = false
+
 retry_num = section_gen:option(Value, "retry_num",  translate("Number of failed attempts"))
   retry_num.default = 3
   retry_num.datatype = "and(uinteger, min(1))"
@@ -54,11 +57,11 @@ atdevice = section_gen:option(Value, "atdevice",  translate("AT modem device nam
   atdevice.rmempty = false
   atdevice.optional = false
 
---iface = section_gen:option(Value, "iface",  translate("Ping iface name"))
---  atdevice.default = "wan2"
---  iface.datatype = "network"
---  iface.rmempty = false
---  iface.optional = false
+iface = section_gen:option(Value, "iface",  translate("Ping iface name"))
+  iface.default = "internet"
+  iface.datatype = "network"
+  iface.rmempty = false
+  iface.optional = false
 
 testip = section_gen:option(DynamicList, "testip",  translate("IP address of remote servers"))
   testip.datatype = "ipaddr"

@@ -123,7 +123,7 @@ mwan_interface = m5:section(TypedSection, "interface", translate("Interfaces")
 	end
 
 
-enabled = mwan_interface:option(DummyValue, "enabled", translate("Enabled"))
+enabled = mwan_interface:option(DummyValue, "enabled", "Enabled")
 	enabled.rawhtml = true
 	function enabled.cfgvalue(self, s)
 		if self.map:get(s, "enabled") == "1" then
@@ -133,7 +133,7 @@ enabled = mwan_interface:option(DummyValue, "enabled", translate("Enabled"))
 		end
 	end
 
-track_ip = mwan_interface:option(DummyValue, "track_ip", translate("Tracking IP"))
+track_ip = mwan_interface:option(DummyValue, "track_ip", "Tracking IP")
 	track_ip.rawhtml = true
 	function track_ip.cfgvalue(self, s)
 		tracked = self.map:get(s, "track_ip")
@@ -148,7 +148,7 @@ track_ip = mwan_interface:option(DummyValue, "track_ip", translate("Tracking IP"
 		end
 	end
 
-reliability = mwan_interface:option(DummyValue, "reliability", translate("Tracking reliability"))
+reliability = mwan_interface:option(DummyValue, "reliability", "Tracking reliability")
 	reliability.rawhtml = true
 	function reliability.cfgvalue(self, s)
 		if tracked then
@@ -158,7 +158,7 @@ reliability = mwan_interface:option(DummyValue, "reliability", translate("Tracki
 		end
 	end
 
-count = mwan_interface:option(DummyValue, "count", translate("Ping count"))
+count = mwan_interface:option(DummyValue, "count", "Ping count")
 	count.rawhtml = true
 	function count.cfgvalue(self, s)
 		if tracked then
@@ -168,7 +168,7 @@ count = mwan_interface:option(DummyValue, "count", translate("Ping count"))
 		end
 	end
 
-timeout = mwan_interface:option(DummyValue, "timeout", translate("Ping timeout"))
+timeout = mwan_interface:option(DummyValue, "timeout", "Ping timeout")
 	timeout.rawhtml = true
 	function timeout.cfgvalue(self, s)
 		if tracked then
@@ -183,7 +183,7 @@ timeout = mwan_interface:option(DummyValue, "timeout", translate("Ping timeout")
 		end
 	end
 
-interval = mwan_interface:option(DummyValue, "interval", translate("Ping interval"))
+interval = mwan_interface:option(DummyValue, "interval", "Ping interval")
 	interval.rawhtml = true
 	function interval.cfgvalue(self, s)
 		if tracked then
@@ -198,7 +198,7 @@ interval = mwan_interface:option(DummyValue, "interval", translate("Ping interva
 		end
 	end
 
-down = mwan_interface:option(DummyValue, "down", translate("Interface down"))
+down = mwan_interface:option(DummyValue, "down", "Interface down")
 	down.rawhtml = true
 	function down.cfgvalue(self, s)
 		if tracked then
@@ -208,7 +208,7 @@ down = mwan_interface:option(DummyValue, "down", translate("Interface down"))
 		end
 	end
 
-up = mwan_interface:option(DummyValue, "up", translate("Interface up"))
+up = mwan_interface:option(DummyValue, "up", "Interface up")
 	up.rawhtml = true
 	function up.cfgvalue(self, s)
 		if tracked then
@@ -218,7 +218,7 @@ up = mwan_interface:option(DummyValue, "up", translate("Interface up"))
 		end
 	end
 
-metric = mwan_interface:option(DummyValue, "metric", translate("Metric"))
+metric = mwan_interface:option(DummyValue, "metric", "Metric")
 	metric.rawhtml = true
 	function metric.cfgvalue(self, s)
 		local metricValue = sys.exec("uci -p /var/state get network." .. s .. ".metric")
@@ -229,7 +229,7 @@ metric = mwan_interface:option(DummyValue, "metric", translate("Metric"))
 		end
 	end
 
-errors = mwan_interface:option(DummyValue, "errors", translate("Errors"))
+errors = mwan_interface:option(DummyValue, "errors", "Errors")
 	errors.rawhtml = true
 	function errors.cfgvalue(self, s)
 		if errorFound == 1 then
