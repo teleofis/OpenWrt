@@ -9,7 +9,7 @@ case "$ACTION" in
             ln -s /dev/pps0 /dev/gpspps0
             /usr/sbin/hwclock --localtime -s
             sleep 3
-            /usr/sbin/gpsd -n -P /var/run/gpsd.pid -S 2947 -G /dev/$DEVICE_NAME
+            /usr/sbin/gpsd -n -P /var/run/gpsd.pid -S 2947 -G /dev/gps0
             /etc/init.d/ntpd restart
         fi
         ;;
