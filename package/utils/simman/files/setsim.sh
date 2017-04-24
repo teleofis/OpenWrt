@@ -125,6 +125,7 @@ if [ "$sim1" == "1" ] && [ "$sim2" == "1" ]; then
 	[ "$ac_sim" != "0" ] && uci -q set simman.core.sim=0
 	# release SIM_DET pin
 	echo "0" > $GPIO_PATH/gpio$SIMDET_PIN/value
+	ubus call network.interface.$iface down
 	exit 0
 fi
 
