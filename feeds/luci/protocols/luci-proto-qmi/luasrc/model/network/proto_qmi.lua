@@ -15,7 +15,7 @@ function proto.ifname(self)
 
 		-- Note: ifname might be nil if the adapter could not be determined through ubus (default name to qmi-wan in this case)
 	if ifname == nil then
-		ifname = "qmi-" .. self.sid
+		ifname = self.sid
 	end
 	return ifname
 end

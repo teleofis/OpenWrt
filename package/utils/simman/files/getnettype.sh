@@ -3,8 +3,10 @@
 OPTIND=1
 
 SCRIPT_BASESTINFO="/etc/simman/getbasestinfo.gcom"
+SCRIPT_BASEIDINFO="/etc/simman/getbaseidinfo.gcom"
 device=""
 BASESTINFO=""
+proto=""
 
 while getopts "h?d:" opt; do
 	case "$opt" in
@@ -27,8 +29,14 @@ shift $((OPTIND-1))
 
 # Check if device exists
 [ ! -e $device ] && exit 0
+proto=$(uci -q get simman.core.proto)
 
-BASESTINFO=$(gcom -d $device -s $SCRIPT_BASESTINFO | awk -F',' '{print $1}')
-[ -z "$BASESTINFO" ] && BASESTINFO="NONE"
+if [ "$proto" = "0" ]; then
+	BASESTINFO=$(gcom -d $device -s $SCRIPT_BASESTINFO | awk -F',' '{print $1}')
+	[ -z "$BASESTINFO" ] && BASESTINFO="NONE"
+else
+	BASESTINFO=$(gcom -d $device -s $SCRIPT_BASEIDINFO | awk -F',' '{print $1}')
+	[ -z "$BASESTINFO" ] && BASESTINFO="NONE"
+fi
 
 echo $BASESTINFO

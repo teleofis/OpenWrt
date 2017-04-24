@@ -13,13 +13,6 @@ config interface 'lan'
 	option netmask '255.255.255.0'
 	option ip6assign '60'
 
-config interface 'internet'
-	option proto '3g'
-	option device '/dev/ttyACM0'
-	option service 'umts'
-	option apn 'internet'
-	option metric '2'
-
 config globals 'globals'
 	option ula_prefix 'fd32:0222:7789::/48'
 

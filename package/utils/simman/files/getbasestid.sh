@@ -3,10 +3,12 @@
 OPTIND=1
 
 SCRIPT_BASESTINFO="/etc/simman/getbasestinfo.gcom"
+SCRIPT_BASEIDINFO="/etc/simman/getbaseidinfo.gcom"
 device=""
 BASESTINFO=""
 NETTYPE=""
 BASESTID=""
+proto=""
 
 while getopts "h?d:" opt; do
         case "$opt" in
@@ -29,18 +31,20 @@ shift $((OPTIND-1))
 
 # Check if device exists
 [ ! -e $device ] && exit 0
+proto=$(uci -q get simman.core.proto)
 
-BASESTINFO=$(gcom -d $device -s $SCRIPT_BASESTINFO)
-[ -z "$BASESTINFO" ] && BASESTINFO="NONE"
+if [ "$proto" = "0" ]; then
+  BASESTINFO=$(gcom -d $device -s $SCRIPT_BASESTINFO)
+  [ -z "$BASESTINFO" ] && BASESTINFO="NONE"
 
-NETTYPE=${BASESTINFO:0:2}
+  NETTYPE=${BASESTINFO:0:2}
 
-if [ "$NETTYPE" == "3G" ]
-then
+  if [ "$NETTYPE" == "3G" ]
+  then
         BASESTID=$( echo $BASESTINFO | awk -F',' '{print $9}')
         [ -z "$BASESTID" ] && BASESTID="SEARCH"
         echo $BASESTID
-else
+  else
         if [ "$NETTYPE" == "2G" ]
         then
                 BASESTID=$( echo $BASESTINFO | awk -F',' '{print $7}')
@@ -49,4 +53,12 @@ else
         else
                 echo "Identification failed"
         fi
+  fi
+else
+  BASESTINFO=$(gcom -d $device -s $SCRIPT_BASEIDINFO)
+  [ -z "$BASESTINFO" ] && BASESTINFO="NONE"
+  
+  BASESTID=$( echo $BASESTINFO | awk -F',' '{print $5}')
+  [ -z "$BASESTID" ] && BASESTID="SEARCH"
+  echo $BASESTID
 fi

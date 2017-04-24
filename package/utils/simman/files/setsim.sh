@@ -102,10 +102,18 @@ if [ ! -d "$GPIO_PATH/gpio$SIMDET1_PIN" ]; then
 	logger -t $tag "Exporting gpio$SIMDET1_PIN"
 fi
 
+# modem type: 0 - 3G; 1 - 4G
+proto=$(uci -q get simman.core.proto)
+[ -z "$proto" ] && {
+	logger -t $tag "Not set proto" && exit 0
+}
 # find 3g interface
-iface=$(uci show network | grep "proto='3g'" | awk -F'.' '{print $2}')
-
-[ -z "$iface" ] && logger -t $tag "Not found 3g interface" && exit 0 
+iface=$(uci show network | awk "/proto='3g'|proto='qmi'/" | awk -F'.' '{print $2}')
+if [ ! -z "$(uci show network | grep "proto='3g'")" ]; then
+	iface="3g-"$iface
+	proto="0"
+fi
+[ -z "$iface" ] && logger -t $tag "Not found 3g/4g interface" && exit 0 
 
 # Check if SIM card placed in holder
 sim1=$(cat $GPIO_PATH/gpio$SIMDET0_PIN/value)
@@ -192,6 +200,14 @@ if [ "$mode" == "0" ]; then
   echo "0" > $GPIO_PATH/gpio$GSMPOW_PIN/value
 
   sleep 4
+  if [ "$proto" == "1" ]; then
+  	dev=$(ls /dev/ | grep cdc-wdm)
+  	while [ -z "$dev"]; do
+  		sleep 4
+  		dev=$(ls /dev/ | grep cdc-wdm)
+  	done
+  fi
+
  else
   retry=0
 
