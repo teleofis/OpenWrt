@@ -1,6 +1,6 @@
-echo 124 > /sys/class/gpio/export
-echo out > /sys/class/gpio/gpio124/direction
-echo 1 > /sys/class/gpio/gpio124/value
+echo 46 > /sys/class/gpio/export
+echo out > /sys/class/gpio/gpio46/direction
+echo 0 > /sys/class/gpio/gpio46/value
 
 echo 23 > /sys/class/gpio/export
 echo out > /sys/class/gpio/gpio23/direction
