@@ -1,6 +1,6 @@
 
 config system
-	option hostname 'TELEOFIS-RTUx68'
+	option hostname 'TELEOFIS-RTUx68V2'
 	option timezone 'MSK-3'
 	option zonename 'Europe/Moscow'
 

@@ -177,7 +177,7 @@ function action_flashops()
 	local restore_cmd = "tar -xzC/ >/dev/null 2>&1"
 	local backup_cmd  = "backup --create-backup - 2>/dev/null"
 	--local image_tmp   = "/tmp/firmware.img"
-	local image_tmp   = "/tmp/sysupgrade_RTUx68.tar"
+	local image_tmp   = "/tmp/sysupgrade_RTUx68V2.tar"
 
 
 

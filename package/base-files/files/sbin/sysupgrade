@@ -36,14 +36,14 @@ try_upgrade ()
 
 	    #### if bootloader is suitable:
 	    cd /tmp/
-		if [ ! -f /tmp/sysupgrade_RTUx68.tar ]; 
+		if [ ! -f /tmp/sysupgrade_RTUx68V2.tar ]; 
 		then
 	    	echo "Sysupgrade file not found!"
 		else
 
 
 			### if we have an upgrade archive
-			tar -xf sysupgrade_RTUx68.tar
+			tar -xf sysupgrade_RTUx68V2.tar
 			if [ ! -f rootfs.img ] || [ ! -f openwrt-mxs-uImage ] || [ ! -f fdt.dtb ] || [ ! -f check.md5 ]; 
 			then
 		    	echo "Upgrade archive is corrupted"
