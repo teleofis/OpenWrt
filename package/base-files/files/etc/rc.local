@@ -1,9 +1,1 @@
-/etc/initscripts/ethinit
-/etc/initscripts/modeminit
-/etc/initscripts/rtcinit
-/etc/initscripts/gpsinit
-/etc/initscripts/usbhost
 
-watchdog -t 30 -T 60 /dev/watchdog0
-
-exit 0
