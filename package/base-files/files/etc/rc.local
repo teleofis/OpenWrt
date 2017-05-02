@@ -1,7 +1,3 @@
-/etc/initscripts/usbhost 
-/etc/initscripts/ethinit 
-/etc/initscripts/modeminit 
-
 watchdog -t 30 -T 60 /dev/watchdog0
 
 exit 0
