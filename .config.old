@@ -39,9 +39,10 @@ CONFIG_TARGET_mxs=y
 # CONFIG_TARGET_omap is not set
 # CONFIG_TARGET_uml is not set
 # CONFIG_TARGET_x86 is not set
-CONFIG_TARGET_mxs_duckbill=y
+# CONFIG_TARGET_mxs_duckbill is not set
 # CONFIG_TARGET_mxs_olinuxino-maxi is not set
 # CONFIG_TARGET_mxs_olinuxino-micro is not set
+CONFIG_TARGET_mxs_teleofis=y
 CONFIG_TARGET_BOARD="mxs"
 CONFIG_TARGET_ARCH_PACKAGES="mxs"
 CONFIG_DEFAULT_TARGET_OPTIMIZATION="-Os -pipe -march=armv5te -mtune=arm926ej-s"
@@ -1802,7 +1803,7 @@ CONFIG_BUSYBOX_CONFIG_NC=y
 CONFIG_BUSYBOX_CONFIG_PING=y
 CONFIG_BUSYBOX_CONFIG_PING6=y
 CONFIG_BUSYBOX_CONFIG_FEATURE_FANCY_PING=y
-# CONFIG_BUSYBOX_CONFIG_WHOIS is not set
+CONFIG_BUSYBOX_CONFIG_WHOIS=y
 CONFIG_BUSYBOX_CONFIG_FEATURE_IPV6=y
 # CONFIG_BUSYBOX_CONFIG_FEATURE_UNIX_LOCAL is not set
 CONFIG_BUSYBOX_CONFIG_FEATURE_PREFER_IPV4_ADDRESS=y
@@ -3122,6 +3123,7 @@ CONFIG_LIBCURL_PROXY=y
 # CONFIG_PACKAGE_libevhtp is not set
 # CONFIG_PACKAGE_libexif is not set
 # CONFIG_PACKAGE_libexpat is not set
+# CONFIG_PACKAGE_libexslt is not set
 # CONFIG_PACKAGE_libf2fs is not set
 # CONFIG_PACKAGE_libfaad2 is not set
 # CONFIG_PACKAGE_libffi is not set
@@ -3142,7 +3144,6 @@ CONFIG_PACKAGE_libgps=y
 # CONFIG_PACKAGE_hidapi is not set
 # CONFIG_PACKAGE_ibrcommon is not set
 # CONFIG_PACKAGE_ibrdtn is not set
-# CONFIG_PACKAGE_libexslt is not set
 # CONFIG_PACKAGE_libhttp-parser is not set
 # CONFIG_PACKAGE_libical is not set
 # CONFIG_PACKAGE_libiconv is not set
