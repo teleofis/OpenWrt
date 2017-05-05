@@ -473,9 +473,9 @@ int main(int argc, char **argv)
 
 			// check SIM1 status
 			tmp  = gpioRead(settings.simdet0_pin);
-			if ((tmp >= 0) && (tmp != sim1_status))   
+			if ((tmp >= 0) && (tmp != sim1_status) && !first_start)   
 			{  // SIM1 remove
-				if (((tmp > 0)&&(active_sim == 0)) // вытянули сим 1
+				if (((tmp == 1)&&(active_sim == 0)) // вытянули сим 1
 				   ||((tmp == 0)&&(settings.sim[0].prio > settings.sim[1].prio)) // вставили сим 1 и приоритет у нее выше  
 				   ||((tmp == 0)&&(sim2_status != 0))) // вытащили сим 2 и приоритет у нее выше  
 				   {
@@ -493,7 +493,7 @@ int main(int argc, char **argv)
 			tmp = gpioRead(settings.simdet1_pin);
 			if ((tmp >= 0) && (tmp != sim2_status))
 			{  // SIM2 remove
-				if (((tmp > 0)&&(active_sim > 0)) // вытянули сим 2
+				if (((tmp == 1)&&(active_sim > 0)) // вытянули сим 2
 				    ||((tmp == 0)&&(settings.sim[0].prio < settings.sim[1].prio)) // вставили сим 2 и приоритет у нее выше
 				    ||((tmp == 0)&&(sim1_status != 0))) // вытащили сим 1 и приоритет у нее выше  
 					{
