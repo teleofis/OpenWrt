@@ -1,1 +1,3 @@
-
+ln -s /dev/ttyAPP4 /dev/com0
+ln -s /dev/ttyAPP2 /dev/com1
+exit 0
