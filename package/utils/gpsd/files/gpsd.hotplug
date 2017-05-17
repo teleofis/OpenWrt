@@ -5,6 +5,7 @@ case "$ACTION" in
         GPS=$(echo $DEVPATH | grep "1-1.1.4:1.1")
         if [ "$PRODUCT" = "10c4/ea70/100" ] && [ "$TYPE" = "0/0/0" ] && [ "$INTERFACE" = "255/0/0" ] && [ "$MODALIAS"="usb:v10C4pEA70d0100dc00dsc00dp00icFFisc00ip00in01" ] && [ ! -z "$GPS" ]; then
             DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+            stty -F /dev/$DEVICE_NAME 9600
             ln -s /dev/$DEVICE_NAME /dev/gps0
             ln -s /dev/pps0 /dev/gpspps0
             /usr/sbin/hwclock --localtime -s
