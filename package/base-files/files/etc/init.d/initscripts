@@ -12,5 +12,6 @@ start_service()
 	/etc/initscripts/rtcinit &
 	/etc/initscripts/gpsinit &	
 	/etc/initscripts/ethinit &
+	/etc/initscripts/upgrade &
 	procd_close_instance
 }

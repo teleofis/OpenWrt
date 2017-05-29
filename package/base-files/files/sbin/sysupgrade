@@ -56,6 +56,20 @@ try_upgrade ()
 		    MD5_FDT_FROMFILE=$(sed -n 1p check.md5)
 		    MD5_KERN_FROMFILE=$(sed -n 2p check.md5)
 		    MD5_ROOT_FROMFILE=$(sed -n 3p check.md5)
+		    if [ -f openwrt_release ]; then
+		    	MD5_VERSION=$(md5sum openwrt_release)
+		    	MD5_VERSION_FROMFILE=$(sed -n 4p check.md5)		
+		    	if [ "$MD5_VERSION" != "$MD5_VERSION_FROMFILE" ]; then    	
+		    		echo "Upgrade archive is corrupted"
+		    		exit 1
+		    	fi
+		    	NEW_VERSION=$(grep 'TELE' openwrt_release | awk -F 'Build TELEOFIS ' '{print $2}' | awk -F '.' '{print $1}')
+		    	if [ "$NEW_VERSION" -ne "$VER_FIRST" ] && [ -f openwrt_release ]; then
+		    		echo "Firmware not supported by hardware"
+		    	exit 1
+		    fi
+		    fi
+
 		    if [ "$MD5_FDT" != "$MD5_FDT_FROMFILE" ] || [ "$MD5_KERN" != "$MD5_KERN_FROMFILE" ] || [ "$MD5_ROOT" != "$MD5_ROOT_FROMFILE" ]; 
 			then
 		    	echo "Upgrade archive is corrupted"
@@ -70,6 +84,7 @@ try_upgrade ()
 				rm openwrt-mxs-uImage
 				rm fdt.dtb
 				rm check.md5
+				rm openwrt_release
 				echo OK
 				exit 0
 			fi
@@ -85,6 +100,22 @@ try_upgrade ()
 			mtd write fdt.dtb fdt
 			mtd verify fdt.dtb fdt
 			fw_setenv filesize_fdt $(printf %x $(stat -c %s fdt.dtb))
+			UPD_FLAG=$(fw_printenv update_flag | sed -e s/update_flag=//)			
+			if [ "$UPD_FLAG" -eq "113" ]; then
+				mkdir /mnt/data/upper
+				cp -pa /overlay/upper/* /mnt/data/upper/
+				rm -r /mnt/data/upper/etc/uci-defaults/
+				rm -r /mnt/data/upper/mnt/
+				rm -r /mnt/data/upper/upper/
+				rm /mnt/data/upper/etc/banner
+				rm /mnt/data/upper/etc/openwrt_release
+				rm /mnt/data/upper/sbin/sysupgrade
+                rm /mnt/data/upper/etc/config/system
+                rm /mnt/data/upper/usr/lib/lua/luci/view/admin_status/index.htm
+                rm /mnt/data/upper/www/index.htm
+                rm /mnt/data/upper/usr/lib/lua/luci/controller/admin/system.lua
+                rm /mnt/data/upper/etc/config/system
+			fi
 			fw_setenv update_flag 15963
 			reboot -f
 			##

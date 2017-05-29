@@ -271,6 +271,11 @@ function action_flashops()
 					size     = (fs.stat(image_tmp, "size") or 0),
 					keep     = (not not luci.http.formvalue("keep"))
 				})
+				if luci.http.formvalue("keep") then 
+					fork_exec("fw_setenv update_flag 113")
+				else
+					fork_exec("fw_setenv update_flag 112")
+				end
 			else
 				fs.unlink(image_tmp)
 				luci.template.render("admin_system/flashops", {
