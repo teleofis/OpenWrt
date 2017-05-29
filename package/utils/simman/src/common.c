@@ -355,7 +355,7 @@ int ping(char *ip, char *iface)
 	if(iface == NULL)
 		sprintf(path,"/bin/ping -w10 -c2 -s 8 %s | grep 'rec' | awk -F'[ ]' '{print $4}'",ip);
 	else
-		sprintf(path,"/bin/ping -w10 -c2 -s 8 -I 3g-%s %s | grep 'rec' | awk -F'[ ]' '{print $4}'", iface, ip);
+		sprintf(path,"/bin/ping -w10 -c2 -s 8 -I %s %s | grep 'rec' | awk -F'[ ]' '{print $4}'", iface, ip);
 
 	fp = popen(path,"r");
 

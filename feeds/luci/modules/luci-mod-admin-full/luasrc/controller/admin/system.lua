@@ -177,7 +177,7 @@ function action_flashops()
 	local restore_cmd = "tar -xzC/ >/dev/null 2>&1"
 	local backup_cmd  = "backup --create-backup - 2>/dev/null"
 	--local image_tmp   = "/tmp/firmware.img"
-	local image_tmp   = "/tmp/sysupgrade_RTU968.tar"
+	local image_tmp   = "/tmp/sysupgrade_RTUx68V2.tar"
 
 
 
@@ -271,6 +271,11 @@ function action_flashops()
 					size     = (fs.stat(image_tmp, "size") or 0),
 					keep     = (not not luci.http.formvalue("keep"))
 				})
+				if luci.http.formvalue("keep") then 
+					fork_exec("fw_setenv update_flag 113")
+				else
+					fork_exec("fw_setenv update_flag 112")
+				end
 			else
 				fs.unlink(image_tmp)
 				luci.template.render("admin_system/flashops", {

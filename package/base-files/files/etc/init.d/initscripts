@@ -10,5 +10,6 @@ start_service()
 	/etc/initscripts/modeminit &
 	/etc/initscripts/usbhost &
 	/etc/initscripts/ethinit &
+	/etc/initscripts/upgrade &
 	procd_close_instance
 }
