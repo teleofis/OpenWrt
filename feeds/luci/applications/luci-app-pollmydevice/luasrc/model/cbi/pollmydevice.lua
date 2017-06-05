@@ -88,6 +88,11 @@ conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time (sec)"
   --conn_time.rmempty = false
   conn_time:depends("mode","server")
 
+modbus_gateway = s:option(Flag, "modbus_gateway", translate("Modbus TCP/IP"))  -- create checkbox
+  modbus_gateway.default = 0
+  modbus_gateway:depends("mode","client")
+  modbus_gateway:depends("mode","server")
+
 client_host = s:option(Value, "client_host",  translate("Client Host or IP Address"))
   client_host.default = "hub.m2m24.ru"
   client_host.datatype = "string"

@@ -2923,6 +2923,21 @@ msgid ""
 msgstr ""
 "Загрузите sysupgrade архив, чтобы заменить текущую прошивку."
 
+msgid "Memory repartition"
+msgstr "Переразметить память"
+
+msgid "This is necessary to add a partition with user data. Configuration files will be erased."
+msgstr "Это необходимо, чтобы добавить раздел для пользовательских данных. Текущая конфигурация будет удалена."
+
+msgid "Perform re-partition"
+msgstr "Выполнить переразметку"
+
+msgid "Its reset all changes. Continue?"
+msgstr "Данное действие сбросит все настройки на значения по умолчанию. Продолжить?"
+
+msgid "For some reason the flashing stopped. Please, run sysupgrade from console"
+msgstr "По некоторым причинам прошивка была остановлена. Пожалуйста, запустите sysupgrade через консоль"
+
 msgid "Upload archive..."
 msgstr "Загрузить архив..."
 

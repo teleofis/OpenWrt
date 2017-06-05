@@ -55,14 +55,16 @@
 		<legend><%:Flash new firmware image%></legend>
 		<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
 			<div class="cbi-section-descr"><%:Upload a sysupgrade archive here to replace the running firmware.%></div>
-			<div class="cbi-section-node">	
-				<div class="cbi-value cbi-value-last">
-					<label class="cbi-value-title" for="keep"><%:Keep settings%>:</label>			
-					<div class="cbi-value-field">
-						<input type="checkbox" name="keep" id="keep" checked />
+			<% if not need_remap then %>
+				<div class="cbi-section-node">	
+					<div class="cbi-value cbi-value-last">
+						<label class="cbi-value-title" for="keep"><%:Keep settings%>:</label>			
+						<div class="cbi-value-field">
+							<input type="checkbox" name="keep" id="keep" checked />
+						</div>
 					</div>
 				</div>
-			</div>
+			<% end %>
 			<div class="cbi-section-node">				
 				<div class="cbi-value cbi-value-last<% if image_invalid then %> cbi-value-error<% end %>">
 					<label class="cbi-value-title" for="image"><%:Image%>:</label>
@@ -73,11 +75,25 @@
 				</div>
 			</div>
 			<% if image_invalid then %>
-				<div class="cbi-section-error"><%:The uploaded archive is corrupted! %></div>
+				<div class="cbi-section-error"><%:For some reason the flashing stopped. Please, run sysupgrade from console%></div>
 			<% end %>
 		</form>
 	</fieldset>
 
+	<% if need_remap then %>
+	<fieldset class="cbi-section">
+		<legend><%:Memory repartition%></legend>
+		<div class="cbi-section-descr"><%:This is necessary to add a partition with user data. Configuration files will be erased.%></div>
+		<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+			<div class="cbi-value cbi-value-last">
+				<label class="cbi-value-title"><%:Perform re-partition%>:</label>
+				<div class="cbi-value-field">
+					<input onclick="return confirm('<%:Its reset all changes. Continue?%>')" class="cbi-button cbi-button-reset" type="submit" name="repart" value="<%:Perform re-partition%>" />
+				</div>
+			</div>
+		</form>
+	</fieldset>
+	<% end %>
 </fieldset>
 
 <%+footer%>
