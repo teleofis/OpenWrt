@@ -23,6 +23,13 @@
 #include "uci.h"
 #include "log.h"
 
+//MODBUS
+#include "modbus.h"
+#include "crc16.h"
+
+
+
+
 #define MODE_DISABLED       0
 #define MODE_SERVER         1
 #define MODE_CLIENT         2
@@ -55,6 +62,12 @@
 
 #define FIRST_RECONN_TIMEOUT    10
 
+//MODBUS
+#define MAX_PACK_SIZE			300
+
+#define MB_TCP_HEADER_SIZE		6
+#define MB_TCP_HEADER_LEN		5
+
 typedef struct 
 {
     int mode;
@@ -71,14 +84,33 @@ typedef struct
     int clientAuth;
     int clientTimeout;
     long long int teleofisID;
+    int modbus_gateway;
 } device_config_t;
+
+
+typedef struct{
+	int		state;
+	char 	header[MB_TCP_HEADER_SIZE];
+	char	packet[MAX_PACK_SIZE];
+	int		offset;
+	int 	len;
+}t_rtu;
+
+typedef struct{
+	char	packet[MAX_PACK_SIZE];
+	int		offset;
+	int		timer;
+	struct itimerspec newValue;
+}t_mb_tcp;
 
 struct fdStructType 
 {
-    int mainSocket;
-    int serialPort;
-    int TCPtimer;
-    int epollFD;
+    int 		mainSocket;
+    int 		serialPort;
+    int 		TCPtimer;
+    int 		epollFD;
+    t_rtu 		state_rtu;
+    t_mb_tcp	mb_tcp;
 };
 
 void CleanThread(struct fdStructType *threadFD);
@@ -87,6 +119,11 @@ void *ClientThreadFunc(void *args);
 device_config_t GetFullDeviceConfig(int deviceID);
 int FormAuthAnswer(char *dataBuffer, long long int teleofisID);
 uint16_t Crc16Block(uint8_t* block, uint16_t len);
+//Modbus
+int SendModbusRTU(struct fdStructType *threadFD,char *pBuf, int len);
+void SendModbusTCP(struct fdStructType *threadFD,char *pBuf, int len);
+void EndTimeoutModbusTCP(struct fdStructType *threadFD, uint8_t server, int sock);
+void ClearModbus(struct fdStructType *threadFD);
 
 /*****************************************/
 /*************** MAIN FUNC ***************/
@@ -222,6 +259,7 @@ void CleanThread(struct fdStructType *threadFD)
     close(threadFD->mainSocket);
     close(threadFD->serialPort);
     close(threadFD->TCPtimer);
+    close(threadFD->mb_tcp.timer);
     close(threadFD->epollFD);
     free(threadFD);
     LOG("Descriptors closed\n");
@@ -403,7 +441,6 @@ void *ServerThreadFunc(void *args)
         pthread_exit(NULL);
     }
 
-
     /////////////////////////
     /**** Timer for TCP ****/
     /////////////////////////
@@ -434,6 +471,34 @@ void *ServerThreadFunc(void *args)
     {
         LOG("Epoll timer addition error\n");
         pthread_exit(NULL);
+    }
+    ////////////////////////////
+    /** Timer for TCP MODBUS **/
+    ////////////////////////////
+    ClearModbus(threadFD);
+    int pack_timeout;
+    if(deviceConfig.baudRate > 19200){		//calculating timeout between package for MODBUS protocol
+    	pack_timeout = 1750;
+    }else{
+    	pack_timeout = 35000000/deviceConfig.baudRate;
+    }
+    bzero(&threadFD->mb_tcp.newValue,sizeof(struct itimerspec));
+    threadFD->mb_tcp.newValue.it_value.tv_sec = 0;
+    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000;
+
+    threadFD->mb_tcp.timer = timerfd_create(CLOCK_MONOTONIC,TFD_NONBLOCK);
+    if(threadFD->mb_tcp.timer < 0){
+    	LOG("Error while timerfd for TCP MODBUS create \n");
+    	pthread_exit(NULL);
+    }
+    // add modbus tcp timer fd to epoll
+    epollConfig.events = EPOLLIN | EPOLLET;
+    epollConfig.data.fd = threadFD->mb_tcp.timer;
+    result = epoll_ctl(threadFD->epollFD, EPOLL_CTL_ADD, threadFD->mb_tcp.timer, &epollConfig);
+    if(result < 0)
+    {
+    	LOG("Error while timer epoll regisration\n");
+    	pthread_exit(NULL);
     }
 
     // begin waiting for clients
@@ -476,8 +541,17 @@ void *ServerThreadFunc(void *args)
             else if(eventSource == threadFD->serialPort)
             {
                 numOfReadBytes = read(threadFD->serialPort, dataBuffer, dataBufferSize);
-                send(lastActiveConnSocket, dataBuffer, numOfReadBytes, 0);
-            }
+                if(deviceConfig.modbus_gateway){
+                	LOG("Receive modbus RTU data %d\n", numOfReadBytes);
+                	SendModbusTCP(threadFD, dataBuffer, numOfReadBytes);
+                }else{
+                	send(lastActiveConnSocket, dataBuffer, numOfReadBytes, 0);
+                }
+            }else
+            // timer modbus tcp for forming packets
+			if(eventSource == threadFD->mb_tcp.timer){
+				EndTimeoutModbusTCP(threadFD, 1, lastActiveConnSocket);
+			}
 
             else if(eventSource == threadFD->TCPtimer) 
             {
@@ -502,8 +576,21 @@ void *ServerThreadFunc(void *args)
                             LOG("Error while timer setup \n");
                         }
                         dataBuffer[numOfReadBytes] = 0;
-                        write(threadFD->serialPort, dataBuffer, numOfReadBytes);
-                        lastActiveConnSocket = eventSource;
+                        if(!deviceConfig.modbus_gateway){
+                        	write(threadFD->serialPort, dataBuffer, numOfReadBytes);
+                        	lastActiveConnSocket = eventSource;
+                        }else
+                        if(!SendModbusRTU(threadFD, dataBuffer, numOfReadBytes)){
+                        	close(eventSource);
+                        	epollConfig.data.fd = eventSource;
+                        	epoll_ctl(threadFD->epollFD, EPOLL_CTL_DEL, eventSource, &epollConfig);
+                        	// if block source wanted to close connection, we free access for all
+                        	if(blockSource == eventSource)
+                        	{
+                        		blockOther = 0; // free access for all clients
+                        	}
+                        	LOG("Connection closed\n");
+                        }else  lastActiveConnSocket = eventSource;
                     }
                     else
                         LOG("Data refused\n");  
@@ -670,6 +757,27 @@ void *ClientThreadFunc(void *args)
         pthread_exit(NULL);
     }
 
+    ////////////////////////////
+    /** Timer for TCP MODBUS **/
+    ////////////////////////////
+    ClearModbus(threadFD);
+    int pack_timeout;
+    if(deviceConfig.baudRate > 19200){		//calculating timeout between package for MODBUS protocol
+    	pack_timeout = 1750;
+    }else{
+    	pack_timeout = 35000000/deviceConfig.baudRate;
+    }
+    bzero(&threadFD->mb_tcp.newValue,sizeof(struct itimerspec));
+    threadFD->mb_tcp.newValue.it_value.tv_sec = 0;
+    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000;
+
+    threadFD->mb_tcp.timer = timerfd_create(CLOCK_MONOTONIC,TFD_NONBLOCK);
+    if(threadFD->mb_tcp.timer < 0){
+    	LOG("Error while timerfd for TCP MODBUS create \n");
+    	pthread_exit(NULL);
+    }
+
+
 
     /////////////////////////
     /** Connect To Server **/
@@ -739,6 +847,15 @@ void *ClientThreadFunc(void *args)
         LOG("Error while timer epoll regisration\n");
         pthread_exit(NULL);
     }
+    // add modbus tcp timer fd to epoll
+    epollConfig.events = EPOLLIN | EPOLLET;
+    epollConfig.data.fd = threadFD->mb_tcp.timer;
+    result = epoll_ctl(threadFD->epollFD, EPOLL_CTL_ADD, threadFD->mb_tcp.timer, &epollConfig);
+    if(result < 0)
+    {
+    	LOG("Error while timer epoll regisration\n");
+    	pthread_exit(NULL);
+    }
     // add serial port fd to epoll
     epollConfig.events = EPOLLIN | EPOLLET; // message, edge trigger
     epollConfig.data.fd = threadFD->serialPort;
@@ -778,7 +895,54 @@ void *ClientThreadFunc(void *args)
                     // if we are autorized already OR we don't need autorization
                     if(autorized == 1 || deviceConfig.clientAuth == 0)
                     {
-                        write(threadFD->serialPort, dataBuffer, numOfReadBytes);
+                    	//TODO SETTING MODBUS
+                    	if(!deviceConfig.modbus_gateway){
+                    		write(threadFD->serialPort, dataBuffer, numOfReadBytes);
+                    	}else
+                        if(!SendModbusRTU(threadFD, dataBuffer, numOfReadBytes)){
+                        	// close existing connection
+                        	close(eventSource);
+                        	// remove from epoll
+                        	epollConfig.data.fd = eventSource;
+                        	epoll_ctl(threadFD->epollFD, EPOLL_CTL_DEL, eventSource, &epollConfig);
+                        	LOG("Connection closed\n");
+
+                        	serverAvailable = 0;
+                        	autorized = 0;
+                        	// re-create socket
+                        	threadFD->mainSocket = socket(AF_INET, SOCK_STREAM, 0);
+                        	if(threadFD->mainSocket < 0)
+                        	{
+                        		LOG("Error while re-opening client socket \n");
+                        	}
+
+                        	// add to epoll again
+                        	epollConfig.events = EPOLLIN | EPOLLPRI | EPOLLERR | EPOLLHUP;
+                        	epollConfig.data.fd = threadFD->mainSocket;
+                        	result = epoll_ctl(threadFD->epollFD, EPOLL_CTL_ADD, threadFD->mainSocket, &epollConfig);
+                        	if(result < 0)
+                        	{
+                        		LOG("Error while socket epoll regisration\n");
+                        		pthread_exit(NULL);
+                        	}
+
+                        	result = connect(threadFD->mainSocket, (struct sockaddr *)&addr, sizeof(addr));
+
+                        	// if connection is not successfull, restart timer
+                        	if(result != 0)
+                        	{
+                        		result = timerfd_settime(threadFD->TCPtimer, 0, &newValue, &oldValue);
+                        		if(result < 0)
+                        		{
+                        			LOG("Error while timer setup \n");
+                        		}
+                        	}
+                        	else
+                        	{
+                        		LOG("Client re-connected successfully \n");
+                        		serverAvailable = 1;
+                        	}
+                        }
                         //LOG("TCP -> Serial: %d bytes\n", numOfReadBytes);
                         result = timerfd_settime(threadFD->TCPtimer, 0, &newValue, &oldValue);
                         if(result < 0)
@@ -952,8 +1116,14 @@ void *ClientThreadFunc(void *args)
             else if(eventSource == threadFD->serialPort)
             {
                 numOfReadBytes = read(threadFD->serialPort, dataBuffer, dataBufferSize);
-                if(serverAvailable == 1)
-                    send(threadFD->mainSocket, dataBuffer, numOfReadBytes, 0);
+                if(serverAvailable == 1){
+                    //TODO SETTING MODBUS
+                    if(deviceConfig.modbus_gateway){
+                    	SendModbusTCP(threadFD, dataBuffer, numOfReadBytes);
+                    }else{
+                    	send(threadFD->mainSocket, dataBuffer, numOfReadBytes, 0);
+                    }
+                }
                 //LOG("Serial -> TCP: %d bytes\n", numOfReadBytes);
             }
 
@@ -1003,6 +1173,10 @@ void *ClientThreadFunc(void *args)
                 {
                     LOG("Error while timer setup \n");
                 }
+            } else
+            // timer modbus tcp for forming packets
+            if(eventSource == threadFD->mb_tcp.timer){
+            	EndTimeoutModbusTCP(threadFD, 0, 0);
             }
 
             else
@@ -1016,6 +1190,125 @@ void *ClientThreadFunc(void *args)
     return (void *) 0;
 } 
 
+
+
+
+int SendModbusRTU(struct fdStructType *threadFD,char *pBuf, int len){
+
+	int count=0;
+	if(threadFD == NULL || pBuf == NULL || !len)return 0;
+	if(len > MAX_PACK_SIZE) return 0;
+
+	while(count < len){
+		switch(threadFD->state_rtu.state){
+		case 0:		//Init;
+			threadFD->state_rtu.len = 0;
+			threadFD->state_rtu.offset = 0;
+			memset(threadFD->state_rtu.packet, 0, MAX_PACK_SIZE);
+			memset(threadFD->state_rtu.header, 0, MB_TCP_HEADER_SIZE);
+			threadFD->state_rtu.state = 1;
+			break;
+		case 1:		//receive MBAP Header
+			threadFD->state_rtu.header[threadFD->state_rtu.offset++] = pBuf[count++];
+			if(threadFD->state_rtu.offset >= MB_TCP_HEADER_SIZE){
+				threadFD->state_rtu.len = threadFD->state_rtu.header[5];
+				 LOG("Receive TCP modbus header len = %d\n", threadFD->state_rtu.len);
+				if(threadFD->state_rtu.len > MAX_PACK_SIZE || modbus_check_header(threadFD->state_rtu.header)){
+					LOG("Header is damaged, drop connection\n");
+					threadFD->state_rtu.state = 0;
+					return 0;
+				}
+				threadFD->state_rtu.offset = 0;
+				threadFD->state_rtu.state = 2;
+			}
+			break;
+		case 2:
+			threadFD->state_rtu.packet[threadFD->state_rtu.offset++] = pBuf[count++];
+			if(threadFD->state_rtu.offset >= threadFD->state_rtu.len){
+				modbus_crc_write((unsigned char *)threadFD->state_rtu.packet, threadFD->state_rtu.offset);
+				LOG("Forming RTU modbus packet CRC\n", threadFD->state_rtu.len);
+				threadFD->state_rtu.offset += 2;
+				write(threadFD->serialPort, threadFD->state_rtu.packet, threadFD->state_rtu.offset);
+				LOG("Send RTU modbus packet len = %d\n", threadFD->state_rtu.offset);
+				threadFD->state_rtu.state = 0;
+			}
+			break;
+		}
+	}
+	return 1;
+}
+
+void ClearModbus(struct fdStructType *threadFD){
+
+	if(threadFD == NULL)return;
+
+	bzero(&threadFD->state_rtu,sizeof(t_rtu));
+	bzero(&threadFD->mb_tcp, sizeof(t_mb_tcp));
+}
+void InsertByteModbusTCP(t_mb_tcp *pTCP, char symbole){
+	int count;
+	if(pTCP == NULL)return;
+	count = pTCP->offset + MB_TCP_HEADER_SIZE;
+	pTCP->packet[count] = symbole;
+	pTCP->offset++;
+	return;
+}
+
+void SendModbusTCP(struct fdStructType *threadFD,char *pBuf, int len){
+	int count=0;
+	int result;
+	struct itimerspec oldValue;
+
+	if(threadFD == NULL || pBuf == NULL || !len)return;
+	if(len > MAX_PACK_SIZE) return;
+
+	t_mb_tcp *pTCP= &threadFD->mb_tcp;
+
+	while(count < len){
+		InsertByteModbusTCP(pTCP, pBuf[count++]);
+		if(pTCP->offset >= MAX_PACK_SIZE){
+			pTCP->offset=0;
+			bzero(pTCP->packet,MAX_PACK_SIZE);
+			break;
+		}
+	}
+
+	LOG("Start timeout RTU pack\n");
+	//restart package timer
+	result = timerfd_settime(pTCP->timer, 0, &pTCP->newValue, &oldValue);
+	if(result < 0)
+	{
+		LOG("Error while timer setup \n");
+	}
+	;
+}
+
+void EndTimeoutModbusTCP(struct fdStructType *threadFD, uint8_t server, int sock){
+	uint16_t crc1, crc2;
+	uint8_t low_byte, high_byte;
+	if(threadFD == NULL)return;
+
+	t_mb_tcp *pTCP= &threadFD->mb_tcp;
+
+	LOG("End timeout RTU pack\n");
+	crc1 = crc16((uint8_t *)&pTCP->packet[MB_TCP_HEADER_SIZE], pTCP->offset-2);
+	high_byte = pTCP->packet[pTCP->offset+MB_TCP_HEADER_SIZE-1];
+	low_byte = pTCP->packet[pTCP->offset+MB_TCP_HEADER_SIZE-2];
+	crc2 = (uint16_t)high_byte<<8 | (uint16_t)low_byte;
+	LOG("Check CRC pack/ Device CRC= %d, calculating CRC=%d\n",crc2,crc1);
+	if(crc1 == crc2){
+		pTCP->offset -= 2;
+		memcpy(pTCP->packet,threadFD->state_rtu.header, MB_TCP_HEADER_SIZE);
+		pTCP->packet[MB_TCP_HEADER_LEN] = (uint8_t)pTCP->offset;
+		if(server)send(sock, pTCP->packet, pTCP->offset + MB_TCP_HEADER_SIZE, 0);
+		else{
+			pTCP->packet[1]++;		//Increment ID packet
+			send(threadFD->mainSocket, pTCP->packet, pTCP->offset + MB_TCP_HEADER_SIZE, 0);
+		}
+		LOG("Send TCP modbus data len=%d, mode=%d, sock=%d\n",pTCP->offset+MB_TCP_HEADER_SIZE, server, sock);
+	}
+	pTCP->offset = 0;
+}
 
 // Read all config for current device from UCI
 // WARNING: indian code detected!!!
@@ -1045,6 +1338,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     char UCIpathClientPort[MAX_CHARS_IN_UCIPATH]    = ".client_port";
     char UCIpathClientAuth[MAX_CHARS_IN_UCIPATH]    = ".client_auth";
     char UCIpathClientTimeout[MAX_CHARS_IN_UCIPATH] = ".client_timeout";
+    char UCIpathModbusGateway[MAX_CHARS_IN_UCIPATH] = ".modbus_gateway";
     // -------------------------------------------- max = 15 symbols, use TMP_PATH_LENGTH
 
     char UCIpathNumber[MAX_DIGITS_IN_DEV_NUM];
@@ -1236,6 +1530,18 @@ device_config_t GetFullDeviceConfig(int deviceID)
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.clientTimeout = atoi(UCIptr.o->v.string);
 
+    //Modbus Gateway
+    memcpy(UCIpath , UCIpathBegin, MAX_CHARS_IN_UCIPATH);
+    strncat(UCIpath, UCIpathNumber, MAX_DIGITS_IN_DEV_NUM-2);
+    strncat(UCIpath, UCIpathModbusGateway, TMP_PATH_LENGTH);
+    if ((uci_lookup_ptr(UCIcontext, &UCIptr, UCIpath, true) != UCI_OK)||
+    		(UCIptr.o==NULL || UCIptr.o->v.string==NULL))
+    {
+    	LOG("No UCI field %s \n", UCIpathModbusGateway);
+    }
+    if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
+    	deviceConfig.modbus_gateway = atoi(UCIptr.o->v.string);
+
 
     // READ S/N AND CONVERT IT TO INT64
     FILE * pFuseFile;
@@ -1364,3 +1670,4 @@ uint16_t Crc16Block(uint8_t* block, uint16_t len)
     }
     return crc;
 }
+

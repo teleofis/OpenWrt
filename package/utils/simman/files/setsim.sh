@@ -110,7 +110,6 @@ proto=$(uci -q get simman.core.proto)
 # find 3g interface
 iface=$(uci show network | awk "/proto='3g'|proto='qmi'/" | awk -F'.' '{print $2}')
 if [ ! -z "$(uci show network | grep "proto='3g'")" ]; then
-	iface="3g-"$iface
 	proto="0"
 fi
 [ -z "$iface" ] && logger -t $tag "Not found 3g/4g interface" && exit 0 

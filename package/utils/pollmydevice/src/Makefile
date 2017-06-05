@@ -9,7 +9,7 @@ PROGRAMS=pollmydevice
 
 all: $(PROGRAMS)
 
-pollmydevice: pollmydevice.o
+pollmydevice: pollmydevice.o crc16.o modbus.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS) 
 
 clean:

@@ -173,16 +173,21 @@ function action_flashops()
 
 	--local upgrade_avail = fs.access("/lib/upgrade/platform.sh")
 	local reset_avail   = os.execute([[grep '"rootfs_data"' /proc/mtd >/dev/null 2>&1]]) == 0
-
+	local need_remap   = os.execute([[grep '"extra_ubi"' /proc/mtd >/dev/null 2>&1]]) ~= 0
 	local restore_cmd = "tar -xzC/ >/dev/null 2>&1"
 	local backup_cmd  = "backup --create-backup - 2>/dev/null"
 	--local image_tmp   = "/tmp/firmware.img"
-	local image_tmp   = "/tmp/sysupgrade_RTUx68V2.tar"
+	local image_tmp   = "/tmp/sysupgrade_RTU968.tar"
 
 
 
 	local function image_supported()
 	    --return (os.execute("backup -T %q >/dev/null" % image_tmp) == 0)
+	    if luci.http.formvalue("keep") then 
+			fork_exec("fw_setenv update_flag 113")
+		else
+			fork_exec("fw_setenv update_flag 112")
+		end
 	    local test = io.popen("sysupgrade -t")
 	    local result = test:read("*a")
 	    test:close()
@@ -271,15 +276,11 @@ function action_flashops()
 					size     = (fs.stat(image_tmp, "size") or 0),
 					keep     = (not not luci.http.formvalue("keep"))
 				})
-				if luci.http.formvalue("keep") then 
-					fork_exec("fw_setenv update_flag 113")
-				else
-					fork_exec("fw_setenv update_flag 112")
-				end
 			else
 				fs.unlink(image_tmp)
 				luci.template.render("admin_system/flashops", {
 					reset_avail   = reset_avail,
+					need_remap = need_remap,
 					upgrade_avail = upgrade_avail,
 					image_invalid = true
 				})
@@ -307,13 +308,19 @@ function action_flashops()
 			addr  = "192.168.88.1"
 		})
 		fork_exec("firstboot -y; reboot -f")
+	elseif luci.http.formvalue("repart") then
+		--
+		-- Memory re-partition
+		--
+		fork_exec("/etc/initscripts/uboot")
 	else
 		--
 		-- Overview
 		--
 		luci.template.render("admin_system/flashops", {
 			reset_avail   = reset_avail,
-			upgrade_avail = upgrade_avail
+			upgrade_avail = upgrade_avail,
+			need_remap = need_remap
 		})
 	end
 end
