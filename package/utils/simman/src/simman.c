@@ -81,8 +81,8 @@ typedef struct current_info{
 static settings_t settings;
 static current_info_t siminfo;
 
-int    sim1_status,        // SIM1 status, 0 - detect, 1 - not detect, -1 - unknown
-	   sim2_status,        // SIM2 status
+int    sim1_status=-1,        // SIM1 status, 0 - detect, 1 - not detect, -1 - unknown
+	   sim2_status=-1,        // SIM2 status
 	   first_start,
 	   active_sim;         // active SIM, 0 - SIM1, 1 - SIM2, -1 - unknown
 
@@ -473,10 +473,11 @@ int main(int argc, char **argv)
 
 			// check SIM1 status
 			tmp  = gpioRead(settings.simdet0_pin);
-			if ((tmp >= 0) && (tmp != sim1_status))   
+			if ((tmp >= 0) && (tmp != sim1_status) && !first_start)   
 			{  // SIM1 remove
-				if (((tmp > 0)&&(active_sim == 0)) // вытянули сим 1
-				   ||((tmp == 0)&&(settings.sim[0].prio > settings.sim[1].prio))) // вставили сим 1 и приоритет у нее выше   
+				if (((tmp == 1)&&(active_sim == 0)) // вытянули сим 1
+				   ||((tmp == 0)&&(settings.sim[0].prio > settings.sim[1].prio)) // вставили сим 1 и приоритет у нее выше  
+				   ||((tmp == 0)&&(sim2_status != 0))) // вытащили сим 2 и приоритет у нее выше  
 				   {
 						for (i = 0; i < sizeof(settings.serv)/sizeof(settings.serv[0]); i++)
 							{
@@ -492,8 +493,9 @@ int main(int argc, char **argv)
 			tmp = gpioRead(settings.simdet1_pin);
 			if ((tmp >= 0) && (tmp != sim2_status))
 			{  // SIM2 remove
-				if (((tmp > 0)&&(active_sim > 0)) // вытянули сим 2
-				    ||((tmp == 0)&&(settings.sim[0].prio < settings.sim[1].prio))) // вставили сим 2 и приоритет у нее выше
+				if (((tmp == 1)&&(active_sim > 0)) // вытянули сим 2
+				    ||((tmp == 0)&&(settings.sim[0].prio < settings.sim[1].prio)) // вставили сим 2 и приоритет у нее выше
+				    ||((tmp == 0)&&(sim1_status != 0))) // вытащили сим 1 и приоритет у нее выше  
 					{
 						for (i = 0; i < sizeof(settings.serv)/sizeof(settings.serv[0]); i++)
 							{

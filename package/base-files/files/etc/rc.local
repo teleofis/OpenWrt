@@ -1,7 +1,5 @@
-/etc/initscripts/usbhost 
-/etc/initscripts/ethinit 
-/etc/initscripts/modeminit 
-
+ln -s /dev/ttyAPP4 /dev/com0
+ln -s /dev/ttyAPP1 /dev/com1
 watchdog -t 30 -T 60 /dev/watchdog0
 
 exit 0

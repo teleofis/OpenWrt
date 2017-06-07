@@ -50,6 +50,15 @@ proto_3g_setup() {
 					*) CODE=0;;
 				esac
 				export MODE="AT\$NWRAT=${CODE},2"
+			
+			elif echo "$cardinfo" | grep -q Cinterion; then
+				case "$service" in
+					umts_only) CODE=2;;
+					gprs_only) CODE=0;;
+					*) CODE="1,2";;
+				esac
+				export MODE="AT^SXRAT=${CODE}"
+			
 			elif echo "$cardinfo" | grep -q Option; then
 				case "$service" in
 					umts_only) CODE=1;;
