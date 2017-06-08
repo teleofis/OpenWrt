@@ -9,6 +9,7 @@ BASESTINFO=""
 NETTYPE=""
 BAND=""
 proto=""
+counter=0
 
 while getopts "h?d:" opt; do
         case "$opt" in
@@ -54,16 +55,30 @@ if [ "$proto" = "0" ]; then
         fi
   fi
 else
-  BASESTINFO=$(gcom -d $device -s $SCRIPT_BASEIDINFO)
+  while [ "$counter" -le "5" ]; do  
+    BASESTINFO=$(gcom -d $device -s $SCRIPT_BASEIDINFO)  
+    counter=$(($counter + 1))
+    usleep 200
+  done
+
   [ -z "$BASESTINFO" ] && BASESTINFO="NONE"
   NETTYPE=$( echo $BASESTINFO | awk -F',' '{print $1}')
-  if [ "$NETTYPE" == "LTE" ]; then
-    BAND=$( echo $BASESTINFO | awk -F',' '{print $7}')
-    [ -z "$BAND" ] && BAND="Search..."
-    echo $BAND
-  else
-        BAND=$( echo $BASESTINFO | awk -F',' '{print $6}')
-    [ -z "$BAND" ] && BAND="Search..."
-    echo $BAND
-  fi
+
+    if [ "$NETTYPE" == "LTE" ]; then
+      BAND=$( echo $BASESTINFO | awk -F',' '{print $8}')
+      [ -z "$BAND" ] && BAND="Search..."
+      echo "'EARFCN $BAND'"
+    else
+      if [ "$NETTYPE" == "WCDMA" ]; then
+        BAND=$( echo $BASESTINFO | awk -F',' '{print $8}')
+        [ -z "$BAND" ] && BAND="Search..."
+        echo "'UARFCN $BAND'"    
+      else
+        if [ "$NETTYPE" == "GSM" ]; then
+          BAND=$( echo $BASESTINFO | awk -F',' '{print $6}')
+          [ -z "$BAND" ] && BAND="Search..."
+          echo "'ARFCN $BAND'"   
+        fi
+      fi
+    fi
 fi

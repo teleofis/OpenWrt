@@ -5,6 +5,7 @@ OPTIND=1
 SCRIPT_IMEI="/etc/simman/getimei.gcom"
 device=""
 IMEI=""
+counter=0
 
 while getopts "h?d:" opt; do
 	case "$opt" in
@@ -27,8 +28,11 @@ shift $((OPTIND-1))
 
 # Check if device exists
 [ ! -e $device ] && exit 0
-
-IMEI=$(gcom -d $device -s $SCRIPT_IMEI)
+while [ "$counter" -le "5" ]; do
+	IMEI=$(gcom -d $device -s $SCRIPT_IMEI)
+	counter=$(($counter + 1))
+    usleep 200
+done
 [ -z "$IMEI" ] && IMEI="NONE"
 
 echo $IMEI

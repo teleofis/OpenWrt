@@ -59,6 +59,7 @@ else
   [ -z "$BASESTINFO" ] && BASESTINFO="NONE"
   
   BASESTID=$( echo $BASESTINFO | awk -F',' '{print $5}')
+  BASESTID=$(echo "obase=16; $BASESTID" | bc)
   [ -z "$BASESTID" ] && BASESTID="SEARCH"
   echo $BASESTID
 fi

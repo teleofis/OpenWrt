@@ -7,6 +7,7 @@ SCRIPT_PACKINFOLTE="/etc/simman/getpackinfolte.gcom"
 device=""
 PACKINFO=""
 proto=""
+counter=0
 
 while getopts "h?d:" opt; do
 	case "$opt" in
@@ -61,35 +62,39 @@ if [ "$proto" = "0" ]; then
 		fi
 	fi
 else
-	PACKINFO=$(gcom -d $device -s $SCRIPT_PACKINFOLTE | awk -F',' '{print $2}')
+	while [ "$counter" -le "5" ]; do
+		PACKINFO=$(gcom -d $device -s $SCRIPT_PACKINFOLTE | awk -F',' '{print $2}')
+		counter=$(($counter + 1))
+    	usleep 200
+	done
 	[ -z "$PACKINFO" ] && PACKINFO="NONE"
 	case "$PACKINFO" in
 		0)
-			echo "No service"
+			echo "'No service'"
 		;;
 		1)
-			echo "GSM"
+			echo "'GSM'"
 		;;
 		2)
-			echo "GPRS"
+			echo "'GPRS'"
 		;;
 		3)
-			echo "EGPRS (EDGE)"
+			echo "'EGPRS (EDGE)'"
 		;;
 		4)
-			echo "WCDMA"
+			echo "'WCDMA'"
 		;;
 		5)
-			echo "HSDPA only(WCDMA)"
+			echo "'HSDPA only(WCDMA)'"
 		;;
 		6)
-			echo "HSUPA only(WCDMA)"
+			echo "'HSUPA only(WCDMA)'"
 		;;
 		7)
-			echo "HSPA (HSDPA and HSUPA, WCDMA)"
+			echo "'HSPA (HSDPA and HSUPA, WCDMA)'"
 		;;
 		8)
-			echo "LTE"
+			echo "'LTE'"
 		;;
 	esac
 fi
