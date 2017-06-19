@@ -88,8 +88,11 @@ conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time (sec)"
   --conn_time.rmempty = false
   conn_time:depends("mode","server")
 
-modbus_gateway = s:option(Flag, "modbus_gateway", translate("Modbus TCP/IP"))  -- create checkbox
+modbus_gateway = s:option(ListValue, "modbus_gateway", translate("Modbus TCP/IP"))  -- create checkbox
   modbus_gateway.default = 0
+  modbus_gateway:value(0,"disabled")
+  modbus_gateway:value(1,"RTU")
+  modbus_gateway:value(2,"ASCII")
   modbus_gateway:depends("mode","client")
   modbus_gateway:depends("mode","server")
 
