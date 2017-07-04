@@ -72,7 +72,7 @@
 						MX28_PAD_SAIF1_SDATA0__GPIO_3_26		/* USBHOST.VCCEN.TRIG.CLK D*/
 						MX28_PAD_PWM3__GPIO_3_28				/* USBHOST.MODE.SWITCHER */
 
-						MX28_PAD_PWM4__GPIO_3_29				/* GPIO on XW2 */
+						MX28_PAD_PWM4__GPIO_3_29				/* VCC.FAULT*/
 						MX28_PAD_ENET0_TX_CLK__GPIO_4_5				/* GPIO on XW2 */
 						MX28_PAD_ENET0_RX_CLK__GPIO_4_13			/* GPIO on XW2 */
 
@@ -354,6 +354,16 @@
 		hw_algo = "toggle";
 		hw_margin_ms = <4000>;
 		always-running = <1>;
+	};
+	vccfault {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&gpio_pins_3V3>;
+		vcc_fault {
+			label = "vccfault";
+			gpios = <&gpio3 29 GPIO_ACTIVE_HIGH>;
+			linux,code = <0x100>;
+		};
 	};
 	leds {
 		compatible = "gpio-leds";

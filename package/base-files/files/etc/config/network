@@ -6,7 +6,7 @@ config interface 'loopback'
 	option netmask '255.0.0.0'
 
 config interface 'lan'
-	option ifname 'eth0 eth1'
+	option ifname 'eth0 eth1 usb0'
 	option type 'bridge'
 	option proto 'static'
 	option ipaddr '192.168.88.1'
