@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
 	<meta http-equiv="Cache-Control" content="no-cache" />
-	<title>TELEOFIS-RTUx68V2</title>
+	<title>TELEOFIS-RTU968</title>
 	<link rel="shortcut icon" href="/luci-static/bootstrap/favicon.ico" type="image/x-icon">
 	<meta http-equiv="refresh" content="0; URL=/cgi-bin/luci" />
 	<style type="text/css">
@@ -20,19 +20,41 @@
 			text-align:center;
 		}
 		.button {
-			color:rgb(149,17,15);
+			display: inline-block;
+			width: 600px;
+			background-color: rgb(152,15,7);
+			color: rgb(239,239,239);
 			outline:none;
 			text-decoration:none;
-			font:18px/25px sans-serif;
-			transition:all 0.5s ease;
+			font-size: 19px;
+			line-height: 50px;
+			font-weight: 400;
+			font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
+			transition: all 0.2s;
+			-moz-transition: all 0.2s;
+			-webkit-transition: all 0.2s;
+			-o-transition: all 0.2s;
+			-ms-transition: all 0.2s;
+			border-radius: 5px;
+			-moz-border-radius: 5px;
+			-webkit-border-radius: 5px;
+			-khtml-border-radius: 5px;
 		}
 		.button:hover {
-			text-decoration:underline;
+			background-color: rgb(210,79,79);
 		}
 		.img {
 			display:block;
 			width:216px;
 			height:48px;
+		}
+		.info {
+			display: block;
+			font-size: 13px;
+			font-family: -apple-system,BlinkMacSystemFont,Roboto,Open Sans,Helvetica Neue,sans-serif;
+			font-weight: 400;
+			margin-top: 10px;
+			color: rgb(134, 134, 134);
 		}
 	</style>
 </head>
@@ -40,8 +62,9 @@
 	<div align="center" style="margin-top:30px;">
 		<img class="img" src="/luci-static/resources/cbi/teleofis-logo.jpg" alt="TELEOFIS" title="TELEOFIS" />
 	</div>
-	<div class="main">
+	<div class="main" align="center">
 		<a class="button" href="/cgi-bin/luci" title="Перейти в управление роутером через WEB интерфейс LuCI">RTUx68V2 - Переход к управлению системой</a>
+		<div class="info">Необходимо подождать, сейчас произойдет перенаправление на страницу входа<br />Если автоматический переход не произошел, нажмите кнопку выше для ручного перехода на страницу входа</div>
 	</div>
 </body>
 </html>

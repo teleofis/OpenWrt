@@ -490,7 +490,7 @@ void *ServerThreadFunc(void *args)
     }
     bzero(&threadFD->mb_tcp.newValue,sizeof(struct itimerspec));
     threadFD->mb_tcp.newValue.it_value.tv_sec = 0;
-    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000;
+    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000*10;
 
     threadFD->mb_tcp.timer = timerfd_create(CLOCK_MONOTONIC,TFD_NONBLOCK);
     if(threadFD->mb_tcp.timer < 0){
@@ -782,7 +782,8 @@ void *ClientThreadFunc(void *args)
     }
     bzero(&threadFD->mb_tcp.newValue,sizeof(struct itimerspec));
     threadFD->mb_tcp.newValue.it_value.tv_sec = 0;
-    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000;
+    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000*10;
+    LOG("Timer set = %lu \n",threadFD->mb_tcp.newValue.it_value.tv_nsec);
 
     threadFD->mb_tcp.timer = timerfd_create(CLOCK_MONOTONIC,TFD_NONBLOCK);
     if(threadFD->mb_tcp.timer < 0){
@@ -1403,6 +1404,7 @@ void SendModbusTCP(struct fdStructType *threadFD,char *pBuf, int len){
 
 	while(count < len){
 		InsertByteModbusTCP(pTCP, pBuf[count++]);
+		result = timerfd_settime(pTCP->timer, 0, &pTCP->newValue, &oldValue);
 		if(pTCP->offset >= MAX_PACK_SIZE){
 			pTCP->offset=0;
 			bzero(pTCP->packet,MAX_PACK_SIZE);

@@ -7,6 +7,9 @@ case "$ACTION" in
                 DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
                 echo -e -n "at+uimhotswaplevel=1\r\n" > /dev/$DEVICE_NAME
                 echo -e -n "at+uimhotswapon=1\r\n" > /dev/$DEVICE_NAME
+                echo 1 > /sys/class/gpio/gpio83/value
+                sleep 1
+                echo 0 > /sys/class/gpio/gpio83/value
                 uci delete network.internet
                 uci set network.wwan0=interface
                 uci set network.wwan0.proto=qmi
@@ -17,6 +20,8 @@ case "$ACTION" in
                 uci set simman.core.iface=wwan0
                 uci set simman.core.proto=1
                 uci set simman.info.atdevice=/dev/ttyUSB2
+                echo wwan0 > /sys/class/leds/middle\:net/device_name
+                echo wwan0 > /sys/class/leds/bottom\:act/device_name
                 sed -i -e "s/$version/RTU1068V2/g" /etc/banner
                 sed -i -e "s/$version/RTU1068V2/g" /etc/config/system
                 sed -i -e "s/$version/RTU1068V2/g" /usr/lib/lua/luci/view/admin_status/index.htm
@@ -25,7 +30,12 @@ case "$ACTION" in
                 sed -i -e "s/$version/RTU1068V2/g" /usr/lib/lua/luci/controller/admin/system.lua
                 sed -i -e "s/3g-internet/wwan0/g" /etc/config/system
                 uci commit
-                /etc/init.d/simman start
+                dev=$(ls /dev/ | grep cdc-wdm)
+                while [ -z "$dev"]; do
+                    sleep 4
+                    dev=$(ls /dev/ | grep cdc-wdm)
+                done
+                /etc/init.d/simman restart
         else if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" ] && [ "$PRODUCT" = "1e2d/58/1730" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" ]; then
                 uci delete network.wwan0
                 uci set network.internet=interface
@@ -38,6 +48,8 @@ case "$ACTION" in
                 uci set simman.core.iface=3g-internet
                 uci set simman.core.proto=0
                 uci set simman.info.atdevice=/dev/ttyACM4
+                echo 3g-internet > /sys/class/leds/middle\:net/device_name
+                echo 3g-internet > /sys/class/leds/bottom\:act/device_name
                 sed -i -e "s/$version/RTU968V2/g" /etc/banner
                 sed -i -e "s/$version/RTU968V2/g" /etc/config/system
                 sed -i -e "s/wwan0/3g-internet/g" /etc/config/system
