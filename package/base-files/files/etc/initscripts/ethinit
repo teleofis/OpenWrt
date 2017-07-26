@@ -6,13 +6,10 @@ echo 1 > /sys/class/gpio/gpio78/value
 MAC0=$(fw_printenv ethaddr | sed s/ethaddr=// | sed -e s/://g)
 MAC1=$(fw_printenv eth1addr | sed s/eth1addr=// | sed -e s/://g)
 
-if [ "$MAC0" -eq "001122334455" ]; then
+if [ "$MAC0" = "001122334455" -o "$MAC1" = "001122334466" ]; then
 		SERIALNUM=$(getserialnum | sed 's/\(..\)/\1:/g' | sed 's/.$//' | tr "a-z" "A-Z")
 		MAC0="F8:1D:"$SERIALNUM
 		fw_setenv ethaddr $MAC0
-fi
-
-if [ "$MAC1" -eq "001122334466" ]; then
 		SERIALNUM=$((0x$(getserialnum)))
 		SERIALNUM=$(($SERIALNUM + 1))
 		SERIALNUM=$(echo "obase=16; $SERIALNUM" | bc | sed 's/\(..\)/\1:/g' | sed 's/.$//')
