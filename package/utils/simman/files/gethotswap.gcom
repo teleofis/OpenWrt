@@ -6,8 +6,8 @@ opengt
  flash 0.1
 
 :start
- send "AT+CSQ^m"
- waitfor 1 "+CSQ: "
+ send "AT+UIMHOTSWAPLEVEL?^m"
+ waitfor 1 "+UIMHOTSWAPLEVEL: "
  get 1 "^m" $s
  print $s
 
