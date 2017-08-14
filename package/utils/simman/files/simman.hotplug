@@ -25,7 +25,7 @@ case "$ACTION" in
                 sed -i -e "s/3g-internet/wwan0/g" /etc/config/system
                 uci commit
                 /etc/init.d/simman restart
-        else if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" ] && [ "$PRODUCT" = "1e2d/58/1730" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" ]; then
+        else if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" ] && [ "$PRODUCT" = "1e2d/58/1730" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then
                 uci delete network.wwan0
                 uci set network.internet=interface
                 uci set network.internet.proto=3g
