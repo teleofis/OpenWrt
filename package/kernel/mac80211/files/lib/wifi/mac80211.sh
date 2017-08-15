@@ -78,7 +78,7 @@ detect_mac80211() {
 		[ "$found" -gt 0 ] && continue
 
 		mode_band="g"
-		channel="11"
+		channel="7"
 		htmode=""
 		ht_capab=""
 
@@ -113,16 +113,16 @@ config wifi-device  radio$devidx
 	option channel  ${channel}
 	option hwmode	11${mode_band}
 $dev_id
-$ht_capab
-	# REMOVE THIS LINE TO ENABLE WIFI:
-	option disabled 1
+	option htmode	HT40
+	option country 	RU
 
 config wifi-iface
 	option device   radio$devidx
 	option network  lan
 	option mode     ap
-	option ssid     OpenWrt
-	option encryption none
+	option ssid     RTUx68V2
+	option encryption psk2
+	option key 		11122233344455566677788899
 
 EOF
 	devidx=$(($devidx + 1))
