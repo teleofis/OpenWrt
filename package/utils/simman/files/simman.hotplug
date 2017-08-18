@@ -43,7 +43,7 @@ case "$ACTION" in
             fi
         fi
 
-        if [ "$PRODUCT" = "1e0e/9001/232" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" ]; then            
+        if [ "$PRODUCT" = "1e0e/9001/232" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2"  -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then            
             DEVICE_NAME=$(ls /sys$DEVPATH | grep tty)
             CHECK=$(gcom -d /dev/$DEVICE_NAME -s /etc/simman/gethotswap.gcom)
             if [ "$CHECK" == "0" ]; then
