@@ -9,7 +9,10 @@ opengt
  send "AT+UIMHOTSWAPLEVEL?^m"
  waitfor 1 "+UIMHOTSWAPLEVEL: "
  get 1 "^m" $s
- print $s
+ send "AT+UIMHOTSWAPON?^m"
+ waitfor 1 "+UIMHOTSWAPON: "
+ get 1 "^m" $t
+ print $s$t
 
 :continue
  exit 0

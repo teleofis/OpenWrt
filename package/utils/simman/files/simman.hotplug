@@ -46,10 +46,9 @@ case "$ACTION" in
         if [ "$PRODUCT" = "1e0e/9001/232" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2"  -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then            
             DEVICE_NAME=$(ls /sys$DEVPATH | grep tty)
             CHECK=$(gcom -d /dev/$DEVICE_NAME -s /etc/simman/gethotswap.gcom)
-            if [ "$CHECK" == "0" ]; then
+            if [ "$CHECK" != "11" ]; then
                 /etc/init.d/simman stop
-                echo -e -n "at+uimhotswaplevel=1\r\n" > /dev/$DEVICE_NAME
-                echo -e -n "at+uimhotswapon=1\r\n" > /dev/$DEVICE_NAME
+                gcom -d /dev/$DEVICE_NAME -s /etc/simman/sethotswap.gcom                
                 echo 1 > /sys/class/gpio/gpio83/value
                 sleep 1
                 echo 0 > /sys/class/gpio/gpio83/value                
