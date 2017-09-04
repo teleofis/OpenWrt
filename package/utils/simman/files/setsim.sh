@@ -46,6 +46,11 @@ shift $((OPTIND-1))
 }
 
 # read GPIO configuration
+PWRKEY_PIN=$(uci -q get simman.core.pwrkey_gpio_pin)
+[ -z "$PWRKEY_PIN" ] && {
+	logger -t $tag "Not set PWRKEY_PIN" && exit 0 
+}
+
 GSMPOW_PIN=$(uci -q get simman.core.gsmpow_gpio_pin)
 [ -z "$GSMPOW_PIN" ] && {
 	logger -t $tag "Not set GSMPOW_PIN" && exit 0 
@@ -70,6 +75,12 @@ SIMDET1_PIN=$(uci -q get simman.core.simdet1_gpio_pin)
 [ -z "$SIMDET1_PIN" ] && {
 	logger -t $tag "Not set SIMDET1_PIN" && exit 0
 }
+
+ATDEVICE=$(uci -q get simman.core.atdevice)
+[ -z "$ATDEVICE" ] && {
+	logger -t $tag "Not set ATDEVICE" && exit 0
+}
+
 
 # GPIO ports configure 
 if [ ! -d "$GPIO_PATH/gpio$GSMPOW_PIN" ]; then
@@ -102,16 +113,14 @@ if [ ! -d "$GPIO_PATH/gpio$SIMDET1_PIN" ]; then
 	logger -t $tag "Exporting gpio$SIMDET1_PIN"
 fi
 
-# modem type: 0 - 3G; 1 - 4G
+# modem type: 0 - Telit; 1 - Simcom
 proto=$(uci -q get simman.core.proto)
 [ -z "$proto" ] && {
-	logger -t $tag "Not set proto" && exit 0
+	logger -t $tag "Not set modem type" && exit 0
 }
 # find 3g interface
 iface=$(uci show network | awk "/proto='3g'|proto='qmi'/" | awk -F'.' '{print $2}')
-if [ ! -z "$(uci show network | grep "proto='3g'")" ]; then
-	proto="0"
-fi
+
 [ -z "$iface" ] && logger -t $tag "Not found 3g/4g interface" && exit 0 
 
 # Check if SIM card placed in holder
@@ -177,6 +186,14 @@ else
  uci -q set network.$iface.password=$pass
 fi
 
+# power down for SIM5360
+if [ "$proto" == "2" ]; then	
+  	echo "0" > $GPIO_PATH/gpio$PWRKEY_PIN/value
+  	sleep 1
+  	echo "1" > $GPIO_PATH/gpio$PWRKEY_PIN/value
+  	sleep 3
+fi
+
 # Set sim card
 if [ "$mode" == "0" ]; then
  echo "0" > $GPIO_PATH/gpio$SIMDET_PIN/value
@@ -200,7 +217,7 @@ if [ "$mode" == "0" ]; then
   echo "0" > $GPIO_PATH/gpio$GSMPOW_PIN/value
 
   sleep 4
-  if [ "$proto" == "1" ]; then
+  if [ "$proto" == "1" -o "$proto" == "2" ]; then
   	dev=$(ls /dev/ | grep cdc-wdm)
   	while [ -z "$dev"]; do
   		sleep 4
@@ -213,7 +230,7 @@ if [ "$mode" == "0" ]; then
 
 
 
-  while [ $retry -lt 10 ]; do
+  while [ $retry -lt 10 -o "$proto" !== "2" ]; do
      retry=`expr $retry + 1`
 
      reg=$($CONFIG_DIR/getreg.sh)
@@ -240,6 +257,27 @@ sleep 1
 if [ "$mode" == "0" ]; then
  echo "1" > $GPIO_PATH/gpio$SIMDET_PIN/value
 fi 
+
+# power up for SIM5360
+if [ "$proto" == "2" -a "$pow" -ne "1" ]; then
+	counter=0
+  	echo "0" > $GPIO_PATH/gpio$PWRKEY_PIN/value
+  	usleep 50000
+  	echo "1" > $GPIO_PATH/gpio$PWRKEY_PIN/value
+  	sleep 3
+  	dev=$(ls /dev/ | grep cdc-wdm)
+  	while [ -z "$dev"]; do
+  		sleep 2
+  		dev=$(ls /dev/ | grep cdc-wdm)
+  		counter=$(($counter + 1))
+  		if [ "$counter" == "15" ]; then
+  			echo "0" > $GPIO_PATH/gpio$PWRKEY_PIN/value
+  			usleep 50000
+  			echo "1" > $GPIO_PATH/gpio$PWRKEY_PIN/value
+  			counter=0
+  		fi
+  	done
+fi
 
 # store uci changes
 uci commit 
