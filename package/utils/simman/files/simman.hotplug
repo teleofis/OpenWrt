@@ -8,7 +8,7 @@ case "$ACTION" in
         EHS5="1e2d/58/1730"
 
         case "$PRODUCT" in
-        $SIM5360)
+        $SIM7100)
             if  [ "$version" = "RTUx68V2" -o "$version" = "RTU968V2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2"  ]; then
                 /etc/init.d/simman stop
                 uci delete network.internet
@@ -71,7 +71,7 @@ case "$ACTION" in
             fi
         ;;
 
-        $SIM7100)
+        $SIM5360)
             if  [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2"  ]; then
             uci delete network.wwan0
                 uci set network.internet=interface
