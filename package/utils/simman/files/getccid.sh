@@ -36,12 +36,8 @@ proto=$(uci -q get simman.core.proto)
 if [ "$proto" = "0" ]; then
 	CCID=$(gcom -d $device -s $SCRIPT_CCID)
 else 
-        while [ "$counter" -le "5" ]; do
-				CCID=$(gcom -d $device -s $SCRIPT_CICCID 2> /dev/null)
-                CCID=${CCID//F/}
-                counter=$(($counter + 1))
-                usleep 200
-        done
+		CCID=$(gcom -d $device -s $SCRIPT_CICCID 2> /dev/null)
+        CCID=${CCID//F/}
 fi
 #CCID=$(gcom -d $device -s $SCRIPT_CCID | grep -e [0-9] | sed 's/"//g')
 [ -z "$CCID" ] && CCID="NONE"

@@ -62,11 +62,9 @@ if [ "$proto" = "0" ]; then
 		fi
 	fi
 else
-	while [ "$counter" -le "5" ]; do
-		PACKINFO=$(gcom -d $device -s $SCRIPT_PACKINFOLTE | awk -F',' '{print $2}')
-		counter=$(($counter + 1))
-    	usleep 200
-	done
+
+	PACKINFO=$(gcom -d $device -s $SCRIPT_PACKINFOLTE | awk -F',' '{print $2}')
+
 	[ -z "$PACKINFO" ] && PACKINFO="NONE"
 	case "$PACKINFO" in
 		0)

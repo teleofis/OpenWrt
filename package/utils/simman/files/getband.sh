@@ -54,12 +54,8 @@ if [ "$proto" = "0" ]; then
                 echo "Identification failed"
         fi
   fi
-else
-  while [ "$counter" -le "5" ]; do  
-    BASESTINFO=$(gcom -d $device -s $SCRIPT_BASEIDINFO)  
-    counter=$(($counter + 1))
-    usleep 200
-  done
+else 
+  BASESTINFO=$(gcom -d $device -s $SCRIPT_BASEIDINFO)  
 
   [ -z "$BASESTINFO" ] && BASESTINFO="NONE"
   NETTYPE=$( echo $BASESTINFO | awk -F',' '{print $1}')

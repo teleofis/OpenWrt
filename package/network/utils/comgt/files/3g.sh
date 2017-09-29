@@ -51,6 +51,14 @@ proto_3g_setup() {
 				esac
 				export MODE="AT\$NWRAT=${CODE},2"
 			
+			elif echo "$cardinfo" | grep -q SIMCOM; then
+				case "$service" in
+					umts_only) CODE=14;;
+					gprs_only) CODE=13;;
+					*) CODE=2;;
+				esac
+				export MODE="AT+CNMP=${CODE}"
+
 			elif echo "$cardinfo" | grep -q Cinterion; then
 				case "$service" in
 					umts_only) CODE=2;;

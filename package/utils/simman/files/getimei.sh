@@ -28,11 +28,9 @@ shift $((OPTIND-1))
 
 # Check if device exists
 [ ! -e $device ] && exit 0
-while [ "$counter" -le "5" ]; do
+
 	IMEI=$(gcom -d $device -s $SCRIPT_IMEI)
-	counter=$(($counter + 1))
-    usleep 200
-done
+
 [ -z "$IMEI" ] && IMEI="NONE"
 
 echo $IMEI

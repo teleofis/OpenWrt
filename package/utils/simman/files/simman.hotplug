@@ -32,7 +32,6 @@ case "$ACTION" in
                 DEVICE_NAME=$(ls /sys$DEVPATH | grep tty)
                 CHECK=$(gcom -d /dev/$DEVICE_NAME -s /etc/simman/gethotswap.gcom)
                 if [ "$CHECK" != "11" ]; then
-                    /etc/init.d/simman stop
                     gcom -d /dev/$DEVICE_NAME -s /etc/simman/sethotswap.gcom                
                     echo 1 > /sys/class/gpio/gpio83/value
                     sleep 1
@@ -42,14 +41,14 @@ case "$ACTION" in
                         sleep 4
                         dev=$(ls /dev/ | grep cdc-wdm)
                     done
-                    /etc/init.d/simman restart
                 fi
             fi
         fi
         ;;
 
         $EHS5)
-            if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then
+            3G_PROTO=$(uci get simman.core.proto 2>/dev/null)
+            if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$3G_PROTO" = "2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then
                 uci delete network.wwan0
                 uci set network.internet=interface
                 uci set network.internet.proto=3g
@@ -72,7 +71,8 @@ case "$ACTION" in
         ;;
 
         $SIM5360)
-            if  [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2"  ]; then
+            3G_PROTO=$(uci get simman.core.proto 2>/dev/null)
+            if  [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$3G_PROTO" = "0" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2"  ]; then
             uci delete network.wwan0
                 uci set network.internet=interface
                 uci set network.internet.proto=3g
