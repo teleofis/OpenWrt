@@ -47,8 +47,8 @@ case "$ACTION" in
         ;;
 
         $EHS5)
-            3G_PROTO=$(uci get simman.core.proto 2>/dev/null)
-            if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$3G_PROTO" = "2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then
+            PROTO_3G=$(uci get simman.core.proto 2>/dev/null)
+            if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$PROTO_3G" = "2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then
                 uci delete network.wwan0
                 uci set network.internet=interface
                 uci set network.internet.proto=3g
@@ -71,8 +71,8 @@ case "$ACTION" in
         ;;
 
         $SIM5360)
-            3G_PROTO=$(uci get simman.core.proto 2>/dev/null)
-            if  [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$3G_PROTO" = "0" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2"  ]; then
+            PROTO_3G=$(uci get simman.core.proto 2>/dev/null)
+            if  [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$PROTO_3G" = "0" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2"  ]; then
             uci delete network.wwan0
                 uci set network.internet=interface
                 uci set network.internet.proto=3g
