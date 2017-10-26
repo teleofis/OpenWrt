@@ -2056,6 +2056,7 @@ CONFIG_PACKAGE_usign=y
 #
 # CONFIG_PACKAGE_zabbix-agent is not set
 # CONFIG_PACKAGE_zabbix-agentd is not set
+# CONFIG_PACKAGE_zabbix-extra-mac80211 is not set
 # CONFIG_PACKAGE_zabbix-extra-network is not set
 # CONFIG_PACKAGE_zabbix-extra-wifi is not set
 # CONFIG_PACKAGE_zabbix-get is not set
@@ -2155,7 +2156,7 @@ CONFIG_PACKAGE_kmod-scsi-generic=y
 # Cryptographic API modules
 #
 CONFIG_PACKAGE_kmod-crypto-aead=y
-CONFIG_PACKAGE_kmod-crypto-aes=y
+# CONFIG_PACKAGE_kmod-crypto-aes is not set
 CONFIG_PACKAGE_kmod-crypto-arc4=y
 CONFIG_PACKAGE_kmod-crypto-authenc=y
 CONFIG_PACKAGE_kmod-crypto-cbc=y
@@ -2172,7 +2173,7 @@ CONFIG_PACKAGE_kmod-crypto-ecb=y
 # CONFIG_PACKAGE_kmod-crypto-ghash is not set
 CONFIG_PACKAGE_kmod-crypto-hash=y
 CONFIG_PACKAGE_kmod-crypto-hmac=y
-CONFIG_PACKAGE_kmod-crypto-hw-dcp=y
+# CONFIG_PACKAGE_kmod-crypto-hw-dcp is not set
 # CONFIG_PACKAGE_kmod-crypto-hw-geode is not set
 # CONFIG_PACKAGE_kmod-crypto-hw-hifn-795x is not set
 # CONFIG_PACKAGE_kmod-crypto-hw-padlock is not set
@@ -2190,7 +2191,7 @@ CONFIG_PACKAGE_kmod-crypto-pcompress=y
 CONFIG_PACKAGE_kmod-crypto-rng=y
 # CONFIG_PACKAGE_kmod-crypto-seqiv is not set
 CONFIG_PACKAGE_kmod-crypto-sha1=y
-CONFIG_PACKAGE_kmod-crypto-sha256=y
+# CONFIG_PACKAGE_kmod-crypto-sha256 is not set
 # CONFIG_PACKAGE_kmod-crypto-test is not set
 # CONFIG_PACKAGE_kmod-crypto-user is not set
 CONFIG_PACKAGE_kmod-crypto-wq=y
@@ -2280,7 +2281,7 @@ CONFIG_PACKAGE_kmod-ledtrig-usbdev=y
 #
 # CONFIG_PACKAGE_kmod-lib-cordic is not set
 CONFIG_PACKAGE_kmod-lib-crc-ccitt=y
-# CONFIG_PACKAGE_kmod-lib-crc-itu-t is not set
+CONFIG_PACKAGE_kmod-lib-crc-itu-t=y
 CONFIG_PACKAGE_kmod-lib-crc16=y
 CONFIG_PACKAGE_kmod-lib-crc32c=y
 # CONFIG_PACKAGE_kmod-lib-crc7 is not set
@@ -3416,6 +3417,7 @@ CONFIG_PACKAGE_luci-app-simman=y
 # CONFIG_PACKAGE_luci-app-splash is not set
 # CONFIG_PACKAGE_luci-app-sqm is not set
 # CONFIG_PACKAGE_luci-app-statistics is not set
+CONFIG_PACKAGE_luci-app-strongswan=y
 CONFIG_PACKAGE_luci-app-tinyproxy=y
 # CONFIG_PACKAGE_luci-app-transmission is not set
 # CONFIG_PACKAGE_luci-app-udpxy is not set
@@ -3903,7 +3905,7 @@ CONFIG_PACKAGE_iptables-mod-tproxy=y
 # CONFIG_PACKAGE_igmpproxy is not set
 CONFIG_PACKAGE_ip=y
 CONFIG_PACKAGE_ip-bridge=y
-# CONFIG_PACKAGE_ip-full is not set
+CONFIG_PACKAGE_ip-full=y
 # CONFIG_PACKAGE_lldpd is not set
 # CONFIG_PACKAGE_mcproxy is not set
 CONFIG_PACKAGE_mwan3=y
@@ -4020,7 +4022,7 @@ CONFIG_PACKAGE_sshtunnel=y
 # Time Synchronization
 #
 # CONFIG_PACKAGE_ntp-keygen is not set
-# CONFIG_PACKAGE_ntp-utils is not set
+CONFIG_PACKAGE_ntp-utils=y
 CONFIG_PACKAGE_ntpclient=y
 CONFIG_PACKAGE_ntpd=y
 # CONFIG_PACKAGE_ntpdate is not set
@@ -4029,7 +4031,7 @@ CONFIG_PACKAGE_ntpd=y
 # VPN
 #
 # CONFIG_PACKAGE_fastd is not set
-CONFIG_PACKAGE_ipsec-tools=y
+# CONFIG_PACKAGE_ipsec-tools is not set
 # CONFIG_PACKAGE_ocserv is not set
 # CONFIG_PACKAGE_openconnect is not set
 # CONFIG_PACKAGE_opennhrp is not set
@@ -4075,7 +4077,7 @@ CONFIG_OPENVPN_polarssl_ENABLE_DEF_AUTH=y
 CONFIG_OPENVPN_polarssl_ENABLE_PF=y
 # CONFIG_OPENVPN_polarssl_ENABLE_IPROUTE2 is not set
 CONFIG_OPENVPN_polarssl_ENABLE_SMALL=y
-# CONFIG_PACKAGE_pptpd is not set
+CONFIG_PACKAGE_pptpd=y
 CONFIG_PACKAGE_strongswan=y
 
 #
@@ -4083,26 +4085,26 @@ CONFIG_PACKAGE_strongswan=y
 #
 CONFIG_STRONGSWAN_ROUTING_TABLE="220"
 CONFIG_STRONGSWAN_ROUTING_TABLE_PRIO="220"
-CONFIG_PACKAGE_strongswan-charon=m
-CONFIG_PACKAGE_strongswan-default=m
+CONFIG_PACKAGE_strongswan-charon=y
+# CONFIG_PACKAGE_strongswan-default is not set
 # CONFIG_PACKAGE_strongswan-libtls is not set
 # CONFIG_PACKAGE_strongswan-minimal is not set
 # CONFIG_PACKAGE_strongswan-mod-addrblock is not set
-CONFIG_PACKAGE_strongswan-mod-aes=m
+CONFIG_PACKAGE_strongswan-mod-aes=y
 # CONFIG_PACKAGE_strongswan-mod-af-alg is not set
 # CONFIG_PACKAGE_strongswan-mod-agent is not set
-CONFIG_PACKAGE_strongswan-mod-attr=m
+CONFIG_PACKAGE_strongswan-mod-attr=y
 # CONFIG_PACKAGE_strongswan-mod-attr-sql is not set
 # CONFIG_PACKAGE_strongswan-mod-blowfish is not set
 # CONFIG_PACKAGE_strongswan-mod-ccm is not set
 # CONFIG_PACKAGE_strongswan-mod-cmac is not set
-CONFIG_PACKAGE_strongswan-mod-constraints=m
+CONFIG_PACKAGE_strongswan-mod-constraints=y
 # CONFIG_PACKAGE_strongswan-mod-coupling is not set
 # CONFIG_PACKAGE_strongswan-mod-ctr is not set
 # CONFIG_PACKAGE_strongswan-mod-curl is not set
-CONFIG_PACKAGE_strongswan-mod-des=m
+CONFIG_PACKAGE_strongswan-mod-des=y
 # CONFIG_PACKAGE_strongswan-mod-dhcp is not set
-CONFIG_PACKAGE_strongswan-mod-dnskey=m
+CONFIG_PACKAGE_strongswan-mod-dnskey=y
 # CONFIG_PACKAGE_strongswan-mod-duplicheck is not set
 # CONFIG_PACKAGE_strongswan-mod-eap-identity is not set
 # CONFIG_PACKAGE_strongswan-mod-eap-md5 is not set
@@ -4110,53 +4112,53 @@ CONFIG_PACKAGE_strongswan-mod-dnskey=m
 # CONFIG_PACKAGE_strongswan-mod-eap-radius is not set
 # CONFIG_PACKAGE_strongswan-mod-eap-tls is not set
 # CONFIG_PACKAGE_strongswan-mod-farp is not set
-CONFIG_PACKAGE_strongswan-mod-fips-prf=m
+CONFIG_PACKAGE_strongswan-mod-fips-prf=y
 # CONFIG_PACKAGE_strongswan-mod-gcm is not set
 # CONFIG_PACKAGE_strongswan-mod-gcrypt is not set
-CONFIG_PACKAGE_strongswan-mod-gmp=m
+CONFIG_PACKAGE_strongswan-mod-gmp=y
 # CONFIG_PACKAGE_strongswan-mod-ha is not set
-CONFIG_PACKAGE_strongswan-mod-hmac=m
+CONFIG_PACKAGE_strongswan-mod-hmac=y
 # CONFIG_PACKAGE_strongswan-mod-kernel-libipsec is not set
-CONFIG_PACKAGE_strongswan-mod-kernel-netlink=m
+CONFIG_PACKAGE_strongswan-mod-kernel-netlink=y
 # CONFIG_PACKAGE_strongswan-mod-ldap is not set
 # CONFIG_PACKAGE_strongswan-mod-led is not set
 # CONFIG_PACKAGE_strongswan-mod-load-tester is not set
 # CONFIG_PACKAGE_strongswan-mod-md4 is not set
-CONFIG_PACKAGE_strongswan-mod-md5=m
+CONFIG_PACKAGE_strongswan-mod-md5=y
 # CONFIG_PACKAGE_strongswan-mod-mysql is not set
-CONFIG_PACKAGE_strongswan-mod-nonce=m
+CONFIG_PACKAGE_strongswan-mod-nonce=y
 # CONFIG_PACKAGE_strongswan-mod-openssl is not set
-CONFIG_PACKAGE_strongswan-mod-pem=m
-CONFIG_PACKAGE_strongswan-mod-pgp=m
-CONFIG_PACKAGE_strongswan-mod-pkcs1=m
+CONFIG_PACKAGE_strongswan-mod-pem=y
+CONFIG_PACKAGE_strongswan-mod-pgp=y
+CONFIG_PACKAGE_strongswan-mod-pkcs1=y
 # CONFIG_PACKAGE_strongswan-mod-pkcs11 is not set
 # CONFIG_PACKAGE_strongswan-mod-pkcs12 is not set
 # CONFIG_PACKAGE_strongswan-mod-pkcs7 is not set
 # CONFIG_PACKAGE_strongswan-mod-pkcs8 is not set
-CONFIG_PACKAGE_strongswan-mod-pubkey=m
-CONFIG_PACKAGE_strongswan-mod-random=m
-CONFIG_PACKAGE_strongswan-mod-rc2=m
-CONFIG_PACKAGE_strongswan-mod-resolve=m
-CONFIG_PACKAGE_strongswan-mod-revocation=m
-CONFIG_PACKAGE_strongswan-mod-sha1=m
-CONFIG_PACKAGE_strongswan-mod-sha2=m
+CONFIG_PACKAGE_strongswan-mod-pubkey=y
+CONFIG_PACKAGE_strongswan-mod-random=y
+CONFIG_PACKAGE_strongswan-mod-rc2=y
+CONFIG_PACKAGE_strongswan-mod-resolve=y
+CONFIG_PACKAGE_strongswan-mod-revocation=y
+CONFIG_PACKAGE_strongswan-mod-sha1=y
+CONFIG_PACKAGE_strongswan-mod-sha2=y
 # CONFIG_PACKAGE_strongswan-mod-smp is not set
-CONFIG_PACKAGE_strongswan-mod-socket-default=m
+CONFIG_PACKAGE_strongswan-mod-socket-default=y
 # CONFIG_PACKAGE_strongswan-mod-socket-dynamic is not set
 # CONFIG_PACKAGE_strongswan-mod-sql is not set
 # CONFIG_PACKAGE_strongswan-mod-sqlite is not set
-CONFIG_PACKAGE_strongswan-mod-sshkey=m
-CONFIG_PACKAGE_strongswan-mod-stroke=m
+CONFIG_PACKAGE_strongswan-mod-sshkey=y
+CONFIG_PACKAGE_strongswan-mod-stroke=y
 # CONFIG_PACKAGE_strongswan-mod-test-vectors is not set
-# CONFIG_PACKAGE_strongswan-mod-uci is not set
-# CONFIG_PACKAGE_strongswan-mod-unity is not set
-CONFIG_PACKAGE_strongswan-mod-updown=m
+CONFIG_PACKAGE_strongswan-mod-uci=y
+CONFIG_PACKAGE_strongswan-mod-unity=y
+CONFIG_PACKAGE_strongswan-mod-updown=y
 # CONFIG_PACKAGE_strongswan-mod-whitelist is not set
-CONFIG_PACKAGE_strongswan-mod-x509=m
+CONFIG_PACKAGE_strongswan-mod-x509=y
 # CONFIG_PACKAGE_strongswan-mod-xauth-eap is not set
-CONFIG_PACKAGE_strongswan-mod-xauth-generic=m
-CONFIG_PACKAGE_strongswan-mod-xcbc=m
-CONFIG_PACKAGE_strongswan-utils=m
+CONFIG_PACKAGE_strongswan-mod-xauth-generic=y
+CONFIG_PACKAGE_strongswan-mod-xcbc=y
+CONFIG_PACKAGE_strongswan-utils=y
 # CONFIG_PACKAGE_tinc is not set
 # CONFIG_PACKAGE_uanytun is not set
 # CONFIG_PACKAGE_uanytun-nettle is not set
@@ -4164,7 +4166,7 @@ CONFIG_PACKAGE_strongswan-utils=m
 # CONFIG_PACKAGE_uanytun-sslcrypt is not set
 # CONFIG_PACKAGE_vpnc is not set
 # CONFIG_PACKAGE_vpnc-scripts is not set
-CONFIG_PACKAGE_xl2tpd=m
+CONFIG_PACKAGE_xl2tpd=y
 
 #
 # Version Control Systems
@@ -4330,7 +4332,7 @@ CONFIG_SOCAT_SSL=y
 # CONFIG_PACKAGE_sstp-client is not set
 CONFIG_PACKAGE_stunnel=y
 # CONFIG_PACKAGE_tayga is not set
-# CONFIG_PACKAGE_tcpdump is not set
+CONFIG_PACKAGE_tcpdump=y
 # CONFIG_PACKAGE_tcpdump-mini is not set
 # CONFIG_PACKAGE_tgt is not set
 # CONFIG_PACKAGE_tor is not set
@@ -4598,6 +4600,7 @@ CONFIG_PACKAGE_dmesg=y
 # CONFIG_PACKAGE_dropbearconvert is not set
 # CONFIG_PACKAGE_dump1090 is not set
 # CONFIG_PACKAGE_enlogic is not set
+# CONFIG_PACKAGE_evtest is not set
 # CONFIG_PACKAGE_fconfig is not set
 # CONFIG_PACKAGE_file is not set
 # CONFIG_PACKAGE_flashrom is not set
