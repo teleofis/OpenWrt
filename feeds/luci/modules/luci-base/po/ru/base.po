@@ -1912,6 +1912,9 @@ msgstr "PID"
 msgid "PIN"
 msgstr "PIN"
 
+msgid "You can configure this value in the SIM manager, or after disabling it"
+msgstr "Вы можете настроить данное значение в SIM-менеджере, либо после его отключения"
+
 msgid "PPP"
 msgstr "PPP"
 

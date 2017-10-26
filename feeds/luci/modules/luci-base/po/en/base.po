@@ -1846,6 +1846,9 @@ msgstr "PID"
 msgid "PIN"
 msgstr ""
 
+msgid "You can configure this value in the SIM manager, or after disabling it"
+msgstr "You can configure this value in the SIM manager, or after disabling it"
+
 msgid "PPP"
 msgstr ""
 
