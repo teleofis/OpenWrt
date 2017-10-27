@@ -68,6 +68,8 @@
 #define MB_TCP_HEADER_SIZE		6
 #define MB_TCP_HEADER_LEN		5
 
+#define MB_ASCII_ON				1
+
 typedef struct 
 {
     int mode;
@@ -94,12 +96,15 @@ typedef struct{
 	char	packet[MAX_PACK_SIZE];
 	int		offset;
 	int 	len;
+	uint8_t crc;
 }t_rtu;
 
 typedef struct{
 	char	packet[MAX_PACK_SIZE];
 	int		offset;
 	int		timer;
+	int		state;
+	int		sock;
 	struct itimerspec newValue;
 }t_mb_tcp;
 
@@ -120,9 +125,10 @@ device_config_t GetFullDeviceConfig(int deviceID);
 int FormAuthAnswer(char *dataBuffer, long long int teleofisID);
 uint16_t Crc16Block(uint8_t* block, uint16_t len);
 //Modbus
-int SendModbusRTU(struct fdStructType *threadFD,char *pBuf, int len);
+int SendModbusRTU(struct fdStructType *threadFD,char *pBuf, int len, int ascii_rtu);
 void SendModbusTCP(struct fdStructType *threadFD,char *pBuf, int len);
-void EndTimeoutModbusTCP(struct fdStructType *threadFD, uint8_t server, int sock);
+void SendModbusASCIItoTCP(struct fdStructType *threadFD,char *pBuf, int len, uint8_t server);
+void EndTimeoutModbusTCP(struct fdStructType *threadFD, uint8_t server, int ascii_rtu);
 void ClearModbus(struct fdStructType *threadFD);
 
 /*****************************************/
@@ -484,7 +490,7 @@ void *ServerThreadFunc(void *args)
     }
     bzero(&threadFD->mb_tcp.newValue,sizeof(struct itimerspec));
     threadFD->mb_tcp.newValue.it_value.tv_sec = 0;
-    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000;
+    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000*10;
 
     threadFD->mb_tcp.timer = timerfd_create(CLOCK_MONOTONIC,TFD_NONBLOCK);
     if(threadFD->mb_tcp.timer < 0){
@@ -542,15 +548,22 @@ void *ServerThreadFunc(void *args)
             {
                 numOfReadBytes = read(threadFD->serialPort, dataBuffer, dataBufferSize);
                 if(deviceConfig.modbus_gateway){
-                	LOG("Receive modbus RTU data %d\n", numOfReadBytes);
-                	SendModbusTCP(threadFD, dataBuffer, numOfReadBytes);
+                	if(deviceConfig.modbus_gateway == 2){
+                		LOG("Receive modbus ASCII data %d\n", numOfReadBytes);
+                		threadFD->mb_tcp.sock = lastActiveConnSocket;
+                		SendModbusASCIItoTCP(threadFD, dataBuffer, numOfReadBytes, 1);
+                	}else{
+                		LOG("Receive modbus RTU data %d\n", numOfReadBytes);
+                		SendModbusTCP(threadFD, dataBuffer, numOfReadBytes);
+                	}
                 }else{
                 	send(lastActiveConnSocket, dataBuffer, numOfReadBytes, 0);
                 }
             }else
             // timer modbus tcp for forming packets
 			if(eventSource == threadFD->mb_tcp.timer){
-				EndTimeoutModbusTCP(threadFD, 1, lastActiveConnSocket);
+				threadFD->mb_tcp.sock = lastActiveConnSocket;
+				EndTimeoutModbusTCP(threadFD, 1, deviceConfig.modbus_gateway);
 			}
 
             else if(eventSource == threadFD->TCPtimer) 
@@ -580,7 +593,7 @@ void *ServerThreadFunc(void *args)
                         	write(threadFD->serialPort, dataBuffer, numOfReadBytes);
                         	lastActiveConnSocket = eventSource;
                         }else
-                        if(!SendModbusRTU(threadFD, dataBuffer, numOfReadBytes)){
+                        if(!SendModbusRTU(threadFD, dataBuffer, numOfReadBytes, deviceConfig.modbus_gateway)){
                         	close(eventSource);
                         	epollConfig.data.fd = eventSource;
                         	epoll_ctl(threadFD->epollFD, EPOLL_CTL_DEL, eventSource, &epollConfig);
@@ -769,7 +782,8 @@ void *ClientThreadFunc(void *args)
     }
     bzero(&threadFD->mb_tcp.newValue,sizeof(struct itimerspec));
     threadFD->mb_tcp.newValue.it_value.tv_sec = 0;
-    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000;
+    threadFD->mb_tcp.newValue.it_value.tv_nsec = pack_timeout*1000*10;
+    LOG("Timer set = %lu \n",threadFD->mb_tcp.newValue.it_value.tv_nsec);
 
     threadFD->mb_tcp.timer = timerfd_create(CLOCK_MONOTONIC,TFD_NONBLOCK);
     if(threadFD->mb_tcp.timer < 0){
@@ -899,7 +913,7 @@ void *ClientThreadFunc(void *args)
                     	if(!deviceConfig.modbus_gateway){
                     		write(threadFD->serialPort, dataBuffer, numOfReadBytes);
                     	}else
-                        if(!SendModbusRTU(threadFD, dataBuffer, numOfReadBytes)){
+                        if(!SendModbusRTU(threadFD, dataBuffer, numOfReadBytes, deviceConfig.modbus_gateway)){
                         	// close existing connection
                         	close(eventSource);
                         	// remove from epoll
@@ -1118,9 +1132,13 @@ void *ClientThreadFunc(void *args)
                 numOfReadBytes = read(threadFD->serialPort, dataBuffer, dataBufferSize);
                 if(serverAvailable == 1){
                     //TODO SETTING MODBUS
-                    if(deviceConfig.modbus_gateway){
+                    if(deviceConfig.modbus_gateway == 1){
                     	SendModbusTCP(threadFD, dataBuffer, numOfReadBytes);
-                    }else{
+                    }else
+                    if(deviceConfig.modbus_gateway == 2){
+                    	threadFD->mb_tcp.sock = threadFD->mainSocket;
+                    	SendModbusASCIItoTCP(threadFD, dataBuffer, numOfReadBytes, 0);
+                    }else {
                     	send(threadFD->mainSocket, dataBuffer, numOfReadBytes, 0);
                     }
                 }
@@ -1176,7 +1194,8 @@ void *ClientThreadFunc(void *args)
             } else
             // timer modbus tcp for forming packets
             if(eventSource == threadFD->mb_tcp.timer){
-            	EndTimeoutModbusTCP(threadFD, 0, 0);
+            	threadFD->mb_tcp.sock = threadFD->mainSocket;
+            	EndTimeoutModbusTCP(threadFD, 0, deviceConfig.modbus_gateway);
             }
 
             else
@@ -1190,10 +1209,14 @@ void *ClientThreadFunc(void *args)
     return (void *) 0;
 } 
 
+char ByteToASCII(char x) {
+	x &= 0x0F;
+	if (x <= 9) return x + '0';
+	return x - 10 + 'A';
+}
 
 
-
-int SendModbusRTU(struct fdStructType *threadFD,char *pBuf, int len){
+int SendModbusRTU(struct fdStructType *threadFD,char *pBuf, int len, int ascii_rtu){
 
 	int count=0;
 	if(threadFD == NULL || pBuf == NULL || !len)return 0;
@@ -1218,11 +1241,19 @@ int SendModbusRTU(struct fdStructType *threadFD,char *pBuf, int len){
 					threadFD->state_rtu.state = 0;
 					return 0;
 				}
-				threadFD->state_rtu.offset = 0;
-				threadFD->state_rtu.state = 2;
+
+				if(ascii_rtu == 2){
+					threadFD->state_rtu.offset = 1;
+					threadFD->state_rtu.packet[0] = ':';
+					threadFD->state_rtu.crc = 0;
+					threadFD->state_rtu.state = 3;
+				}else{
+					threadFD->state_rtu.offset = 0;
+					threadFD->state_rtu.state = 2;
+				}
 			}
 			break;
-		case 2:
+		case 2:		//forming RTU packet
 			threadFD->state_rtu.packet[threadFD->state_rtu.offset++] = pBuf[count++];
 			if(threadFD->state_rtu.offset >= threadFD->state_rtu.len){
 				modbus_crc_write((unsigned char *)threadFD->state_rtu.packet, threadFD->state_rtu.offset);
@@ -1233,11 +1264,36 @@ int SendModbusRTU(struct fdStructType *threadFD,char *pBuf, int len){
 				threadFD->state_rtu.state = 0;
 			}
 			break;
+		case 3:	//forming ASCII packet
+			threadFD->state_rtu.crc += pBuf[count];
+			threadFD->state_rtu.packet[threadFD->state_rtu.offset++] = ByteToASCII(pBuf[count]>> 4);
+			threadFD->state_rtu.packet[threadFD->state_rtu.offset++] = ByteToASCII(pBuf[count++]);
+			if(threadFD->state_rtu.offset >= ((threadFD->state_rtu.len*2)+1)){
+				LOG("Forming ASCII modbus packet CRC\n");
+				threadFD->state_rtu.crc = (255 - threadFD->state_rtu.crc) + 1;
+				threadFD->state_rtu.packet[threadFD->state_rtu.offset++] = ByteToASCII(threadFD->state_rtu.crc>> 4);
+				threadFD->state_rtu.packet[threadFD->state_rtu.offset++] = ByteToASCII(threadFD->state_rtu.crc);
+				threadFD->state_rtu.packet[threadFD->state_rtu.offset++] = 0x0D;
+				threadFD->state_rtu.packet[threadFD->state_rtu.offset++] = 0x0A;
+				write(threadFD->serialPort, threadFD->state_rtu.packet, threadFD->state_rtu.offset);
+				LOG("Send modbus ASCII packet len = %d\n", threadFD->state_rtu.offset);
+				threadFD->state_rtu.state = 0;
+
+			}
+			break;
 		}
 	}
 	return 1;
 }
-
+char ASCIItoOctet(char byte){
+	if((byte >= '0' && byte <= '9')){
+		return (byte-'0');
+	}else
+	if(byte >= 'A' && byte <= 'F'){
+		return (byte-'A'+10);
+	}
+	return 0;
+}
 void ClearModbus(struct fdStructType *threadFD){
 
 	if(threadFD == NULL)return;
@@ -1253,7 +1309,89 @@ void InsertByteModbusTCP(t_mb_tcp *pTCP, char symbole){
 	pTCP->offset++;
 	return;
 }
+void SendModbusASCIItoTCP(struct fdStructType *threadFD,char *pBuf, int len, uint8_t server){
+	int count=0;
+	uint32_t i;
+	uint8_t calculate_crc=0;
+	struct itimerspec oldValue;
+	int result;
 
+	if(threadFD == NULL || pBuf == NULL || !len)return;
+	if(len > MAX_PACK_SIZE) return;
+
+	t_mb_tcp *pTCP= &threadFD->mb_tcp;
+
+	while(count < len){
+		switch(pTCP->state){
+		case 0:
+			if(pBuf[count] == ':'){
+				pTCP->state = 1;
+				pTCP->offset = 0;
+				bzero( pTCP->packet, MAX_PACK_SIZE);
+				LOG("Start receive modbus ASCII packet");
+			}
+			break;
+		case 1:
+			if((pBuf[count] >= '0' && pBuf[count] <= '9') || (pBuf[count] >= 'A' && pBuf[count] <= 'F') ){
+				pTCP->packet[pTCP->offset+MB_TCP_HEADER_SIZE] = ASCIItoOctet(pBuf[count]);
+				pTCP->state = 2;
+			}else
+			if(pBuf[count] == 0x0D){
+				if(pTCP->offset < 2)pTCP->state = 0;
+				pTCP->state = 3;
+			}else{
+				pTCP->state = 0;
+			}
+			break;
+		case 2:
+			if((pBuf[count] >= '0' && pBuf[count] <= '9') || (pBuf[count] >= 'A' && pBuf[count] <= 'F') ){
+				pTCP->packet[pTCP->offset+MB_TCP_HEADER_SIZE] = (pTCP->packet[pTCP->offset+MB_TCP_HEADER_SIZE]<<4) | ASCIItoOctet(pBuf[count]);
+				pTCP->offset++;
+				if(pTCP->offset >= MAX_PACK_SIZE){
+					pTCP->state = 0;
+				}else{
+					pTCP->state = 1;
+				}
+			}else{
+				pTCP->state = 0;
+			}
+			break;
+		case 3:
+			if(pBuf[count] == 0x0A){
+				pTCP->state = 0;
+				calculate_crc = 0;
+				for(i=0;i < (pTCP->offset+MB_TCP_HEADER_SIZE-1);i++){
+					calculate_crc += (uint8_t)pTCP->packet[i];
+				}
+				calculate_crc = (255 - calculate_crc) + 1;
+				LOG("Check CRC pack/ Device CRC= %d, calculating CRC=%d\n",(uint8_t)pTCP->packet[pTCP->offset+MB_TCP_HEADER_SIZE-1], calculate_crc);
+				if(calculate_crc == (uint8_t)pTCP->packet[pTCP->offset+MB_TCP_HEADER_SIZE-1]){
+					pTCP->offset--;
+					memcpy(pTCP->packet,threadFD->state_rtu.header, MB_TCP_HEADER_SIZE);
+					pTCP->packet[MB_TCP_HEADER_LEN] = (uint8_t)pTCP->offset;
+					if(server)send(pTCP->sock, pTCP->packet, pTCP->offset + MB_TCP_HEADER_SIZE, 0);
+					else{
+						pTCP->packet[1]++;		//Increment ID packet
+						send(pTCP->sock, pTCP->packet, pTCP->offset + MB_TCP_HEADER_SIZE, 0);
+					}
+					LOG("Send TCP modbus data len=%d, mode=%d, sock=%d\n",pTCP->offset+MB_TCP_HEADER_SIZE, server, pTCP->sock);
+				}else{
+
+				}
+			}else{
+				pTCP->state = 0;
+			}
+			break;
+		}
+		count++;
+
+	}
+//	result = timerfd_settime(pTCP->timer, 0, &pTCP->newValue, &oldValue);
+//	if(result < 0){
+//		LOG("Error while timer setup \n");
+//	}
+
+}
 void SendModbusTCP(struct fdStructType *threadFD,char *pBuf, int len){
 	int count=0;
 	int result;
@@ -1266,6 +1404,7 @@ void SendModbusTCP(struct fdStructType *threadFD,char *pBuf, int len){
 
 	while(count < len){
 		InsertByteModbusTCP(pTCP, pBuf[count++]);
+		result = timerfd_settime(pTCP->timer, 0, &pTCP->newValue, &oldValue);
 		if(pTCP->offset >= MAX_PACK_SIZE){
 			pTCP->offset=0;
 			bzero(pTCP->packet,MAX_PACK_SIZE);
@@ -1283,13 +1422,18 @@ void SendModbusTCP(struct fdStructType *threadFD,char *pBuf, int len){
 	;
 }
 
-void EndTimeoutModbusTCP(struct fdStructType *threadFD, uint8_t server, int sock){
+void EndTimeoutModbusTCP(struct fdStructType *threadFD, uint8_t server, int ascii_rtu){
 	uint16_t crc1, crc2;
 	uint8_t low_byte, high_byte;
 	if(threadFD == NULL)return;
 
 	t_mb_tcp *pTCP= &threadFD->mb_tcp;
 
+	if(ascii_rtu == 2){
+		pTCP->state = 0;
+		LOG("End timeout receive modbus ASCII packet");
+		return;
+	}
 	LOG("End timeout RTU pack\n");
 	crc1 = crc16((uint8_t *)&pTCP->packet[MB_TCP_HEADER_SIZE], pTCP->offset-2);
 	high_byte = pTCP->packet[pTCP->offset+MB_TCP_HEADER_SIZE-1];
@@ -1300,12 +1444,12 @@ void EndTimeoutModbusTCP(struct fdStructType *threadFD, uint8_t server, int sock
 		pTCP->offset -= 2;
 		memcpy(pTCP->packet,threadFD->state_rtu.header, MB_TCP_HEADER_SIZE);
 		pTCP->packet[MB_TCP_HEADER_LEN] = (uint8_t)pTCP->offset;
-		if(server)send(sock, pTCP->packet, pTCP->offset + MB_TCP_HEADER_SIZE, 0);
+		if(server)send(pTCP->sock, pTCP->packet, pTCP->offset + MB_TCP_HEADER_SIZE, 0);
 		else{
 			pTCP->packet[1]++;		//Increment ID packet
-			send(threadFD->mainSocket, pTCP->packet, pTCP->offset + MB_TCP_HEADER_SIZE, 0);
+			send(pTCP->sock, pTCP->packet, pTCP->offset + MB_TCP_HEADER_SIZE, 0);
 		}
-		LOG("Send TCP modbus data len=%d, mode=%d, sock=%d\n",pTCP->offset+MB_TCP_HEADER_SIZE, server, sock);
+		LOG("Send TCP modbus data len=%d, mode=%d, sock=%d\n",pTCP->offset+MB_TCP_HEADER_SIZE, server, pTCP->sock);
 	}
 	pTCP->offset = 0;
 }
@@ -1541,6 +1685,8 @@ device_config_t GetFullDeviceConfig(int deviceID)
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
     	deviceConfig.modbus_gateway = atoi(UCIptr.o->v.string);
+
+
 
 
     // READ S/N AND CONVERT IT TO INT64

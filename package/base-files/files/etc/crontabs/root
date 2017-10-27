@@ -1,1 +1,2 @@
+# 10 4 * * * reboot
 */10 * * * * /sbin/ntptohc.sh

@@ -458,6 +458,8 @@ int main(int argc, char **argv)
 				if ((state < 0) || (state != INIT))
 				{
 					LOG("modem not found\n");
+					changeCounter = settings.sw_before_modres;
+					SetSim(active_sim);
 				}
 				state = INIT;
 			}
@@ -491,7 +493,7 @@ int main(int argc, char **argv)
 
 			// check SIM2 status
 			tmp = gpioRead(settings.simdet1_pin);
-			if ((tmp >= 0) && (tmp != sim2_status))
+			if ((tmp >= 0) && (tmp != sim2_status) && !first_start)
 			{  // SIM2 remove
 				if (((tmp == 1)&&(active_sim > 0)) // вытянули сим 2
 				    ||((tmp == 0)&&(settings.sim[0].prio < settings.sim[1].prio)) // вставили сим 2 и приоритет у нее выше
@@ -528,8 +530,16 @@ int main(int argc, char **argv)
 					{
 						if (active_sim == 1)
 						{
-							LOG("SIM2 is active\n");
-							SetSim(active_sim);
+							if ((sim2_status != 0)&&(sim1_status == 0))
+							{
+								LOG("Only SIM1 detected\n");
+								SetSim(0);
+							}
+							else 
+							{
+								LOG("SIM2 is active\n");
+								SetSim(active_sim);
+							}
 						}
 						else
 							LOG("No one SIM is available\n");
@@ -554,8 +564,16 @@ int main(int argc, char **argv)
 					{
 						if (active_sim == 0)
 						{
-							LOG("SIM1 is active\n");
-							SetSim(active_sim);
+							if ((sim1_status != 0)&&(sim2_status == 0))
+							{
+								LOG("Only SIM2 detected\n");
+								SetSim(1);
+							}
+							else 
+							{
+								LOG("SIM1 is active\n");
+								SetSim(active_sim);
+							}
 						}
 						else
 							LOG("No one SIM is available\n");
