@@ -30,6 +30,8 @@
 #include <linux/module.h>
 #include <linux/nls.h>
 #include <linux/usb/ch9.h>
+#include <linux/of.h>
+#include <linux/of_i2c.h>
 #include "hid-ids.h"
 
 enum {
@@ -1080,6 +1082,7 @@ static int cp2112_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	dev->adap.algo		= &smbus_algorithm;
 	dev->adap.algo_data	= dev;
 	dev->adap.dev.parent	= &hdev->dev;
+	dev->adap.dev.of_node   = of_find_node_by_path("/i2c@cp2112");
 	snprintf(dev->adap.name, sizeof(dev->adap.name),
 		 "CP2112 SMBus Bridge on hiddev%d", hdev->minor);
 	dev->hwversion = buf[2];
@@ -1095,6 +1098,8 @@ static int cp2112_probe(struct hid_device *hdev, const struct hid_device_id *id)
 	}
 
 	hid_dbg(hdev, "adapter registered\n");
+
+	of_i2c_register_devices(&dev->adap);
 
 	dev->gc.label			= "cp2112_gpio";
 	dev->gc.direction_input		= cp2112_gpio_direction_input;

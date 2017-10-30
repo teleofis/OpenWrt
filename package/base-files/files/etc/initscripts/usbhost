@@ -13,3 +13,7 @@ echo 121 > /sys/class/gpio/export
 echo out > /sys/class/gpio/gpio121/direction
 echo 0 > /sys/class/gpio/gpio121/value
 echo 1 > /sys/class/gpio/gpio121/value
+
+echo "1" > /sys/bus/usb/devices/usb2/2-1/2-1.1/2-1.1.4/bConfigurationValue
+echo "1" > /sys/bus/usb/devices/usb2/2-1/2-1.1/2-1.1.1/bConfigurationValue
+echo "1" > /sys/bus/usb/devices/usb2/2-1/2-1.1/2-1.1.3/bConfigurationValue
