@@ -11,11 +11,8 @@
 	</legend>
 
 	<% if self.mode == "basic" then %>
-		<hr style="margin:0.5em 0" />
 		<a href="<%=luci.dispatcher.build_url("admin", "services", "openvpn", "advanced", self.instance, "Service")%>"><%:Switch to advanced configuration%></a>
-		<hr style="margin:0.5em 0" />
 	<% else %>
-		<hr style="margin:0.5em 0" />
 		<a href="<%=luci.dispatcher.build_url("admin", "services", "openvpn", "basic", self.instance)%>"><%:Switch to basic configuration%></a>
 		<hr style="margin:0.5em 0" />
 		<%:Configuration category%>:
