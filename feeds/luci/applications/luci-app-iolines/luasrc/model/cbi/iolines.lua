@@ -1,7 +1,7 @@
 local fs  = require "nixio.fs"
 local sys = require "luci.sys"
 
-m = Map("iolines", "Universal I/O lines", translate("Mode 1 - voltage measurement; Mode 2 - connection of resistance sensors; Mode 3 - load management"))
+m = Map("iolines", "Universal I/O lines", translate("Mode 1 - voltage measurement; Mode 2 - resistive sensor connection; Mode 3 - load management"))
 
 s = m:section(TypedSection, "io")
 s.anonymous = true
@@ -29,6 +29,17 @@ voltage = s:option(DummyValue, "voltage", translate("Measured voltage on ADC, mV
         result = result * 4.365
         return result
     end
+
+resist = s:option(DummyValue, "resist", translate("Measured resistance by ADC, Ohm"))
+    function resist.cfgvalue(self, section)
+        local dev = self.map:get(section, "dev")
+        local test = io.popen("cat %s" %{dev})
+        local result = test:read("*a")
+        test:close()
+        result = result * 0.543
+        return result
+    end
+    resist:depends("mode","mode2")
 
 refresher = s:option( Button, "refresher", translate("Refresh measuring") )  
   refresher.title      = translate("Refresh measuring")
