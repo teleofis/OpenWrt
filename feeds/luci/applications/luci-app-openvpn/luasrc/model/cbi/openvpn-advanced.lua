@@ -795,6 +795,7 @@ for _, option in ipairs(params) do
 	end
 
 	if option[2] == "auth_user_pass" then
+		o.optional = false
         local userstr = s:option(Value, "", translate("User"))
         userstr:depends({ client="1" })
         userstr.cfgvalue = function(self, section)
