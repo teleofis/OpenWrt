@@ -27,7 +27,7 @@ voltage = s:option(DummyValue, "voltage", translate("Measured voltage on ADC, mV
         local result = test:read("*a")
         test:close()
         result = result * 4.365
-        return result
+        return tonumber(string.format("%.0f", result))
     end
 
 resist = s:option(DummyValue, "resist", translate("Measured resistance by ADC, Ohm"))
@@ -36,8 +36,8 @@ resist = s:option(DummyValue, "resist", translate("Measured resistance by ADC, O
         local test = io.popen("cat %s" %{dev})
         local result = test:read("*a")
         test:close()
-        result = result * 0.457
-        return result
+        result = result * 0.543
+        return tonumber(string.format("%.0f", result))
     end
     resist:depends("mode","mode2")
 
