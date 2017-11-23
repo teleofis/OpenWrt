@@ -150,6 +150,9 @@ msgstr ""
 msgid "Don't log timestamps"
 msgstr ""
 
+msgid "Don't pull routes automatically"
+msgstr ""
+
 msgid "Don't re-read key on restart"
 msgstr ""
 
@@ -190,6 +193,9 @@ msgid "Enable management interface on <em>IP</em> <em>port</em>"
 msgstr ""
 
 msgid "Enabled"
+msgstr ""
+
+msgid "Encrypt and authenticate all control channel packets with the key"
 msgstr ""
 
 msgid "Encryption cipher for packets"
@@ -490,6 +496,15 @@ msgid "TOS passthrough (applies to IPv4 only)"
 msgstr ""
 
 msgid "Temporary directory for client-connect return file"
+msgstr ""
+
+msgid "The highest supported TLS version"
+msgstr ""
+
+msgid "The key direction for 'tls-auth' and 'secret' options"
+msgstr ""
+
+msgid "The lowest supported TLS version"
 msgstr ""
 
 msgid "Timeframe for key exchange"

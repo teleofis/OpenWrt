@@ -58,6 +58,7 @@ o = s:option( ListValue, "keyexchange", translate("IKE version"), translate("Met
 	o:value("ikev2",translate("IKEv2"))
 
 o = s:option( ListValue, "aggressive", translate("Mode"), translate("ISAKMP (Internet Security Association and Key Management Protocol) phase 1 exchange mode"))
+	o:depends({keyexchange="ikev1"})
 	o.default = "main"
 	o:value("no",translate("Main"))
 	o:value("yes",translate("Aggressive"))

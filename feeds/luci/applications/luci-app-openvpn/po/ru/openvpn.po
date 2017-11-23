@@ -60,9 +60,6 @@ msgstr "Дописать журнал в файл"
 msgid "Authenticate using username/password"
 msgstr "Аутентификация с использованием имени пользователя и пароля"
 
-msgid "Path to username/password file(empty when not use)"
-msgstr "Путь к файлу с логином/паролем(оставить пустым, если не используется)"
-
 msgid "Automatically redirect default route"
 msgstr "Автоматически перенаправлять маршруты по умолчанию"
 
@@ -158,6 +155,9 @@ msgstr "Не наследовать глобальные параметры push
 msgid "Don't log timestamps"
 msgstr "Не записывать отметки времени в журнал"
 
+msgid "Don't pull routes automatically"
+msgstr ""
+
 msgid "Don't re-read key on restart"
 msgstr "Не считывать заново ключ при перезапуске"
 
@@ -199,6 +199,9 @@ msgstr "Включить интерфейс управления на <em>IP</em
 
 msgid "Enabled"
 msgstr "Включено"
+
+msgid "Encrypt and authenticate all control channel packets with the key"
+msgstr "Шифровать и аутентифициоровать ключом все пакеты канала управления"
 
 msgid "Encryption cipher for packets"
 msgstr "Шифрование для пакетов"
@@ -493,8 +496,8 @@ msgstr "Запущено"
 msgid "Status file format version"
 msgstr "Версия формата статусного файла"
 
-msgid "Switch to advanced configuration"
-msgstr "Перейти к расширенным настройкам"
+msgid "Switch to advanced configuration »"
+msgstr "Перейти к расширенным настройкам »"
 
 msgid "TCP/UDP port # for both local and remote"
 msgstr "Номер локального и удалённого TCP/UDP порта"
@@ -513,6 +516,15 @@ msgstr "Пропуск ToS (только для IPv4)"
 
 msgid "Temporary directory for client-connect return file"
 msgstr "Временная директория для файла возрата подключения клиента"
+
+msgid "The highest supported TLS version"
+msgstr ""
+
+msgid "The key direction for 'tls-auth' and 'secret' options"
+msgstr ""
+
+msgid "The lowest supported TLS version"
+msgstr ""
 
 msgid "Timeframe for key exchange"
 msgstr "Временное окно для обмена ключами"
@@ -556,8 +568,8 @@ msgstr "таймаут простоя tun/tap"
 msgid "yes (%i)"
 msgstr "да (%i)"
 
-msgid "Switch to basic configuration"
-msgstr "Перейти к основным настройкам"
+msgid "« Switch to basic configuration"
+msgstr "« Перейти к основным настройкам"
 
 #~ msgid "Cryptography"
 #~ msgstr "Криптография"
