@@ -6,6 +6,7 @@ case "$ACTION" in
         SIM7100="1e0e/9001/232"
         SIM5360="5c6/9000/0"
         EHS5="1e2d/58/1730"
+        SIM5300="1e0e/20/1730"
 
         case "$PRODUCT" in
         $SIM7100)
@@ -48,7 +49,7 @@ case "$ACTION" in
 
         $EHS5)
             PROTO_3G=$(uci get simman.core.proto 2>/dev/null)
-            if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$PROTO_3G" = "2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then
+            if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$PROTO_3G" != "0" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then
                 uci delete network.wwan0
                 uci set network.internet=interface
                 uci set network.internet.proto=3g
@@ -72,7 +73,7 @@ case "$ACTION" in
 
         $SIM5360)
             PROTO_3G=$(uci get simman.core.proto 2>/dev/null)
-            if  [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$PROTO_3G" = "0" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2"  ]; then
+            if  [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$PROTO_3G" != "2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2"  ]; then
             uci delete network.wwan0
                 uci set network.internet=interface
                 uci set network.internet.proto=3g
@@ -94,6 +95,31 @@ case "$ACTION" in
                 ubus call network reload
             fi
         ;;
+        
+        $SIM5300)
+            PROTO_3G=$(uci get simman.core.proto 2>/dev/null)
+            if [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$PROTO_3G" != "3" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then
+                uci delete network.wwan0
+                uci set network.internet=interface
+                uci set network.internet.proto=3g
+                uci set network.internet.device=/dev/ttyACM0
+                uci set network.internet.service=umts
+                uci set network.internet.apn=internet
+                uci set network.internet.metric=2
+                uci set simman.core.atdevice=/dev/ttyACM3
+                uci set simman.core.iface=3g-internet
+                uci set simman.core.proto=3
+                uci set simman.info.atdevice=/dev/ttyACM3
+                echo 3g-internet > /sys/class/leds/middle\:net/device_name
+                echo 3g-internet > /sys/class/leds/bottom\:act/device_name
+                sed -i -e "/SGAUTH/d" /etc/chatscripts/3g.chat
+                sed -i -e "s/$version/RTU968V2/g" /etc/banner
+                sed -i -e "s/$version/RTU968V2/g" /etc/config/system
+                sed -i -e "s/wwan0/3g-internet/g" /etc/config/system
+                uci commit
+                ubus call network reload
+            fi
+        ;;            
         esac
     ;;
 esac

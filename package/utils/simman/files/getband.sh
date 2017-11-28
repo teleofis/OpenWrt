@@ -3,6 +3,7 @@
 OPTIND=1
 
 SCRIPT_BASESTINFO="/etc/simman/getbasestinfo.gcom"
+SCRIPT_BASESTINFO1="/etc/simman/getenginfo.gcom"
 SCRIPT_BASEIDINFO="/etc/simman/getbaseidinfo.gcom"
 device=""
 BASESTINFO=""
@@ -54,7 +55,23 @@ if [ "$proto" = "0" ]; then
                 echo "Identification failed"
         fi
   fi
-else 
+elif [ "$proto" == 3 ]; then
+  BASESTINFO=$(gcom -d $device -s $SCRIPT_BASESTINFO1)
+  [ -z "$BASESTINFO" ] && BASESTINFO="NONE"
+
+  NETTYPE=$( echo $BASESTINFO | awk -F':' '{print $1}')
+
+  if [ "$NETTYPE" == "UMTS" ]; then
+        BAND=$( echo $BASESTINFO | awk -F'"' '{print $2}' | awk -F',' '{print $1}')
+        [ -z "$BAND" ] && BAND="Search..."
+        echo "'UARFCN $BAND'"   
+  elif [ "$NETTYPE" == "GSM" ]; then
+        BAND=$( echo $BASESTINFO | awk -F'"' '{print $2}' | awk -F',' '{print $1}')
+        [ -z "$BAND" ] && BAND="Search..."
+        echo "'ARFCN $BAND'"   
+  fi
+
+else
   BASESTINFO=$(gcom -d $device -s $SCRIPT_BASEIDINFO)  
 
   [ -z "$BASESTINFO" ] && BASESTINFO="NONE"

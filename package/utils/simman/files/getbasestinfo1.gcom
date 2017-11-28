@@ -6,10 +6,12 @@ opengt
  flash 0.1
 
 :start
- send "AT+UIMHOTSWAPLEVEL=1^m"
- waitfor 2 "OK"
- send "AT+UIMHOTSWAPON=1^m"
- waitfor 2 "OK"
+ send "AT+CREG=2^m"
+ waitfor 1 "OK"
+ send "AT+CREG?^m"
+ waitfor 1 "+CREG: "
+ get 1 "^m" $s
+ print $s
 
 :continue
  exit 0

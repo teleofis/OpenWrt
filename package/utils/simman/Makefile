@@ -43,6 +43,7 @@ define Package/simman/install
 	$(INSTALL_BIN) ./files/setsim.sh $(1)/etc/simman/setsim.sh
 	$(INSTALL_BIN) ./files/getccid.sh $(1)/etc/simman/getccid.sh
 	$(INSTALL_BIN) ./files/getimei.sh $(1)/etc/simman/getimei.sh
+	$(INSTALL_BIN) ./files/setfun.sh $(1)/etc/simman/setfun.sh
 	$(INSTALL_BIN) ./files/getreg.sh $(1)/etc/simman/getreg.sh
 	$(INSTALL_BIN) ./files/getgprsreg.sh $(1)/etc/simman/getgprsreg.sh
 	$(INSTALL_BIN) ./files/getsiglev.sh $(1)/etc/simman/getsiglev.sh
