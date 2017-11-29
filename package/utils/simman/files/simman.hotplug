@@ -32,6 +32,8 @@ case "$ACTION" in
                 /etc/init.d/simman restart
             else if [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2"  -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2" ]; then            
                 DEVICE_NAME=$(ls /sys$DEVPATH | grep tty)
+                uci set simman.core.atdevice=/dev/$DEVICE_NAME
+                uci set simman.info.atdevice=/dev/$DEVICE_NAME
                 CHECK=$(gcom -d /dev/$DEVICE_NAME -s /etc/simman/gethotswap.gcom)
                 if [ "$CHECK" != "11" ]; then
                     gcom -d /dev/$DEVICE_NAME -s /etc/simman/sethotswap.gcom                
