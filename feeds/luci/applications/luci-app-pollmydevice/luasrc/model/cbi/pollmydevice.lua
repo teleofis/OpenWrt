@@ -96,12 +96,12 @@ modbus_gateway = s:option(ListValue, "modbus_gateway", translate("Modbus TCP/IP"
   modbus_gateway:depends("mode","client")
   modbus_gateway:depends("mode","server")
 
-client_host = s:option(Value, "client_host",  translate("Client Host or IP Address"))
+client_host = s:option(Value, "client_host",  translate("Server Host or IP Address"))
   client_host.default = "hub.m2m24.ru"
   client_host.datatype = "string"
   client_host:depends("mode","client")
 
-client_port = s:option(Value, "client_port",  translate("Client Port"))
+client_port = s:option(Value, "client_port",  translate("Server Port"))
   client_port.default = 6008
   client_port.datatype = "and(uinteger, min(1025), max(65535))"
   --client_port.rmempty = false
