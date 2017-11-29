@@ -3,6 +3,7 @@
 OPTIND=1
 
 SCRIPT_PACKINFO="/etc/simman/getpackinfo.gcom"
+SCRIPT_PACKINFO1="/etc/simman/getpackinfo1.gcom"
 SCRIPT_PACKINFOLTE="/etc/simman/getpackinfolte.gcom"
 device=""
 PACKINFO=""
@@ -61,6 +62,35 @@ if [ "$proto" = "0" ]; then
 			fi
 		fi
 	fi
+elif [ "$proto" == "3" ]; then
+	PACKINFO=$(gcom -d $device -s $SCRIPT_PACKINFO1 | awk -F',' '{print $1}')
+	[ -z "$PACKINFO" ] && PACKINFO="NONE"
+	case "$PACKINFO" in
+				0)
+			echo "'GSM'"
+		;;
+		1)
+			echo "'GPRS'"
+		;;
+		2)
+			echo "'WCDMA'"
+		;;
+		3)
+			echo "'EGPRS (EDGE)'"
+		;;
+		4)
+			echo "'HSDPA only(WCDMA)'"
+		;;
+		5)
+			echo "'HSUPA only(WCDMA)'"
+		;;
+		6)
+			echo "'HSPA (HSDPA and HSUPA, WCDMA)'"
+		;;
+		7)
+			echo "'LTE'"
+		;;
+	esac
 else
 
 	PACKINFO=$(gcom -d $device -s $SCRIPT_PACKINFOLTE | awk -F',' '{print $2}')

@@ -186,6 +186,11 @@ else
  uci -q set network.$iface.password=$pass
 fi
 
+# at+cfun=0 for SIM5300
+if [ "$proto" == "3" -a "$pow" -ne "1" ]; then
+	$CONFIG_DIR/setfun.sh -f 0
+fi
+
 # power down for SIM5360
 if [ "$proto" == "2" ]; then	
   	echo "0" > $GPIO_PATH/gpio$PWRKEY_PIN/value
@@ -217,13 +222,15 @@ if [ "$mode" == "0" ]; then
   echo "0" > $GPIO_PATH/gpio$GSMPOW_PIN/value
 
   sleep 4
-  if [ "$proto" == "1" -o "$proto" == "2" ]; then
+  
   	dev=$(ls /dev/ | grep cdc-wdm)
+  	[ -z "$dev" ] && dev=$(ls /dev/ | grep ttyACM0)
   	while [ -z "$dev"]; do
   		sleep 4
   		dev=$(ls /dev/ | grep cdc-wdm)
+  		[ -z "$dev" ] && dev=$(ls /dev/ | grep ttyACM0)
   	done
-  fi
+
 
  else
   retry=0
@@ -258,6 +265,10 @@ if [ "$mode" == "0" ]; then
  echo "1" > $GPIO_PATH/gpio$SIMDET_PIN/value
 fi 
 
+# at+cfun=1 for SIM5300
+if [ "$proto" == "3" -a "$pow" -ne "1" ]; then
+	$CONFIG_DIR/setfun.sh -f 1
+fi
 # power up for SIM5360
 if [ "$proto" == "2" -a "$pow" -ne "1" ]; then
 	counter=0
@@ -266,9 +277,11 @@ if [ "$proto" == "2" -a "$pow" -ne "1" ]; then
   	echo "1" > $GPIO_PATH/gpio$PWRKEY_PIN/value
   	sleep 3
   	dev=$(ls /dev/ | grep cdc-wdm)
-  	while [ -z "$dev"]; do
+  	[ -z "$dev" ] && dev=$(ls /dev/ | grep ttyACM0)
+  	while [ -z "$dev" ]; do
   		sleep 2
   		dev=$(ls /dev/ | grep cdc-wdm)
+  		[ -z "$dev" ] && dev=$(ls /dev/ | grep ttyACM0)
   		counter=$(($counter + 1))
   		if [ "$counter" == "15" ]; then
   			echo "0" > $GPIO_PATH/gpio$PWRKEY_PIN/value

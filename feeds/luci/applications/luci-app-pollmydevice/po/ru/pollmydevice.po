@@ -30,10 +30,10 @@ msgstr "Порт"
 msgid "Connection Hold Time (sec)"
 msgstr "Время удержания приоритета соединения (сек)"
 
-msgid "Client Host or IP Address"
+msgid "Server Host or IP Address"
 msgstr "Адрес сервера"
 
-msgid "Client Port"
+msgid "Server Port"
 msgstr "Порт сервера"
 
 msgid "Client Reconnection Timeout (sec)"

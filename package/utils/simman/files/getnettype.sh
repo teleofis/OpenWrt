@@ -3,6 +3,7 @@
 OPTIND=1
 
 SCRIPT_BASESTINFO="/etc/simman/getbasestinfo.gcom"
+SCRIPT_BASESTINFO1="/etc/simman/getenginfo.gcom"
 SCRIPT_BASEIDINFO="/etc/simman/getbaseidinfo.gcom"
 device=""
 BASESTINFO=""
@@ -33,6 +34,9 @@ proto=$(uci -q get simman.core.proto)
 
 if [ "$proto" = "0" ]; then
 	BASESTINFO=$(gcom -d $device -s $SCRIPT_BASESTINFO | awk -F',' '{print $1}')
+	[ -z "$BASESTINFO" ] && BASESTINFO="NONE"
+elif [ "$proto" = "3" ]; then
+	BASESTINFO=$(gcom -d $device -s $SCRIPT_BASESTINFO1 | awk -F':' '{print $1}')
 	[ -z "$BASESTINFO" ] && BASESTINFO="NONE"
 else
 	BASESTINFO=$(gcom -d $device -s $SCRIPT_BASEIDINFO | awk -F',' '{print $1}')

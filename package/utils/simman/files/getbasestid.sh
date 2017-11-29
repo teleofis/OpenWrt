@@ -3,6 +3,7 @@
 OPTIND=1
 
 SCRIPT_BASESTINFO="/etc/simman/getbasestinfo.gcom"
+SCRIPT_BASESTINFO1="/etc/simman/getbasestinfo1.gcom"
 SCRIPT_BASEIDINFO="/etc/simman/getbaseidinfo.gcom"
 device=""
 BASESTINFO=""
@@ -54,6 +55,10 @@ if [ "$proto" = "0" ]; then
                 echo "Identification failed"
         fi
   fi
+elif [ "$proto" = "3" ]; then
+  BASESTINFO=$(gcom -d $device -s $SCRIPT_BASESTINFO1)
+  BASESTID=$( echo $BASESTINFO | awk -F',' '{print $4}')
+  echo $BASESTID
 else
   BASESTINFO=$(gcom -d $device -s $SCRIPT_BASEIDINFO)
   [ -z "$BASESTINFO" ] && BASESTINFO="NONE"
