@@ -3429,6 +3429,7 @@ CONFIG_PACKAGE_luci-app-pollmydevice=y
 # CONFIG_PACKAGE_luci-app-shairport is not set
 # CONFIG_PACKAGE_luci-app-siitwizard is not set
 CONFIG_PACKAGE_luci-app-simman=y
+CONFIG_PACKAGE_luci-app-smscontrol=y
 # CONFIG_PACKAGE_luci-app-splash is not set
 # CONFIG_PACKAGE_luci-app-sqm is not set
 # CONFIG_PACKAGE_luci-app-statistics is not set
@@ -4366,6 +4367,7 @@ CONFIG_PACKAGE_pppstats=y
 # CONFIG_PACKAGE_seafile-seahub is not set
 # CONFIG_PACKAGE_seafile-server is not set
 # CONFIG_PACKAGE_ser2net is not set
+# CONFIG_PACKAGE_shellinabox is not set
 # CONFIG_PACKAGE_smartsnmpd is not set
 # CONFIG_PACKAGE_snmp-utils is not set
 CONFIG_PACKAGE_snmpd=y
