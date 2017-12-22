@@ -1,0 +1,44 @@
+#!/bin/sh /etc/rc.common
+
+START=90
+COMMANDS="/etc/smscontrol/commands"
+OUT_DIR="/var/spool/sms/outgoing"
+
+add_comm() {
+	config_get enabled "$1" "enabled"
+	[ "$enabled" -eq "0" ] && continue
+
+	config_get ack "$1" "ack"
+	config_get received "$1" "received"
+	config_get command "$1" "command"
+
+	echo "	\"$received\")" >> "$COMMANDS"
+
+	if [ "$ack" -eq "1" ]; then
+		echo "		REPLY=\$($command)" >> "$COMMANDS"
+		echo "		if [ -n \"\$REPLY\" ]; then"  >> "$COMMANDS"
+		echo "			DATE=\$(date +%s)" >> "$COMMANDS"
+		echo "			touch /tmp/sms\$DATE.sms" >> "$COMMANDS"
+		echo "			echo \"To: \$2\" >> /tmp/sms\$DATE.sms" >> "$COMMANDS"
+		echo "			echo \" \" >> /tmp/sms\$DATE.sms" >> "$COMMANDS"
+		echo "			echo \"\$REPLY\" >> /tmp/sms\$DATE.sms" >> "$COMMANDS"
+		echo "			cp /tmp/sms\$DATE.sms $OUT_DIR/sms\$DATE.sms" >> "$COMMANDS"
+		echo "			rm /tmp/sms\$DATE.sms" >> "$COMMANDS"
+		echo "		fi" >> "$COMMANDS"
+	else
+		echo "		$command" >> "$COMMANDS"
+	fi
+	echo "	;;" >> "$COMMANDS"
+
+}
+
+restart() {
+
+	rm "$COMMANDS"
+	touch "$COMMANDS"
+	chmod +x "$COMMANDS"
+	echo "case \"\$1\" in" >> "$COMMANDS"
+	config_load smscontrol
+	config_foreach add_comm remote
+	echo "esac" >> "$COMMANDS"
+}
