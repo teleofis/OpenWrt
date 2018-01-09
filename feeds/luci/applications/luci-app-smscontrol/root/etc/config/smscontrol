@@ -5,3 +5,8 @@ config remote
         option enabled '0'
         option received 'reboot'
         option command 'reboot'
+
+config remote
+        option enabled '0'
+        option received 'factory'
+        option command 'echo y | firstboot && sleep 30 && reboot'
