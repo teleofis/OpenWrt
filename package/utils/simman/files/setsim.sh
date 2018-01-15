@@ -209,6 +209,11 @@ if [ "$mode" == "0" ]; then
  if [ "$pow" == "1" ]; then
 
   logger -t $tag "Reset pin toggle"
+  GPSPORT=$(uci get simman.core.gpsdevice)
+  if [ -n "$GPSPORT" -a "$GPSPORT" != "/dev/ttyAPP1" ]; then
+  		/etc/init.d/gpsd stop
+  		/etc/init.d/ntpd stop
+  fi
   # release SIMADDR
   echo "0" > $GPIO_PATH/gpio$SIMADDR_PIN/value  
 
@@ -223,12 +228,10 @@ if [ "$mode" == "0" ]; then
 
   sleep 4
   
-  	dev=$(ls /dev/ | grep cdc-wdm)
-  	[ -z "$dev" ] && dev=$(ls /dev/ | grep ttyACM0)
-  	while [ -z "$dev"]; do
+  	dev=$(ls $ATDEVICE 2>/dev/null)
+  	while [ -z "$dev" ]; do
   		sleep 4
-  		dev=$(ls /dev/ | grep cdc-wdm)
-  		[ -z "$dev" ] && dev=$(ls /dev/ | grep ttyACM0)
+  		dev=$(ls $ATDEVICE 2>/dev/null)
   	done
 
 

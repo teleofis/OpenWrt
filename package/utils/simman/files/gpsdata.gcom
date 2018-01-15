@@ -5,7 +5,7 @@ opengt
  flash 0.1
 
 :start
- waitfor 5 "GPGSV"
+ waitfor 5 "$G"
  if % = -1 goto timeout
  if % = 0 goto continue
 
@@ -17,4 +17,3 @@ opengt
  get 1 "^m" $s
  print $s
  exit 0
- 
