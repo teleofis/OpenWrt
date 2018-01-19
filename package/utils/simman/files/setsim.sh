@@ -294,6 +294,8 @@ if [ "$proto" == "2" -a "$pow" -ne "1" ]; then
   	done
 fi
 
+sleep 10 && /etc/init.d/smstools3 restart > /dev/null &
+
 # store uci changes
 uci commit 
 
