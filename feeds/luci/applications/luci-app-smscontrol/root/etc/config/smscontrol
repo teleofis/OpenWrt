@@ -1,6 +1,11 @@
 config smscontrol 'common'
         option enabled '0'
 
+config call
+        option enabled '0'
+        option ack '0'
+        option command 'reboot'
+
 config remote
         option enabled '0'
         option received 'reboot'

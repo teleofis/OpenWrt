@@ -35,21 +35,23 @@ if [ "$ENABLED" -eq "1" ]; then
 
 
 
-
-
-
-
-
-
-
     USSD)
     ;;
 
     CALL)
-        if [[ "${FROM}" == "${ADMINPHONE}" && "$BODY" == "REBOOT" ]]; then
-            /sbin/reboot
-            exit
-        fi
+        MESSAGE=$(cat "$2")
+        FROM=$(echo "${MESSAGE}"|grep -e '^From\:'|cut -d' ' -f2)
+        ADMINPHONES=$(uci get smscontrol.common.whitelist)
+        COUNTPHONES=$(echo $ADMINPHONES | wc -w)   
+        COUNT="0"
+        while [ "$COUNT" -ne "$COUNTPHONES" ]; do
+            COUNT=$(($COUNT + 1))
+            ADMPH=$(echo $ADMINPHONES | awk -v var=$COUNT -F ' ' '{print $var}')
+            if [ "$ADMPH" -eq "$FROM" ]; then
+                $DIR/calls "$FROM" &
+                break
+            fi
+        done
     ;;
 
     SENT)

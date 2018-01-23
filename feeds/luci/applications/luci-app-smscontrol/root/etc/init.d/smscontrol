@@ -2,11 +2,12 @@
 
 START=90
 COMMANDS="/etc/smscontrol/commands"
+CALLS="/etc/smscontrol/calls"
 OUT_DIR="/var/spool/sms/outgoing"
 
 add_comm() {
 	config_get enabled "$1" "enabled"
-	[ "$enabled" -eq "0" ] && continue
+	[ "$enabled" = "0" ] && continue
 
 	config_get ack "$1" "ack"
 	config_get received "$1" "received"
@@ -14,7 +15,7 @@ add_comm() {
 
 	echo "	\"$received\")" >> "$COMMANDS"
 
-	if [ "$ack" -eq "1" ]; then
+	if [ "$ack" = "1" ]; then
 		echo "		REPLY=\$($command)" >> "$COMMANDS"
 		echo "		if [ -n \"\$REPLY\" ]; then"  >> "$COMMANDS"
 		echo "			DATE=\$(date +%s)" >> "$COMMANDS"
@@ -29,7 +30,31 @@ add_comm() {
 		echo "		$command" >> "$COMMANDS"
 	fi
 	echo "	;;" >> "$COMMANDS"
+	echo "	" >> "$COMMANDS"
 
+}
+
+add_call() {
+	config_get enabled "$1" "enabled"
+	[ "$enabled" = "0" ] && continue
+
+	config_get ack "$1" "ack"
+	config_get command "$1" "command"
+
+	if [ "$ack" = "1" ]; then
+		echo "		REPLY=\$($command)" >> "$CALLS"
+		echo "		if [ -n \"\$REPLY\" ]; then"  >> "$CALLS"
+		echo "			DATE=\$(date +%s)" >> "$CALLS"
+		echo "			touch /tmp/sms\$DATE.sms" >> "$CALLS"
+		echo "			echo \"To: \$1\" >> /tmp/sms\$DATE.sms" >> "$CALLS"
+		echo "			echo \" \" >> /tmp/sms\$DATE.sms" >> "$CALLS"
+		echo "			echo \"\$REPLY\" >> /tmp/sms\$DATE.sms" >> "$CALLS"
+		echo "			cp /tmp/sms\$DATE.sms $OUT_DIR/sms\$DATE.sms" >> "$CALLS"
+		echo "			rm /tmp/sms\$DATE.sms" >> "$CALLS"
+		echo "		fi" >> "$CALLS"
+	else
+		echo "		$command" >> "$CALLS"
+	fi
 }
 
 restart() {
@@ -37,8 +62,12 @@ restart() {
 	rm "$COMMANDS"
 	touch "$COMMANDS"
 	chmod +x "$COMMANDS"
-	echo "case \"\$1\" in" >> "$COMMANDS"
+	rm "$CALLS"
+	touch "$CALLS"
+	chmod +x "$CALLS"
 	config_load smscontrol
+	config_foreach add_call call
+	echo "case \"\$1\" in" >> "$COMMANDS"
 	config_foreach add_comm remote
 	echo "esac" >> "$COMMANDS"
 }

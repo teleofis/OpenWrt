@@ -29,7 +29,23 @@ whitelist = n:option(DynamicList, "whitelist",  translate("Allowed numbers"))
   whitelist.cast = "string"
   whitelist.rmempty =true
 
-s = m:section(TypedSection, "remote")
+c = m:section(TypedSection, "call", translate("Command over call"))
+c.rmempty = true
+c.anonymous = true
+c.addremove = false
+c.template = "cbi/tblsection"
+
+enabled = c:option(Flag, "enabled", translate("Enable"))
+  enabled.rmempty = false
+
+ack = c:option(Flag, "ack", translate("Reply via SMS"))
+  ack.rmempty = true
+
+command = c:option(Value, "command", translate("Linux command"))
+  command.rmempty =false
+  command.optional = false
+
+s = m:section(TypedSection, "remote", translate("Command over SMS"))
 s.rmempty = true
 s.anonymous = true
 s.addremove = true
