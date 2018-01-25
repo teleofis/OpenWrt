@@ -1,6 +1,10 @@
 config smscontrol 'common'
         option enabled '0'
 
+config smscontrol 'send'
+        option to ''
+        option msgtxt ''
+
 config call
         option enabled '0'
         option ack '0'

@@ -29,6 +29,26 @@ whitelist = n:option(DynamicList, "whitelist",  translate("Allowed numbers"))
   whitelist.cast = "string"
   whitelist.rmempty =true
 
+s = m:section(TypedSection, "remote", translate("Command over SMS"))
+s.rmempty = true
+s.anonymous = true
+s.addremove = true
+s.template = "cbi/tblsection"
+
+enabled = s:option(Flag, "enabled", translate("Enable"))
+  enabled.rmempty = false
+
+ack = s:option(Flag, "ack", translate("Reply via SMS"))
+  ack.rmempty = true
+
+received = s:option(Value, "received", translate("Message text"))
+  received.rmempty =false
+  received.optional = false
+
+command = s:option(Value, "command", translate("Linux command"))
+  command.rmempty =false
+  command.optional = false
+
 c = m:section(TypedSection, "call", translate("Command over call"))
 c.rmempty = true
 c.anonymous = true
@@ -45,24 +65,40 @@ command = c:option(Value, "command", translate("Linux command"))
   command.rmempty =false
   command.optional = false
 
-s = m:section(TypedSection, "remote", translate("Command over SMS"))
-s.rmempty = true
-s.anonymous = true
-s.addremove = true
-s.template = "cbi/tblsection"
+k = m:section(NamedSection, "send", "smscontrol", translate("Send SMS"))
+k.rmempty = true
 
-enabled = s:option(Flag, "enabled", translate("Enable"))
-  enabled.rmempty = false
+to = k:option(Value, "to",  translate("To number"))
+  to.datatype = "phonedigit"
+  to.cast = "string"
+  to.rmempty =true
+  to.optional =false
 
-ack = s:option(Flag, "ack", translate("Reply via SMS"))
-  ack.rmempty = true
+msgtxt = k:option(Value, "msgtxt", translate("Message text"))
+  msgtxt.rmempty =true
+  msgtxt.optional =false
 
-msgtxt = s:option(Value, "received", translate("Message text"))
-  msgtxt.rmempty =false
-  msgtxt.optional = false
+sendsms = k:option(Button, "sendsms", translate("Send") )  
+  sendsms.title      = translate(" ")
+  sendsms.inputtitle = translate("Send")
+  sendsms.inputstyle = "apply"
+  function sendsms.write(self, section)
+    local to = self.map:get(section, "to")
+    local msgtxt = self.map:get(section, "msgtxt")
+    local err = self.map:get(section, "err")
+    if to == nil then
+      luci.sys.call("/etc/smscontrol/sendsms error '%s' &" %{msgtxt})
+      return self.map:set(section, "err", "You must specify a phone number")
+    else
+      luci.sys.call("/etc/smscontrol/sendsms %s '%s' &" %{to, msgtxt})
+      self.map:set(section, "to", "")
+      self.map:set(section, "msgtxt", "")
+      return self.map:set(section, "err", "Message sent successfully")
+    end
+  end
 
-command = s:option(Value, "command", translate("Linux command"))
-  command.rmempty =false
-  command.optional = false
+err = k:option(DummyValue, "err", translate(" "))
+  err.rmempty =true
+  err.optional =false
 
 return m

@@ -21,7 +21,7 @@ add_comm() {
 		echo "			DATE=\$(date +%s)" >> "$COMMANDS"
 		echo "			touch /tmp/sms\$DATE.sms" >> "$COMMANDS"
 		echo "			echo \"To: \$2\" >> /tmp/sms\$DATE.sms" >> "$COMMANDS"
-		echo "			echo \" \" >> /tmp/sms\$DATE.sms" >> "$COMMANDS"
+		echo "			echo \"\" >> /tmp/sms\$DATE.sms" >> "$COMMANDS"
 		echo "			echo \"\$REPLY\" >> /tmp/sms\$DATE.sms" >> "$COMMANDS"
 		echo "			cp /tmp/sms\$DATE.sms $OUT_DIR/sms\$DATE.sms" >> "$COMMANDS"
 		echo "			rm /tmp/sms\$DATE.sms" >> "$COMMANDS"
