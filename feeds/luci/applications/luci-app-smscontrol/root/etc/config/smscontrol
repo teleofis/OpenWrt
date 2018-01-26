@@ -18,4 +18,9 @@ config remote
 config remote
         option enabled '0'
         option received 'factory'
-        option command 'echo y | firstboot && sleep 30 && reboot'
+        option command 'echo y | firstboot'
+
+config cli
+        option enabled '0'
+        option received 'CLI$any_cli_command_here'
+        option command 'any_cli_command_here'

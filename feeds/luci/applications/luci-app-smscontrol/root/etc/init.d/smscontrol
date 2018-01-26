@@ -3,6 +3,7 @@
 START=90
 COMMANDS="/etc/smscontrol/commands"
 CALLS="/etc/smscontrol/calls"
+CLI="/etc/smscontrol/cli"
 OUT_DIR="/var/spool/sms/outgoing"
 
 add_comm() {
@@ -47,13 +48,34 @@ add_call() {
 		echo "			DATE=\$(date +%s)" >> "$CALLS"
 		echo "			touch /tmp/sms\$DATE.sms" >> "$CALLS"
 		echo "			echo \"To: \$1\" >> /tmp/sms\$DATE.sms" >> "$CALLS"
-		echo "			echo \" \" >> /tmp/sms\$DATE.sms" >> "$CALLS"
+		echo "			echo \"\" >> /tmp/sms\$DATE.sms" >> "$CALLS"
 		echo "			echo \"\$REPLY\" >> /tmp/sms\$DATE.sms" >> "$CALLS"
 		echo "			cp /tmp/sms\$DATE.sms $OUT_DIR/sms\$DATE.sms" >> "$CALLS"
 		echo "			rm /tmp/sms\$DATE.sms" >> "$CALLS"
 		echo "		fi" >> "$CALLS"
 	else
 		echo "		$command" >> "$CALLS"
+	fi
+}
+
+add_cli() {
+	config_get enabled "$1" "enabled"
+	[ "$enabled" = "0" ] && continue
+
+	config_get ack "$1" "ack"
+	if [ "$ack" = "1" ]; then
+		echo "		REPLY=\$(\$1)" >> "$CLI"
+		echo "		if [ -n \"\$REPLY\" ]; then"  >> "$CLI"
+		echo "			DATE=\$(date +%s)" >> "$CLI"
+		echo "			touch /tmp/sms\$DATE.sms" >> "$CLI"
+		echo "			echo \"To: \$2\" >> /tmp/sms\$DATE.sms" >> "$CLI"
+		echo "			echo \"\" >> /tmp/sms\$DATE.sms" >> "$CLI"
+		echo "			echo \"\$REPLY\" >> /tmp/sms\$DATE.sms" >> "$CLI"
+		echo "			cp /tmp/sms\$DATE.sms $OUT_DIR/sms\$DATE.sms" >> "$CLI"
+		echo "			rm /tmp/sms\$DATE.sms" >> "$CLI"
+		echo "		fi" >> "$CLI"
+	else
+		echo "		\$1" >> "$CLI"
 	fi
 }
 
@@ -65,8 +87,12 @@ restart() {
 	rm "$CALLS"
 	touch "$CALLS"
 	chmod +x "$CALLS"
+	rm "$CLI"
+	touch "$CLI"
+	chmod +x "$CLI"
 	config_load smscontrol
 	config_foreach add_call call
+	config_foreach add_cli cli
 	echo "case \"\$1\" in" >> "$COMMANDS"
 	config_foreach add_comm remote
 	echo "esac" >> "$COMMANDS"

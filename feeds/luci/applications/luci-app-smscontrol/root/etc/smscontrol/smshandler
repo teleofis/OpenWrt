@@ -25,8 +25,14 @@ if [ "$ENABLED" -eq "1" ]; then
             ADMPH=$(echo $ADMINPHONES | awk -v var=$COUNT -F ' ' '{print $var}')
             if [ "$ADMPH" -eq "$FROM" ]; then
                 BODY=${BODY:$PASSLENGTH}
-                $DIR/commands "$BODY" "$FROM" &
-                break
+                if [ "${BODY::4}" != "CLI\$" ]; then                    
+                    $DIR/commands "$BODY" "$FROM" &
+                    break
+                else
+                    BODY=${BODY:4}
+                    $DIR/cli  "$BODY" "$FROM" &
+                    break
+                fi
             fi
         done
     
