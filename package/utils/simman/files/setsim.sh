@@ -189,6 +189,7 @@ fi
 
 # at+cfun=0 for SIM5300
 if [ "$proto" == "3" -a "$pow" -ne "1" ]; then
+	sleep 1
 	$CONFIG_DIR/setfun.sh -f 0
 fi
 
@@ -237,7 +238,7 @@ if [ "$mode" == "0" ]; then
   		sleep 4
   		dev=$(ls $ATDEVICE 2>/dev/null)
   	done
-
+  	sim="0"
 
  else
   retry=0
