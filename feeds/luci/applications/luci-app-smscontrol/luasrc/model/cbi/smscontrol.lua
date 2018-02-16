@@ -108,14 +108,19 @@ sendsms = k:option(Button, "sendsms", translate("Send") )
     local to = self.map:get(section, "to")
     local msgtxt = self.map:get(section, "msgtxt")
     local err = self.map:get(section, "err")
-    if to == nil then
-      luci.sys.call("/etc/smscontrol/sendsms error '%s' &" %{msgtxt})
-      return self.map:set(section, "err", "You must specify a phone number")
+    if msgtxt == nil then
+      luci.sys.call("/etc/smscontrol/sendsms error error &" %{msgtxt})
+      return self.map:set(section, "err", "Empty message")
     else
-      luci.sys.call("/etc/smscontrol/sendsms %s '%s' &" %{to, msgtxt})
-      self.map:set(section, "to", "")
-      self.map:set(section, "msgtxt", "")
-      return self.map:set(section, "err", "Message sent successfully")
+      if to == nil then
+        luci.sys.call("/etc/smscontrol/sendsms error '%s' &" %{msgtxt})
+        return self.map:set(section, "err", "You must specify a phone number")
+      else
+        luci.sys.call("/etc/smscontrol/sendsms %s '%s' &" %{to, msgtxt})
+        self.map:set(section, "to", "")
+        self.map:set(section, "msgtxt", "")
+        return self.map:set(section, "err", "Message sent successfully")
+      end
     end
   end
 
