@@ -56,24 +56,22 @@ case "$ACTION" in
             PROTO_3G=$(uci get simman.core.proto 2>/dev/null)
             if  [ "$version" = "RTUx68V2" -o "$version" = "RTU1068V2" -o "$PROTO_3G" != "2" ] && [ "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1:1.2" -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.1/1-1.1:1.2"  ]; then
             uci delete network.wwan0
-                uci set network.internet=interface
-                uci set network.internet.proto=3g
-                uci set network.internet.device=/dev/ttyUSB3
-                uci set network.internet.service=umts
-                uci set network.internet.apn=internet
-                uci set network.internet.metric=2
-                uci set simman.core.atdevice=/dev/ttyUSB2
-                uci set simman.core.iface=3g-internet
+                /etc/init.d/simman stop
+                uci delete network.internet
+                uci set network.wwan0=interface
+                uci set network.wwan0.proto=qmi
+                uci set network.wwan0.device=/dev/cdc-wdm0
+                uci set network.wwan0.apn=internet
+                uci set network.wwan0.metric=2
+                uci set simman.core.iface=wwan0
                 uci set simman.core.proto=2
-                uci set simman.info.atdevice=/dev/ttyUSB2
-                echo 3g-internet > /sys/class/leds/middle\:net/device_name
-                echo 3g-internet > /sys/class/leds/bottom\:act/device_name
-                sed -i -e "/SGAUTH/d" /etc/chatscripts/3g.chat
+                echo wwan0 > /sys/class/leds/middle\:net/device_name
+                echo wwan0 > /sys/class/leds/bottom\:act/device_name
                 sed -i -e "s/$version/RTU968V2/g" /etc/banner
                 sed -i -e "s/$version/RTU968V2/g" /etc/config/system
-                sed -i -e "s/wwan0/3g-internet/g" /etc/config/system
+                sed -i -e "s/3g-internet/wwan0/g" /etc/config/system
                 uci commit
-                ubus call network reload
+                /etc/init.d/simman restart
             fi
         ;;
         

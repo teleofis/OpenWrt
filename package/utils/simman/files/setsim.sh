@@ -187,14 +187,17 @@ else
  uci -q set network.$iface.password=$pass
 fi
 
+sleep 1
+
 # at+cfun=0 for SIM5300
-if [ "$proto" == "3" -a "$pow" -ne "1" ]; then
-	sleep 1
+if [ "$proto" == "3" -a "$pow" -ne "1" ]; then	
 	$CONFIG_DIR/setfun.sh -f 0
 fi
 
 # power down for SIM5360
-if [ "$proto" == "2" ]; then	
+if [ "$proto" == "2" -a "$pow" -ne "1" ]; then
+	logger -t $tag "power down for SIM5360"
+	/etc/init.d/smstools3 stop > /dev/null &
   	echo "0" > $GPIO_PATH/gpio$PWRKEY_PIN/value
   	sleep 1
   	echo "1" > $GPIO_PATH/gpio$PWRKEY_PIN/value
@@ -279,6 +282,7 @@ if [ "$proto" == "3" -a "$pow" -ne "1" ]; then
 fi
 # power up for SIM5360
 if [ "$proto" == "2" -a "$pow" -ne "1" ]; then
+	logger -t $tag "power up for SIM5360"
 	counter=0
   	echo "0" > $GPIO_PATH/gpio$PWRKEY_PIN/value
   	usleep 50000
@@ -296,6 +300,7 @@ if [ "$proto" == "2" -a "$pow" -ne "1" ]; then
   			counter=0
   		fi
   	done
+  	logger -t $tag "SIM5360 powered up"
 fi
 
 sleep 10 && /etc/init.d/smstools3 restart > /dev/null &
