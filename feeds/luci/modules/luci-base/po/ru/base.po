@@ -4576,3 +4576,6 @@ msgid ""
 "You can make a call from the allowed phone number and then the router will "
 "execute the command"
 msgstr "Если совершить звонок с разрешенного телефонного номера, роутер выполнит указанную команду"
+
+msgid "Keep connect"
+msgstr "Поддерживать соединение"

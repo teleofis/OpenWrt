@@ -17,6 +17,7 @@ case "$ACTION" in
                 uci set network.wwan0.proto=qmi
                 uci set network.wwan0.device=/dev/cdc-wdm0
                 uci set network.wwan0.apn=internet
+                uci set network.wwan0.autoconnect=0
                 uci set network.wwan0.metric=2
                 uci set simman.core.iface=wwan0
                 uci set simman.core.proto=1
@@ -62,6 +63,7 @@ case "$ACTION" in
                 uci set network.wwan0.proto=qmi
                 uci set network.wwan0.device=/dev/cdc-wdm0
                 uci set network.wwan0.apn=internet
+                uci set network.wwan0.autoconnect=0
                 uci set network.wwan0.metric=2
                 uci set simman.core.iface=wwan0
                 uci set simman.core.proto=2
