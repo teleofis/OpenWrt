@@ -196,12 +196,15 @@ fi
 
 # power down for SIM5360
 if [ "$proto" == "2" -a "$pow" -ne "1" ]; then
-	logger -t $tag "power down for SIM5360"
-	/etc/init.d/smstools3 stop > /dev/null &
-  	echo "0" > $GPIO_PATH/gpio$PWRKEY_PIN/value
-  	sleep 1
-  	echo "1" > $GPIO_PATH/gpio$PWRKEY_PIN/value
-  	sleep 3
+	dev=$(ls $ATDEVICE 2>/dev/null)
+	if [ -n "$dev" ]; then
+		logger -t $tag "power down for SIM5360"
+		/etc/init.d/smstools3 stop > /dev/null &
+  		echo "0" > $GPIO_PATH/gpio$PWRKEY_PIN/value
+  		sleep 1
+  		echo "1" > $GPIO_PATH/gpio$PWRKEY_PIN/value
+  		sleep 3
+  	fi
 fi
 
 # Set sim card
