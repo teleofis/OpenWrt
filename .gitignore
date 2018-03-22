@@ -24,3 +24,4 @@ git-src
 /openwrt-mxs-root.ext4
 /rootfs.img
 /sysupgrade_RTU968.tar
+/.config.old
