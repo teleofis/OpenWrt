@@ -8,9 +8,9 @@ PKG_NAME:=luci-app-pollmydevice
 LUCI_DEPENDS:= +pollmydevice
 
 # Version: <major>.<minor>.<patch>
-PKG_VERSION:=0.1.0
+PKG_VERSION:=0.1
 
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_MAINTAINER:=Vladimir Ovseychuk <ovseychuk@teleofis.com>
 
