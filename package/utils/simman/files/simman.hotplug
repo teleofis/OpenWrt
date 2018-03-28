@@ -95,7 +95,7 @@ case "$ACTION" in
                 uci set simman.core.proto=3
                 echo 3g-internet > /sys/class/leds/middle\:net/device_name
                 echo 3g-internet > /sys/class/leds/bottom\:act/device_name
-                sed -i -e "/SGAUTH/d" /etc/chatscripts/3g.chat
+                sed -i -e "s/\\\^S/+X/g" /etc/chatscripts/3g.chat
                 sed -i -e "s/$version/RTU968V2/g" /etc/banner
                 sed -i -e "s/$version/RTU968V2/g" /etc/config/system
                 sed -i -e "s/wwan0/3g-internet/g" /etc/config/system
