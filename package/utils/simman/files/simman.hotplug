@@ -52,6 +52,7 @@ case "$ACTION" in
                 sed -i -e "s/wwan0/3g-internet/g" /etc/config/system
                 uci commit
                 ubus call network reload
+                /etc/init.d/simman restart
             fi
         ;;
 
@@ -101,6 +102,7 @@ case "$ACTION" in
                 sed -i -e "s/wwan0/3g-internet/g" /etc/config/system
                 uci commit
                 ubus call network reload
+                /etc/init.d/simman restart
             fi
         ;;            
         esac
