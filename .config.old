@@ -3612,6 +3612,8 @@ CONFIG_PACKAGE_luci-i18n-openvpn-uk=y
 # CONFIG_PACKAGE_luci-i18n-openvpn-zh-tw is not set
 CONFIG_PACKAGE_luci-i18n-pollmydevice-en=y
 CONFIG_PACKAGE_luci-i18n-pollmydevice-ru=y
+CONFIG_PACKAGE_luci-i18n-report-en=y
+CONFIG_PACKAGE_luci-i18n-report-ru=y
 CONFIG_PACKAGE_luci-i18n-simman-en=y
 CONFIG_PACKAGE_luci-i18n-simman-ru=y
 # CONFIG_PACKAGE_luci-i18n-tinyproxy-ca is not set

@@ -92,11 +92,11 @@ conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time (sec)"
 
 modbus_gateway = s:option(ListValue, "modbus_gateway", translate("Modbus TCP/IP"))  -- create checkbox
   modbus_gateway.default = 0
-  modbus_gateway:value(0,"disabled")
+  modbus_gateway:value(0,"Disabled")
   modbus_gateway:value(1,"RTU")
   modbus_gateway:value(2,"ASCII")
-  modbus_gateway:depends("mode","client")
   modbus_gateway:depends("mode","server")
+  modbus_gateway:depends("client_auth",0)
 
 client_host = s:option(Value, "client_host",  translate("Server Host or IP Address"))
   client_host.default = "hub.m2m24.ru"
@@ -115,8 +115,11 @@ client_timeout = s:option(Value, "client_timeout",  translate("Client Reconnecti
   --client_timeout.rmempty = false
   client_timeout:depends("mode","client")
 
-client_auth = s:option(Flag, "client_auth", translate("Client Authentification"), translate("Use Teleofis Authentification"))  -- create enable checkbox
-  client_auth.default = 1
+client_auth = s:option(ListValue, "client_auth", translate("Client Authentification"), translate("Use Teleofis Authentification"))
+  client_auth.widget="radio"
+  client_auth.default = 0
+  client_auth:value(0,"Disable")
+  client_auth:value(1,"Enable")
   --client_auth.rmempty = false
   client_auth:depends("mode","client")
 

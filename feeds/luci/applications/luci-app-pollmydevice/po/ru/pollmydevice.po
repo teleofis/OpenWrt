@@ -53,3 +53,12 @@ msgstr "Отключить консоль"
 
 msgid "Enable console port"
 msgstr "Включить консоль"
+
+msgid "Disabled"
+msgstr "Отключено"
+
+msgid "Disable"
+msgstr "Отключить"
+
+msgid "Enable"
+msgstr "Включить"
