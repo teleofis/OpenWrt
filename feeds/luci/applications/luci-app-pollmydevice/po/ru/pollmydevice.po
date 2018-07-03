@@ -44,3 +44,21 @@ msgstr "Авторизация Teleofis"
 
 msgid "Use Teleofis Authentification"
 msgstr "Использовать авторизацию по Teleofis ID"
+
+msgid "Save the changes. The router will reboot"
+msgstr "Сохраните настройки. Роутер перезагрузится"
+
+msgid "Disable console port"
+msgstr "Отключить консоль"
+
+msgid "Enable console port"
+msgstr "Включить консоль"
+
+msgid "Disabled"
+msgstr "Отключено"
+
+msgid "Disable"
+msgstr "Отключить"
+
+msgid "Enable"
+msgstr "Включить"
