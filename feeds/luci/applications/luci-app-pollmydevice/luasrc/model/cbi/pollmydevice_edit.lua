@@ -1,16 +1,25 @@
---
---
+local sys = require "luci.sys"
+local uci = require "luci.model.uci".cursor()
+local d = require "luci.dispatcher"
 
-require 'luci.sys'
+local section_name
 
-arg[1] = arg[1] or ""
+if arg[1] then
+	section_name = arg[1]
+else
+	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "pollmydevice"))
+end
 
-m = Map("pollmydevice", translate("PollMyDevice"), translate("TCP to RS232/RS485 converter"))
+local m = Map("pollmydevice", translate("PollMyDevice"), translate("TCP to RS232/RS485 converter"))
+	m.redirect=d.build_url("admin/services/pollmydevice/")
 
-s = m:section(NamedSection, arg[1], "pollmydevice", translate("Utility Settings"))
-s.addremove = false
+local s = m:section(NamedSection, arg[1], "pollmydevice", translate("Utility Settings"))
+	s.addremove = false
 
-devicename = s:option(DummyValue, "devicename", translate("Port"))
+devicename = s:option(Value, "devicename", translate("Port"))
+	devicename.default = "/dev/com0"
+	devicename:value("/dev/com0")
+	devicename:value("/dev/com1")
 
 mode = s:option(ListValue, "mode", translate("Mode"))
   mode.default = "disabled"
