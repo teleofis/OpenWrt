@@ -46,7 +46,7 @@
 #define MAX_CLIENTS_IN_QUEUE    10
 
 #define MAX_EPOLL_EVENTS        MAX_CLIENTS_IN_QUEUE + 3  // + timer + listen socket + com-port
-#define NUM_OF_DEVICES          2  // num of services (e.g. RS232, RS485 means 2)
+#define NUM_OF_DEVICES          7  // num of services (e.g. RS232, RS485 means 2)
 
 #define MAX_TCP_BUF_SIZE        1024
 #define MAX_SERIAL_BUF_SIZE     4096
@@ -658,6 +658,7 @@ void *ClientThreadFunc(void *args)
     int numOfReadBytes;
 
     int serverAvailable = 0, autorized = 0;
+    int stat = 0; 
 
     struct epoll_event epollConfig;
     struct epoll_event epollEventArray[MAX_EPOLL_EVENTS];
@@ -1085,7 +1086,9 @@ void *ClientThreadFunc(void *args)
                     // remove from epoll
                     epollConfig.data.fd = eventSource;
                     epoll_ctl(threadFD->epollFD, EPOLL_CTL_DEL, eventSource, &epollConfig);
-                    LOG("Connection closed by server\n");
+                    if (stat == 0)
+                        LOG("Connection closed by server\n");
+                    stat = 1;
 
                     serverAvailable = 0;
                     autorized = 0;
@@ -1121,6 +1124,7 @@ void *ClientThreadFunc(void *args)
                     {
                         LOG("Client re-connected successfully \n");
                         serverAvailable = 1;
+                        stat = 0;
                     }
                     
                 }
