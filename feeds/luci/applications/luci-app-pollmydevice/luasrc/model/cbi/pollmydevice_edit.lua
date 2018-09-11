@@ -28,6 +28,12 @@ mode = s:option(ListValue, "mode", translate("Mode"))
   mode:value("client")
   mode.optional = false
 
+quiet = s:option(Flag, "quiet", translate("Disable log messages"))
+  quiet.optional = false
+  quiet.default = 0
+  quiet:depends("mode","server")
+  quiet:depends("mode","client")
+
 baudrate = s:option(ListValue, "baudrate",  translate("BaudRate"))
   baudrate.default = 9600
   baudrate:value(300)

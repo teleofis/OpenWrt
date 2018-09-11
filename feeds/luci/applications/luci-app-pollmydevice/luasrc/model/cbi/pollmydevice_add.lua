@@ -5,25 +5,25 @@ local util = require ("luci.util")
 
 local m = Map("pollmydevice", translate("PollMyDevice"))
 
-local s = m:section(TypedSection, "interface", translate("TCP to RS232/RS485 converter"), translate(""))
+local s = m:section(TypedSection, "interface", translate("TCP to RS232/RS485 converter"))
 	s.addremove = true
 	s.template = "pollmydevice/tblsection"
 	s.novaluetext = translate("There are no PollMyDevice configurations yet")
 	s.extedit = luci.dispatcher.build_url("admin", "services", "pollmydevice", "%s")
 	s.defaults = {mode = "disabled"}
-	s.sectionhead = "Name"
+	s.sectionhead = "№"
 
-o = s:option(DummyValue, "mode", translate("Mode"), translate("333"))
+o = s:option(DummyValue, "mode", translate("Mode"))
 	function o.cfgvalue(self, section)
 		return self.map:get(section, self.option) or "-"
 	end
 
-o = s:option(DummyValue, "devicename", translate("Port"), translate("333"))
+o = s:option(DummyValue, "devicename", translate("Port"))
 	function o.cfgvalue(self, section)
 		return self.map:get(section, self.option) or "-"
 	end
 
-o = s:option(DummyValue, "client_host", translate("Server Host or IP Address"), translate("333"))
+o = s:option(DummyValue, "client_host", translate("Server Host or IP Address"))
 	function o.cfgvalue(self, section)
 		return self.map:get(section, self.option) or "-"
 	end
@@ -44,7 +44,7 @@ o = s:option(DummyValue, "port", translate("Port"), translate("333"))
 		end
 	end
 
-o = s:option(DummyValue, "client_auth", translate("Client Authentification"), translate("333"))
+o = s:option(DummyValue, "client_auth", translate("Client Authentification"))
 	function o.cfgvalue(self, section)
 		local value = self.map:get(section, self.option) or "-"
 		if value == "0" then
@@ -58,7 +58,7 @@ o = s:option(DummyValue, "client_auth", translate("Client Authentification"), tr
 		end
 	end
 
-o = s:option(DummyValue, "modbus_gateway", translate("Modbus TCP/IP"), translate("333"))
+o = s:option(DummyValue, "modbus_gateway", translate("Modbus TCP/IP"))
 	function o.cfgvalue(self, section)
 		local value = self.map:get(section, self.option) or "-"
 		if value == "0" then

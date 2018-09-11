@@ -62,3 +62,6 @@ msgstr "Отключить"
 
 msgid "Enable"
 msgstr "Включить"
+
+msgid "Disable log messages"
+msgstr "Отключить логирование"
