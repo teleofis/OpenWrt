@@ -1,16 +1,25 @@
---
---
+local sys = require "luci.sys"
+local uci = require "luci.model.uci".cursor()
+local d = require "luci.dispatcher"
 
-require 'luci.sys'
+local section_name
 
-arg[1] = arg[1] or ""
+if arg[1] then
+	section_name = arg[1]
+else
+	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "pollmydevice"))
+end
 
-m = Map("pollmydevice", translate("PollMyDevice"), translate("TCP to RS232/RS485 converter"))
+local m = Map("pollmydevice", translate("PollMyDevice"), translate("TCP to RS232/RS485 converter"))
+	m.redirect=d.build_url("admin/services/pollmydevice/")
 
-s = m:section(NamedSection, arg[1], "pollmydevice", translate("Utility Settings"))
-s.addremove = false
+local s = m:section(NamedSection, arg[1], "pollmydevice", translate("Utility Settings"))
+	s.addremove = false
 
-devicename = s:option(DummyValue, "devicename", translate("Port"))
+devicename = s:option(Value, "devicename", translate("Port"))
+	devicename.default = "/dev/com0"
+	devicename:value("/dev/com0")
+	devicename:value("/dev/com1")
 
 mode = s:option(ListValue, "mode", translate("Mode"))
   mode.default = "disabled"
@@ -18,6 +27,12 @@ mode = s:option(ListValue, "mode", translate("Mode"))
   mode:value("server")
   mode:value("client")
   mode.optional = false
+
+quiet = s:option(Flag, "quiet", translate("Disable log messages"))
+  quiet.optional = false
+  quiet.default = 0
+  quiet:depends("mode","server")
+  quiet:depends("mode","client")
 
 baudrate = s:option(ListValue, "baudrate",  translate("BaudRate"))
   baudrate.default = 9600
@@ -92,11 +107,11 @@ conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time (sec)"
 
 modbus_gateway = s:option(ListValue, "modbus_gateway", translate("Modbus TCP/IP"))  -- create checkbox
   modbus_gateway.default = 0
-  modbus_gateway:value(0,"disabled")
+  modbus_gateway:value(0,"Disabled")
   modbus_gateway:value(1,"RTU")
   modbus_gateway:value(2,"ASCII")
-  modbus_gateway:depends("mode","client")
   modbus_gateway:depends("mode","server")
+  modbus_gateway:depends("client_auth",0)
 
 client_host = s:option(Value, "client_host",  translate("Server Host or IP Address"))
   client_host.default = "hub.m2m24.ru"
@@ -115,8 +130,11 @@ client_timeout = s:option(Value, "client_timeout",  translate("Client Reconnecti
   --client_timeout.rmempty = false
   client_timeout:depends("mode","client")
 
-client_auth = s:option(Flag, "client_auth", translate("Client Authentification"), translate("Use Teleofis Authentification"))  -- create enable checkbox
-  client_auth.default = 1
+client_auth = s:option(ListValue, "client_auth", translate("Client Authentification"), translate("Use Teleofis Authentification"))
+  client_auth.widget="radio"
+  client_auth.default = 0
+  client_auth:value(0,"Disable")
+  client_auth:value(1,"Enable")
   --client_auth.rmempty = false
   client_auth:depends("mode","client")
 
