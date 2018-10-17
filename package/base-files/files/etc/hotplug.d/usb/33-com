@@ -41,6 +41,7 @@ case "$DEVPATH" in
         if [ "$ACTION" = "add" ]; then
             DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
             ln -s /dev/$DEVICE_NAME /dev/com14
+            /etc/init.d/pollmydevice restart
         else
             rm /dev/com14
         fi
