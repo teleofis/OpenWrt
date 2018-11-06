@@ -611,11 +611,13 @@ void *ServerThreadFunc(void *args)
                         	}
                             if (!deviceConfig.quiet)
                         	    LOG("Connection closed\n");
+                            lastActiveConnSocket = -1;
                         }else  lastActiveConnSocket = eventSource;
                     }
                     else
                         if (!deviceConfig.quiet)
                             LOG("Data refused\n");  
+                        //lastActiveConnSocket = -1;
                 }
                 else // if someone want to close connection
                 {
@@ -629,6 +631,7 @@ void *ServerThreadFunc(void *args)
                     }
                     if (!deviceConfig.quiet)
                         LOG("Connection closed\n");
+                    lastActiveConnSocket = -1;
                 }
             }
 
@@ -636,6 +639,7 @@ void *ServerThreadFunc(void *args)
             {
                 if (!deviceConfig.quiet)
                     LOG("Unknown epoll event\n");
+                //lastActiveConnSocket = -1;
             }
         }      
     }
