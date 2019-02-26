@@ -16,6 +16,8 @@ local m = Map("pollmydevice", translate("PollMyDevice"), translate("TCP to RS232
 local s = m:section(NamedSection, arg[1], "pollmydevice", translate("Utility Settings"))
 	s.addremove = false
 
+desc = s:option(Value, "desc", translate("Description"))
+
 devicename = s:option(Value, "devicename", translate("Port"))
 	devicename.default = "/dev/com0"
 	devicename:value("/dev/com0")
