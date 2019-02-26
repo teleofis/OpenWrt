@@ -13,7 +13,7 @@ try_upgrade ()
 		if [ "$VER_FIRST" -eq 0 ]
 		then
 	        echo "Bootloader is too old"	# 0.x.x
-	        exit 1
+	        if_failed
 		fi
 
 		if [ "$VER_FIRST" -eq 1 ]
@@ -21,7 +21,7 @@ try_upgrade ()
 			if  [ "$VER_SECOND" -eq 0 ]
 			then
 				echo "Bootloader is too old"	# 1.0.x
-	        	exit 1
+	        	if_failed
 			fi
 
 			if  [ "$VER_SECOND" -eq 1 ]
@@ -29,25 +29,25 @@ try_upgrade ()
 				if  [ "$VER_THIRD" -eq 0 ]
 		        then
 		            echo "Bootloader is too old" # 1.1.0
-		            exit 1
+		            if_failed
 		    	fi
 			fi
 		fi
 
 	    #### if bootloader is suitable:
 	    cd /tmp/
-		if [ ! -f /tmp/sysupgrade_RTUx68V2.tar ]; 
+		if [ ! -f /tmp/sysupgrade_RTU*.tar ]; 
 		then
 	    	echo "Sysupgrade file not found!"
 		else
 
 
 			### if we have an upgrade archive
-			tar -xf sysupgrade_RTUx68V2.tar
+			tar -xf sysupgrade_RTU*.tar
 			if [ ! -f rootfs.img ] || [ ! -f openwrt-mxs-uImage ] || [ ! -f fdt.dtb ] || [ ! -f check.md5 ]; 
 			then
 		    	echo "Upgrade archive is corrupted"
-		    	exit 1
+		    	if_failed
 		    fi
 
 		    MD5_FDT=$(md5sum fdt.dtb)
@@ -61,19 +61,19 @@ try_upgrade ()
 		    	MD5_VERSION_FROMFILE=$(sed -n 4p check.md5)		
 		    	if [ "$MD5_VERSION" != "$MD5_VERSION_FROMFILE" ]; then    	
 		    		echo "Upgrade archive is corrupted"
-		    		exit 1
+		    		if_failed
 		    	fi
 		    	NEW_VERSION=$(grep 'TELE' openwrt_release | awk -F 'Build TELEOFIS ' '{print $2}' | awk -F '.' '{print $1}')
 		    	if [ "$NEW_VERSION" -ne "$VER_FIRST" ] && [ -f openwrt_release ]; then
 		    		echo "Firmware not supported by hardware"
-		    		exit 1
+		    		if_failed
 		    	fi
 		    fi
 
 		    if [ "$MD5_FDT" != "$MD5_FDT_FROMFILE" ] || [ "$MD5_KERN" != "$MD5_KERN_FROMFILE" ] || [ "$MD5_ROOT" != "$MD5_ROOT_FROMFILE" ]; 
 			then
 		    	echo "Upgrade archive is corrupted"
-		    	exit 1
+		    	if_failed
 		    fi
 		    UPD_FLAG=$(fw_printenv update_flag | sed -e s/update_flag=//)
 		    if [ "$UPD_FLAG" -eq "113" ]; then
@@ -81,12 +81,12 @@ try_upgrade ()
 				if [ -z "$DATA_FREE" ]; then
 					echo 'Option "Keep settings" not supported'
 					fw_setenv update_flag 112
-		    		exit 1
+		    		if_failed
 				fi
 				OVERLAY_USED=$(df | grep ubi0_1 | awk -F ' ' '{print$3}')
 				if [ "$DATA_FREE" -lt "$OVERLAY_USED" ]; then
 					echo "No space left on device to save overlay"
-		    		exit 1
+		    		if_failed
 				fi
 			fi
 
@@ -140,6 +140,16 @@ try_upgrade ()
 	        echo "Can't read bootloader version:"
 	        fw_printenv ver
 	fi
+}
+
+if_failed(){
+	rm /tmp/sysupgrade_RTU*.tar
+	rm /tmp/openwrt-mxs-uImage
+	rm /tmp/openwrt_release
+	rm /tmp/fdt.dtb
+	rm /tmp/rootfs.img
+	rm /tmp/check.md5
+	exit 1
 }
 
 # check -key options
