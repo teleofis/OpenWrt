@@ -41,29 +41,28 @@ try_upgrade ()
 	    	echo "Sysupgrade file not found!"
 		else
 
-
 			### if we have an upgrade archive
-			tar -xf sysupgrade_RTU*.tar
-			if [ ! -f rootfs.img ] || [ ! -f openwrt-mxs-uImage ] || [ ! -f fdt.dtb ] || [ ! -f check.md5 ]; 
+
+			if [ ! $(tar -tf sysupgrade_RTU*.tar rootfs.img) ] || [ ! $(tar -tf sysupgrade_RTU*.tar openwrt-mxs-uImage) ] || [ ! $(tar -tf sysupgrade_RTU*.tar fdt.dtb) ] || [ ! $(tar -tf sysupgrade_RTU*.tar check.md5) ]; 
 			then
-		    	echo "Upgrade archive is corrupted"
+		    	echo "Upgrade archive is corrupted1"
 		    	if_failed
 		    fi
-
-		    MD5_FDT=$(md5sum fdt.dtb)
-		    MD5_KERN=$(md5sum openwrt-mxs-uImage)
-		    MD5_ROOT=$(md5sum rootfs.img)
-		    MD5_FDT_FROMFILE=$(sed -n 1p check.md5)
-		    MD5_KERN_FROMFILE=$(sed -n 2p check.md5)
-		    MD5_ROOT_FROMFILE=$(sed -n 3p check.md5)
-		    if [ -f openwrt_release ]; then
-		    	MD5_VERSION=$(md5sum openwrt_release)
-		    	MD5_VERSION_FROMFILE=$(sed -n 4p check.md5)		
+		    tar -xf sysupgrade_RTU*.tar check.md5
+		    MD5_FDT=$(tar -xf sysupgrade_RTU*.tar fdt.dtb -O | md5sum | awk -F ' ' '{print $1}')
+		    MD5_KERN=$(tar -xf sysupgrade_RTU*.tar openwrt-mxs-uImage -O | md5sum | awk -F ' ' '{print $1}')
+		    MD5_ROOT=$(tar -xf sysupgrade_RTU*.tar rootfs.img -O | md5sum | awk -F ' ' '{print $1}')
+		    MD5_FDT_FROMFILE=$(sed -n 1p check.md5 | awk -F ' ' '{print $1}')
+		    MD5_KERN_FROMFILE=$(sed -n 2p check.md5 | awk -F ' ' '{print $1}')
+		    MD5_ROOT_FROMFILE=$(sed -n 3p check.md5 | awk -F ' ' '{print $1}')
+		    if [ $(tar -tf sysupgrade_RTU*.tar openwrt_release) ]; then
+		    	MD5_VERSION=$(tar -xf sysupgrade_RTU*.tar openwrt_release -O | md5sum | awk -F ' ' '{print $1}')
+		    	MD5_VERSION_FROMFILE=$(sed -n 4p check.md5 | awk -F ' ' '{print $1}')		
 		    	if [ "$MD5_VERSION" != "$MD5_VERSION_FROMFILE" ]; then    	
-		    		echo "Upgrade archive is corrupted"
+		    		echo "Upgrade archive is corrupted2"
 		    		if_failed
 		    	fi
-		    	NEW_VERSION=$(grep 'TELE' openwrt_release | awk -F 'Build TELEOFIS ' '{print $2}' | awk -F '.' '{print $1}')
+		    	NEW_VERSION=$(tar -xf sysupgrade_RTU*.tar openwrt_release -O | grep 'TELE' | awk -F 'Build TELEOFIS ' '{print $2}' | awk -F '.' '{print $1}')
 		    	if [ "$NEW_VERSION" -ne "$VER_FIRST" ] && [ -f openwrt_release ]; then
 		    		echo "Firmware not supported by hardware"
 		    		if_failed
@@ -72,7 +71,7 @@ try_upgrade ()
 
 		    if [ "$MD5_FDT" != "$MD5_FDT_FROMFILE" ] || [ "$MD5_KERN" != "$MD5_KERN_FROMFILE" ] || [ "$MD5_ROOT" != "$MD5_ROOT_FROMFILE" ]; 
 			then
-		    	echo "Upgrade archive is corrupted"
+		    	echo "Upgrade archive is corrupted3"
 		    	if_failed
 		    fi
 		    UPD_FLAG=$(fw_printenv update_flag | sed -e s/update_flag=//)
@@ -94,26 +93,21 @@ try_upgrade ()
 		    # if test mode
 		    if [ "$MODETEST" -eq 1 ]
 			then
-				rm rootfs.img
-				rm openwrt-mxs-uImage
-				rm fdt.dtb
 				rm check.md5
-				rm openwrt_release
 				echo OK
 				exit 0
 			fi
 			#
-			mtd erase updroot
-			mtd write rootfs.img  updroot
-			fw_setenv filesize_rootfs $(printf %x $(stat -c %s rootfs.img))
-			mtd erase kernel
-			mtd write openwrt-mxs-uImage kernel
-			mtd verify openwrt-mxs-uImage kernel
-			fw_setenv filesize_kernel $(printf %x $(stat -c %s openwrt-mxs-uImage))
-			mtd erase fdt
-			mtd write fdt.dtb fdt
-			mtd verify fdt.dtb fdt
-			fw_setenv filesize_fdt $(printf %x $(stat -c %s fdt.dtb))
+
+			tar -xf sysupgrade_RTU*.tar rootfs.img -O | mtd write - updroot
+			fw_setenv filesize_rootfs $(printf %x $(tar -xf sysupgrade_RTU*.tar rootfs.img -O | wc -c))
+
+			tar -xf sysupgrade_RTU*.tar openwrt-mxs-uImage -O | mtd write - kernel
+			fw_setenv filesize_kernel $(printf %x $(tar -xf sysupgrade_RTU*.tar openwrt-mxs-uImage -O | wc -c))
+			
+			tar -xf sysupgrade_RTU*.tar fdt.dtb -O | mtd write - fdt
+			fw_setenv filesize_fdt $(printf %x $(tar -xf sysupgrade_RTU*.tar fdt.dtb -O | wc -c))
+
 			UPD_FLAG=$(fw_printenv update_flag | sed -e s/update_flag=//)			
 			if [ "$UPD_FLAG" -eq "113" ]; then
 				mkdir /mnt/data/upper
@@ -144,10 +138,6 @@ try_upgrade ()
 
 if_failed(){
 	rm /tmp/sysupgrade_RTU*.tar
-	rm /tmp/openwrt-mxs-uImage
-	rm /tmp/openwrt_release
-	rm /tmp/fdt.dtb
-	rm /tmp/rootfs.img
 	rm /tmp/check.md5
 	exit 1
 }
