@@ -10,7 +10,7 @@ USE_PROCD=1
 PIDFILE="/var/run/smsd.pid"
 INFOFILE="/var/run/smsd.working"
 
-DAEMON=/usr/local/bin/smsd
+DAEMON=/usr/bin/smsd
 
 # Set/edit this before starting service !!!!!
 WRT_SPOOL=/var/spool

@@ -225,8 +225,6 @@ if [ "$mode" == "0" ]; then
   		/etc/init.d/ntpd stop
   fi
 
-  kill $(pidof cmux)
-
   # release SIMADDR
   echo "0" > $GPIO_PATH/gpio$SIMADDR_PIN/value  
 
