@@ -307,7 +307,6 @@ proto_qmi_setup() {
 			json_add_string name "${interface}_6"
 			json_add_string ifname "@$interface"
 			json_add_string proto "dhcpv6"
-			proto_add_dynamic_defaults
 			# RFC 7278: Extend an IPv6 /64 Prefix to LAN
 			json_add_string extendprefix 1
 			json_close_object
@@ -320,7 +319,6 @@ proto_qmi_setup() {
 		json_add_string name "${interface}_4"
 		json_add_string ifname "@$interface"
 		json_add_string proto "dhcp"
-		proto_add_dynamic_defaults
 		json_close_object
 		ubus call network add_dynamic "$(json_dump)"
 	}
