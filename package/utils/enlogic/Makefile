@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=enlogic
 PKG_VERSION:=1
-PKG_RELEASE:=21
+PKG_RELEASE:=22
 PKG_BUILD_DIR:= $(BUILD_DIR)/$(PKG_NAME)
 PKG_MAINTAINER:=www.smart-grid.ru
 PKGPP:=/usr/share
@@ -43,31 +43,25 @@ endef
 define Package/enlogic/preinst
 #!/bin/sh
 
-tobak()
-{
-	if [ -f $(PKGPE)/$1 ]; then
-		mv $(PKGPE)/$1 $(PKGPE)/$1.bak
+for var in "enlogic.cfg" "config.bin" "cfgxml"
+do
+	if [ -f $(PKGPE)/$$var ]; then
+		cp $(PKGPE)/$$var $(1)/tmp/$$var.bak 
 	fi
-}
+done
 
-tobak enlogic.cfg
-tobak config.bin
-tobak cfgxml
 endef
 
 define Package/enlogic/postinst
 #!/bin/sh
 
-frombak()
-{
-	if [ -f $(PKGPE)/$1.bak ]; then
-		mv $(PKGPE)/$1.bak $(PKGPE)/$1
+for var in "enlogic.cfg" "config.bin" "cfgxml"
+do 
+	if [ -f $(1)/tmp/$$var.bak ]; then
+		mv $(1)/tmp/$$var.bak $(PKGPE)/$$var -f
 	fi
-}
+done
 
-frombak enlogic.cfg
-frombak config.bin
-frombak cfgxml
 endef
 
 define Package/enlogic/install
