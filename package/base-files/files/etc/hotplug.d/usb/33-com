@@ -1,49 +1,101 @@
-COM10=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.1/2-1.1.1:1.0
-COM11=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.1/2-1.1.1:1.1
-COM12=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.3/2-1.1.3:1.0
-COM13=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.3/2-1.1.3:1.1
-COM14=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.4/2-1.1.4:1.0
+if [ "$PRODUCT" == "10c4/ea70/100" ]; then
 
-case "$DEVPATH" in
-    $COM10)
-        if [ "$ACTION" = "add" ]; then
-            DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
-            ln -s /dev/$DEVICE_NAME /dev/com10
-        else
-            rm /dev/com10
-        fi
+    COM10=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.1/2-1.1.1:1.0
+    COM11=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.1/2-1.1.1:1.1
+    COM12=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.3/2-1.1.3:1.0
+    COM13=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.3/2-1.1.3:1.1
+    COM14=/devices/soc0/80080000.ahb/80080000.usb/ci_hdrc.0/usb2/2-1/2-1.1/2-1.1.4/2-1.1.4:1.0
+
+    COM10N=/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.4/1-1.4.1/1-1.4.1.1/1-1.4.1.1:1.0
+    COM11N=/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.4/1-1.4.1/1-1.4.1.1/1-1.4.1.1:1.1
+    COM12N=/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.4/1-1.4.1/1-1.4.1.3/1-1.4.1.3:1.0
+    COM13N=/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.4/1-1.4.1/1-1.4.1.3/1-1.4.1.3:1.1
+    COM14N=/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.4/1-1.4.1/1-1.4.1.4/1-1.4.1.4:1.0
+
+    case "$DEVPATH" in
+        $COM10)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com10
+            else
+                rm /dev/com10
+            fi
         ;;
-    $COM11)
-        if [ "$ACTION" = "add" ]; then
-            DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
-            ln -s /dev/$DEVICE_NAME /dev/com11
-        else
-            rm /dev/com11
-        fi
+        $COM11)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com11
+            else
+                rm /dev/com11
+            fi
         ;;
-    $COM12)
-        if [ "$ACTION" = "add" ]; then
-            DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
-            ln -s /dev/$DEVICE_NAME /dev/com12
-        else
-            rm /dev/com12
-        fi
+        $COM12)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com12
+            else
+                rm /dev/com12
+            fi
         ;;
-    $COM13)
-        if [ "$ACTION" = "add" ]; then
-            DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
-            ln -s /dev/$DEVICE_NAME /dev/com13
-        else
-            rm /dev/com13
-        fi        
+        $COM13)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com13
+            else
+                rm /dev/com13
+            fi        
         ;;
-    $COM14)
-        if [ "$ACTION" = "add" ]; then
-            DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
-            ln -s /dev/$DEVICE_NAME /dev/com14
-            /etc/init.d/pollmydevice restart
-        else
-            rm /dev/com14
-        fi
+        $COM14)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com14
+                /etc/init.d/pollmydevice restart
+            else
+                rm /dev/com14
+            fi
         ;;
-esac
+
+        $COM10N)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com10
+            else
+                rm /dev/com10
+            fi
+        ;;
+        $COM11N)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com11
+            else
+                rm /dev/com11
+            fi
+        ;;
+        $COM12N)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com12
+            else
+                rm /dev/com12
+            fi
+        ;;
+        $COM13N)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com13
+            else
+                rm /dev/com13
+            fi        
+        ;;
+        $COM14N)
+            if [ "$ACTION" = "add" ]; then
+                DEVICE_NAME=$(ls /sys/$DEVPATH | grep tty)
+                ln -s /dev/$DEVICE_NAME /dev/com14
+                /etc/init.d/pollmydevice restart
+            else
+                rm /dev/com14
+            fi
+        ;;
+    esac
+
+fi
