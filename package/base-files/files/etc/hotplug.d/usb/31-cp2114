@@ -1,0 +1,7 @@
+if [ "$ACTION" == "add" -a "$PRODUCT" == "10c4/ea90/0" ]; then
+    echo 507 > /sys/class/gpio/export
+    echo 508 > /sys/class/gpio/export
+    echo high > /sys/class/gpio/gpio508/direction
+    echo low > /sys/class/gpio/gpio507/direction
+    echo high > /sys/class/gpio/gpio507/direction
+fi
