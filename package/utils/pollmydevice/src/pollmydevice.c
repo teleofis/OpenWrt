@@ -575,6 +575,7 @@ void *ServerThreadFunc(void *args)
             else if(eventSource == threadFD->TCPtimer) 
             {
                 blockOther = 0; // free access for all clients
+                LOG("Connection hold time is up. Free access for all clients\n");
             }
 
             // data from TCP on existing connection
@@ -1697,7 +1698,10 @@ device_config_t GetFullDeviceConfig(int deviceID)
     }
     if(UCIptr.flags & UCI_LOOKUP_COMPLETE)
         deviceConfig.holdConnTime = atoi(UCIptr.o->v.string);
-
+    if(deviceConfig.holdConnTime==0){
+        LOG("Connection hold time not set. Set value to 60 sec\n");
+        deviceConfig.holdConnTime = 60;
+    }
     // client_host
     memcpy(UCIpath , UCIpathBegin, MAX_CHARS_IN_UCIPATH);
     strncat(UCIpath, UCIpathNumber, MAX_DIGITS_IN_DEV_NUM-2);

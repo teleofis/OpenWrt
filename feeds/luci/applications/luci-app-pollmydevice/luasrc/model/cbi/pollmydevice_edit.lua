@@ -101,11 +101,11 @@ server_port = s:option(Value, "server_port",  translate("Server Port"))
   --server_port.rmempty = false
   server_port:depends("mode","server")
 
-conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time (sec)"))
-  conn_time.default = 60
-  conn_time.datatype = "and(uinteger, min(0), max(100000))"
-  --conn_time.rmempty = false
-  conn_time:depends("mode","server")
+holdconntime = s:option(Value, "holdconntime",  translate("Connection Hold Time (sec)"))
+  holdconntime.default = 60
+  holdconntime.datatype = "and(uinteger, min(0), max(100000))"
+  --holdconntime.rmempty = false
+  holdconntime:depends("mode","server")
 
 modbus_gateway = s:option(ListValue, "modbus_gateway", translate("Modbus TCP/IP"))  -- create checkbox
   modbus_gateway.default = 0
