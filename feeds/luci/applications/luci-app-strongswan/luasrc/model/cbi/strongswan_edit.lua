@@ -82,10 +82,17 @@ o = s:option( Value, "my_identifier", translate("My identifier"), translate("Set
 		return value
 	end
 
+local r_iden  = s:option( ListValue, "remote_identifier_type", translate("Remote identifier type"), translate("Choose one accordingly to your IPSec configuration"))
+	r_iden.nowrite = true
+	r_iden.default = "fqdn"
+	r_iden:value("fqdn", translate("FQDN"))
+	r_iden:value("user_fqdn", translate("User FQDN"))
+	r_iden:value("address", translate("Address"))
+
 o = s:option( Value, "remote_identifier", translate("Remote identifier"), translate("Set the remote identifier for IPSec tunnel"))
 
 	function o.validate(self, value, section)
-		if iden:formvalue(section) == "address" then
+		if r_iden:formvalue(section) == "address" then
 			if not value:match("[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+") then
 				m.message = translate("IP address expected in \"Remote identifier\" field")
 				return nil
@@ -124,7 +131,11 @@ o = s:option( Value, "dpd_delay", translate("Delay (sec)"), translate("Delay bet
 o:depends({dpd_enable="1"})
 o.datatype = "lengthvalidation(0,64,'^[0-9]+$')"
 
-remip = s:option(DynamicList, "rightsubnet", translate("IP address/Subnet mask"),
+o = s:option(Value, "local_subnet", translate("Local IP address/Subnet mask"))
+	o.datatype = "ipaddr"
+	o.placeholder = "192.168.88.0/24"
+
+remip = s:option(DynamicList, "rightsubnet", translate("Remote IP address/Subnet mask"),
 	translate("Remote network secure group IP address and mask used to determine to what subnet an IP address belongs to. Range [0 - 32]. IP should differ from device LAN IP"))
 	remip.datatype = "ipaddr"
 

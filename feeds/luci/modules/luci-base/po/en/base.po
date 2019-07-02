@@ -3177,6 +3177,12 @@ msgstr ""
 msgid "« Back"
 msgstr "« Back"
 
+msgid "Return to member"
+msgstr "Return to member"
+
+msgid "Return to this member is performed with the current connection break. Use this option in one policy with the current participant designation."
+msgstr "Return to this member is performed with the current connection break. Use this option in one policy with the current participant designation."
+
 #~ msgid "Cached"
 #~ msgstr "Cached"
 
@@ -4044,3 +4050,12 @@ msgstr "« Back"
 
 #~ msgid "zone"
 #~ msgstr "Zone"
+
+msgid "GPS Clock Synchronization"
+msgstr "GPS Clock Synchronization"
+
+msgid "Input Voltage"
+msgstr "Input Voltage"
+
+msgid "CPU Temperature"
+msgstr "CPU Temperature"

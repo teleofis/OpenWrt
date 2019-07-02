@@ -1,0 +1,22 @@
+#!/bin/sh
+
+case "$1" in
+	list)
+		echo '{ "info": { } }'
+	;;
+	call)
+		case "$2" in
+			info)
+				temp1=$(cat /sys/bus/iio/devices/iio:device0/in_temp8_raw)
+				temp2=$(cat /sys/bus/iio/devices/iio:device0/in_temp8_raw)
+				temp3=$(cat /sys/bus/iio/devices/iio:device0/in_temp8_raw)
+				temp=$((temp1+temp2+temp3))
+				temp=$(((temp-3225)*253/3000))
+				temp="$temp °C"
+				echo '{'
+				echo "\"temperature\": \"$temp\""
+				echo '}'
+			;;
+		esac
+	;;
+esac
