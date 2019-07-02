@@ -1,16 +1,27 @@
---
---
+local sys = require "luci.sys"
+local uci = require "luci.model.uci".cursor()
+local d = require "luci.dispatcher"
 
-require 'luci.sys'
+local section_name
 
-arg[1] = arg[1] or ""
+if arg[1] then
+	section_name = arg[1]
+else
+	luci.http.redirect(luci.dispatcher.build_url("admin", "services", "pollmydevice"))
+end
 
-m = Map("pollmydevice", translate("PollMyDevice"), translate("TCP to RS232/RS485 converter"))
+local m = Map("pollmydevice", translate("PollMyDevice"), translate("TCP to RS232/RS485 converter"))
+	m.redirect=d.build_url("admin/services/pollmydevice/")
 
-s = m:section(NamedSection, arg[1], "pollmydevice", translate("Utility Settings"))
-s.addremove = false
+local s = m:section(NamedSection, arg[1], "pollmydevice", translate("Utility Settings"))
+	s.addremove = false
 
-devicename = s:option(DummyValue, "devicename", translate("Port"))
+desc = s:option(Value, "desc", translate("Description"))
+
+devicename = s:option(Value, "devicename", translate("Port"))
+	devicename.default = "/dev/com0"
+	devicename:value("/dev/com0")
+	devicename:value("/dev/com1")
 
 mode = s:option(ListValue, "mode", translate("Mode"))
   mode.default = "disabled"
@@ -18,6 +29,12 @@ mode = s:option(ListValue, "mode", translate("Mode"))
   mode:value("server")
   mode:value("client")
   mode.optional = false
+
+quiet = s:option(Flag, "quiet", translate("Disable log messages"))
+  quiet.optional = false
+  quiet.default = 0
+  quiet:depends("mode","server")
+  quiet:depends("mode","client")
 
 baudrate = s:option(ListValue, "baudrate",  translate("BaudRate"))
   baudrate.default = 9600
@@ -84,11 +101,11 @@ server_port = s:option(Value, "server_port",  translate("Server Port"))
   --server_port.rmempty = false
   server_port:depends("mode","server")
 
-conn_time = s:option(Value, "conn_time",  translate("Connection Hold Time (sec)"))
-  conn_time.default = 60
-  conn_time.datatype = "and(uinteger, min(0), max(100000))"
-  --conn_time.rmempty = false
-  conn_time:depends("mode","server")
+holdconntime = s:option(Value, "holdconntime",  translate("Connection Hold Time (sec)"))
+  holdconntime.default = 60
+  holdconntime.datatype = "and(uinteger, min(0), max(100000))"
+  --holdconntime.rmempty = false
+  holdconntime:depends("mode","server")
 
 modbus_gateway = s:option(ListValue, "modbus_gateway", translate("Modbus TCP/IP"))  -- create checkbox
   modbus_gateway.default = 0
