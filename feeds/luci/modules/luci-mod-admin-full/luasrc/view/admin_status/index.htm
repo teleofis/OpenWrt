@@ -523,8 +523,8 @@
 			if (e = document.getElementById('adc'))
 				e.innerHTML = info.adc /1000 + " <%:V%>";
 
-			if (e = document.getElementById('temp'))
-				e.innerHTML = info.temp;
+			/* if (e = document.getElementById('temp'))
+			 	e.innerHTML = info.temp; */
 
 			if (e = document.getElementById('memtotal'))
 				e.innerHTML = progressbar(
@@ -579,7 +579,7 @@
 		<tr><td width="33%"><%:Uptime%></td><td id="uptime">-</td></tr>
 		<tr><td width="33%"><%:Load Average%></td><td id="loadavg">-</td></tr>
 		<tr><td width="33%"><%:Input Voltage%></td><td id="adc">-</td></tr>
-		<tr><td width="33%"><%:CPU Temperature%></td><td id="temp">-</td></tr>
+		<!--<tr><td width="33%"><%:CPU Temperature%></td><td id="temp">-</td></tr>-->
 	</table>
 </fieldset>
 

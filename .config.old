@@ -4063,19 +4063,7 @@ CONFIG_PACKAGE_ntpdate=y
 # CONFIG_PACKAGE_openconnect is not set
 # CONFIG_PACKAGE_opennhrp is not set
 CONFIG_PACKAGE_openvpn-easy-rsa=y
-CONFIG_PACKAGE_openvpn-nossl=y
-CONFIG_OPENVPN_nossl_ENABLE_LZO=y
-CONFIG_OPENVPN_nossl_ENABLE_SERVER=y
-# CONFIG_OPENVPN_nossl_ENABLE_MANAGEMENT is not set
-CONFIG_OPENVPN_nossl_ENABLE_HTTP=y
-CONFIG_OPENVPN_nossl_ENABLE_SOCKS=y
-CONFIG_OPENVPN_nossl_ENABLE_FRAGMENT=y
-CONFIG_OPENVPN_nossl_ENABLE_MULTIHOME=y
-CONFIG_OPENVPN_nossl_ENABLE_PORT_SHARE=y
-CONFIG_OPENVPN_nossl_ENABLE_DEF_AUTH=y
-CONFIG_OPENVPN_nossl_ENABLE_PF=y
-# CONFIG_OPENVPN_nossl_ENABLE_IPROUTE2 is not set
-CONFIG_OPENVPN_nossl_ENABLE_SMALL=y
+# CONFIG_PACKAGE_openvpn-nossl is not set
 CONFIG_PACKAGE_openvpn-openssl=y
 CONFIG_OPENVPN_openssl_ENABLE_LZO=y
 # CONFIG_OPENVPN_openssl_ENABLE_X509_ALT_USERNAME is not set
@@ -4090,20 +4078,7 @@ CONFIG_OPENVPN_openssl_ENABLE_DEF_AUTH=y
 CONFIG_OPENVPN_openssl_ENABLE_PF=y
 # CONFIG_OPENVPN_openssl_ENABLE_IPROUTE2 is not set
 CONFIG_OPENVPN_openssl_ENABLE_SMALL=y
-CONFIG_PACKAGE_openvpn-polarssl=y
-CONFIG_OPENVPN_polarssl_ENABLE_LZO=y
-# CONFIG_OPENVPN_polarssl_ENABLE_X509_ALT_USERNAME is not set
-CONFIG_OPENVPN_polarssl_ENABLE_SERVER=y
-# CONFIG_OPENVPN_polarssl_ENABLE_MANAGEMENT is not set
-CONFIG_OPENVPN_polarssl_ENABLE_HTTP=y
-CONFIG_OPENVPN_polarssl_ENABLE_SOCKS=y
-CONFIG_OPENVPN_polarssl_ENABLE_FRAGMENT=y
-CONFIG_OPENVPN_polarssl_ENABLE_MULTIHOME=y
-CONFIG_OPENVPN_polarssl_ENABLE_PORT_SHARE=y
-CONFIG_OPENVPN_polarssl_ENABLE_DEF_AUTH=y
-CONFIG_OPENVPN_polarssl_ENABLE_PF=y
-# CONFIG_OPENVPN_polarssl_ENABLE_IPROUTE2 is not set
-CONFIG_OPENVPN_polarssl_ENABLE_SMALL=y
+# CONFIG_PACKAGE_openvpn-polarssl is not set
 CONFIG_PACKAGE_pptpd=y
 CONFIG_PACKAGE_strongswan=y
 
@@ -4601,7 +4576,7 @@ CONFIG_PACKAGE_collectd-mod-df=y
 CONFIG_PACKAGE_collectd-mod-dns=y
 # CONFIG_PACKAGE_collectd-mod-email is not set
 # CONFIG_PACKAGE_collectd-mod-entropy is not set
-# CONFIG_PACKAGE_collectd-mod-exec is not set
+CONFIG_PACKAGE_collectd-mod-exec=y
 # CONFIG_PACKAGE_collectd-mod-filecount is not set
 # CONFIG_PACKAGE_collectd-mod-fscache is not set
 CONFIG_PACKAGE_collectd-mod-interface=y
@@ -4632,7 +4607,7 @@ CONFIG_PACKAGE_collectd-mod-processes=y
 # CONFIG_PACKAGE_collectd-mod-tcpconns is not set
 # CONFIG_PACKAGE_collectd-mod-teamspeak2 is not set
 # CONFIG_PACKAGE_collectd-mod-ted is not set
-# CONFIG_PACKAGE_collectd-mod-thermal is not set
+CONFIG_PACKAGE_collectd-mod-thermal=y
 # CONFIG_PACKAGE_collectd-mod-unixsock is not set
 CONFIG_PACKAGE_collectd-mod-uptime=y
 # CONFIG_PACKAGE_collectd-mod-users is not set
@@ -4704,7 +4679,7 @@ CONFIG_PACKAGE_mmc-utils=y
 CONFIG_PACKAGE_mount-utils=y
 # CONFIG_PACKAGE_mountd is not set
 # CONFIG_PACKAGE_mpack is not set
-CONFIG_PACKAGE_mxsldr=y
+# CONFIG_PACKAGE_mxsldr is not set
 # CONFIG_PACKAGE_namei is not set
 # CONFIG_PACKAGE_nfc-utils is not set
 # CONFIG_PACKAGE_ocf-crypto-headers is not set
