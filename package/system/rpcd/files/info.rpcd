@@ -7,19 +7,11 @@ case "$1" in
 	call)
 		case "$2" in
 			info)
-				val1=$(cat /sys/bus/iio/devices/iio:device0/in_voltage2_raw)
-				val2=$(cat /sys/bus/iio/devices/iio:device0/in_voltage2_raw)
-				val3=$(cat /sys/bus/iio/devices/iio:device0/in_voltage2_raw)
-				val1=$((val1+val2+val3))
-				val1=$((val1*227/30))
-				temp1=$(cat /sys/bus/iio/devices/iio:device0/in_temp8_raw)
-				temp2=$(cat /sys/bus/iio/devices/iio:device0/in_temp8_raw)
-				temp3=$(cat /sys/bus/iio/devices/iio:device0/in_temp8_raw)
-				temp=$((temp1+temp2+temp3))
-				temp=$(((temp-3225)*253/3000))
+				volt=$((($(cat /sys/bus/iio/devices/iio:device0/in_voltage2_raw)+$(cat /sys/bus/iio/devices/iio:device0/in_voltage2_raw)+$(cat /sys/bus/iio/devices/iio:device0/in_voltage2_raw))*227/30))
+				temp=$((($(cat /sys/bus/iio/devices/iio:device0/in_temp8_raw)+$(cat /sys/bus/iio/devices/iio:device0/in_temp8_raw)+$(cat /sys/bus/iio/devices/iio:device0/in_temp8_raw)-3225)*253/3000))
 				temp="$temp °C"
 				echo '{'
-				echo "\"voltage\": \"$val1\" ,"
+				echo "\"voltage\": \"$volt\" ,"
 				echo "\"temperature\": \"$temp\""
 				echo '}'
 			;;
