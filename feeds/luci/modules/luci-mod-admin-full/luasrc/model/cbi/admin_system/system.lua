@@ -187,21 +187,6 @@ if has_ntpd then
 		o = s:option(Flag, "enable", translate("Enable NTP client"))
 		o.rmempty = false
 
-		function o.cfgvalue(self)
-			return sys.init.enabled("ntpd")
-				and self.enabled or self.disabled
-		end
-
-		function o.write(self, section, value)
-			if value == self.enabled then
-				sys.init.enable("ntpd")
-				sys.call("env -i /etc/init.d/ntpd start >/dev/null")
-			else
-				sys.call("env -i /etc/init.d/ntpd stop >/dev/null")
-				sys.init.disable("ntpd")
-			end
-		end
-
 		o = s:option(Flag, "use_gps", translate("GPS Clock Synchronization"))
 		o:depends("enable", "1")
 
