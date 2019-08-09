@@ -6,7 +6,7 @@ FLAG=$(cat /sys/class/gpio/gpio61/value)
 
 BOARD=$((($(cat /dev/board)+$(cat /dev/board)+$(cat /dev/board))/3))
 BOARD=$((($(cat /dev/board)+$(cat /dev/board)+$(cat /dev/board))/3))
-if [[ "$FLAG" -eq "0" -a "$BOARD" -gt "1800" -a "$BOARD" -lt "1900" ]]; then
+if [[ "$FLAG" -eq "0" -a "$BOARD" -gt "1775" -a "$BOARD" -lt "1875" ]]; then
 	/etc/init.d/simman disable
 	opkg remove simman --force-removal-of-dependent-packages && rm /tmp/luci-indexcache &
 	echo "Configuration without modem" > /dev/kmsg
