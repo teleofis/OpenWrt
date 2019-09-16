@@ -25,3 +25,4 @@ git-src
 /rootfs.img
 /sysupgrade_RTU968.tar
 /.config.old
+/dl

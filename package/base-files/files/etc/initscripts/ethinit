@@ -1,8 +1,7 @@
 #!/bin/ash
 
 echo 60 > /sys/class/gpio/export
-echo out > /sys/class/gpio/gpio60/direction
-echo 1 > /sys/class/gpio/gpio60/value
+echo high > /sys/class/gpio/gpio60/direction
 
 MAC0=$(fw_printenv ethaddr | sed s/ethaddr=// | sed -e s/://g)
 MAC1=$(fw_printenv eth1addr | sed s/eth1addr=// | sed -e s/://g)
