@@ -10,6 +10,7 @@ PROG=$PP/enlogic
 start_service()
 {
 	echo "Starting EnLogic system"
+	ln -s $PP/network.conf.$(fw_printenv rtc_device | awk -F '=' '{print $2}' 2>/dev/null) $PP/network.conf
 	cd $PP/
 	$PP/start
 }

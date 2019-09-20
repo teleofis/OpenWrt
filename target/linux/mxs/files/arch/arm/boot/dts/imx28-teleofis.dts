@@ -245,13 +245,8 @@
 			};
 			i2c0: i2c@80058000 {					
 				pinctrl-names = "default";
-				pinctrl-0 = <&i2c0_pins_b>;			/* RTC */
+				pinctrl-0 = <&i2c0_pins_b>;			/* For RTC */
 				status = "okay";
-				
-				pcf8563: rtc@51 {                    
-					compatible = "phg,pcf8563";
-					reg = <0x51>;
-				};
 			};
 			usbphy0: usbphy@8007c000 {
 				status = "okay";

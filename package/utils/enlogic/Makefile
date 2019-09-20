@@ -68,6 +68,7 @@ define Package/enlogic/install
 	$(INSTALL_DIR) $(1)/$(PKGPE)
 	$(INSTALL_DIR) $(1)/$(PKGPE)/defcfg
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/enlogic $(1)/$(PKGPE)
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/network.conf.* $(1)/$(PKGPE)
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/start $(1)/$(PKGPE)
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/cfgxml $(1)/$(PKGPE)
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/config.bin $(1)/$(PKGPE)

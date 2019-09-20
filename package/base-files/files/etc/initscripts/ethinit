@@ -1,6 +1,8 @@
 #!/bin/ash
 
 echo 60 > /sys/class/gpio/export
+echo low > /sys/class/gpio/gpio60/direction
+sleep 0.2
 echo high > /sys/class/gpio/gpio60/direction
 
 MAC0=$(fw_printenv ethaddr | sed s/ethaddr=// | sed -e s/://g)

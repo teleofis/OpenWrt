@@ -107,6 +107,18 @@ holdconntime = s:option(Value, "holdconntime",  translate("Connection Hold Time 
   --holdconntime.rmempty = false
   holdconntime:depends("mode","server")
 
+pack_timeout = s:option(Value, "pack_timeout",  translate("Packet timeout (msec)"))
+  pack_timeout.default = 0
+  pack_timeout.datatype = "and(uinteger, min(0), max(25500))"
+  pack_timeout:depends("mode","server")
+  pack_timeout:depends("mode","client")
+
+pack_size = s:option(Value, "pack_size",  translate("Packet size (byte)"))
+  pack_size.default = 255
+  pack_size.datatype = "and(uinteger, min(1), max(255))"
+  pack_size:depends("mode","server")
+  pack_size:depends("mode","client")
+
 modbus_gateway = s:option(ListValue, "modbus_gateway", translate("Modbus TCP/IP"))  -- create checkbox
   modbus_gateway.default = 0
   modbus_gateway:value(0,"Disabled")
