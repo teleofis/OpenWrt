@@ -142,6 +142,10 @@ GPRS_pass = sim:option(Value, "GPRS_pass", translate("Password"))
   GPRS_pass.rmempty = true
   GPRS_pass.optional = false
 
+testip = sim:option(DynamicList, "testip",  translate("IP address of remote servers"))
+  testip.datatype = "ipaddr"
+  testip.cast = "string"
+
 --- SIM2 settings ---
 sim = m:section(TypedSection, "sim1", translate("SIM2 settings"))
   sim.addremove = false
@@ -173,6 +177,10 @@ GPRS_pass = sim:option(Value, "GPRS_pass", translate("Password"))
   GPRS_pass.default  = ""
   GPRS_pass.rmempty = true
   GPRS_pass.optional = false
+
+testip = sim:option(DynamicList, "testip",  translate("IP address of remote servers"))
+  testip.datatype = "ipaddr"
+  testip.cast = "string"
 
 function m.on_commit(self)
   -- Modified configurations got committed and the CBI is about to restart associated services
