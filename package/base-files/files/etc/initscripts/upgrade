@@ -1,7 +1,8 @@
 #!/bin/ash
-mkdir /mnt/data
-mount -t ubifs ubi0_2 /mnt/data
+mkdir /mnt/data &>/dev/null
+mount -t ubifs ubi0_2 /mnt/data &>/dev/null
 if [ "$?" != "0" ]; then
+	echo "badblock searching"
 	BB=$(dmesg | grep -n1 "UBI error: ubi_io_read: error -74" | awk -F 'PEB ' '{print $2}' | awk -F ':' '{print $1}')
 	if [ -n "$BB" ]; then
 		FW_NAND_BOOT=$(fw_printenv nand_boot | grep "run extra_command" )
@@ -19,14 +20,17 @@ if [ "$?" != "0" ]; then
 		BB=$((BB*131072+54788096))
 		BB=$(echo "obase=16; $BB" | bc)
 		fw_setenv badblock "0x$BB"
+		echo "badblock found: the system will reboot"
 		echo "badblock found: the system will reboot" > /dev/kmsg
 		reboot
 	fi
+	echo "badblock not found"
 fi
 
 BB=$(fw_printenv badblock)
 if [ "$BB" = "badblock=-1" ]; then
 	touch /mnt/data/recovered
+	date +"%F %T" >> /etc/bbevent
 	fw_setenv badblock "0"
 fi
 
