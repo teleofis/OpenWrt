@@ -3,7 +3,7 @@ mkdir /mnt/data &>/dev/null
 mount -t ubifs ubi0_2 /mnt/data &>/dev/null
 if [ "$?" != "0" ]; then
 	echo "badblock searching"
-	BB=$(dmesg | grep -n1 "UBI error: ubi_io_read: error -74" | awk -F 'PEB ' '{print $2}' | awk -F ':' '{print $1}')
+	BB=$(dmesg | grep -m1 "UBI error: ubi_io_read: error -74" | awk -F 'PEB ' '{print $2}' | awk -F ':' '{print $1}')
 	if [ -n "$BB" ]; then
 		FW_NAND_BOOT=$(fw_printenv nand_boot | grep "run extra_command" )
 		if [ -z "$FW_NAND_BOOT" ]; then
