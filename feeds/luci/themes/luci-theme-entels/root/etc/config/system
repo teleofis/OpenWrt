@@ -3,6 +3,7 @@ config system
 	option hostname 'RTUx68V2'
 	option timezone 'MSK-3'
 	option zonename 'Europe/Moscow'
+	option bbrecovery '1'
 
 config timeserver 'ntp'
 	list server 'timeserver.ru'

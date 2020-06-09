@@ -3,6 +3,7 @@ config system
 	option hostname 'TELEOFIS-RTUx68V2'
 	option timezone 'MSK-3'
 	option zonename 'Europe/Moscow'
+	option bbrecovery '0'
 
 config timeserver 'ntp'
 	option enable '1'

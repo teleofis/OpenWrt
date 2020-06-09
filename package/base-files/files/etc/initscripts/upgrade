@@ -1,7 +1,8 @@
 #!/bin/ash
+BBREC=$(uci get system.@system[0].bbrecovery)
 mkdir /mnt/data &>/dev/null
 mount -t ubifs ubi0_2 /mnt/data &>/dev/null
-if [ "$?" != "0" ]; then
+if [ "$?" != "0" ] && [ "$BBREC" == "1" ]; then
 	echo "badblock searching"
 	BB=$(dmesg | grep -m1 "UBI error: ubi_io_read: error -74" | awk -F 'PEB ' '{print $2}' | awk -F ':' '{print $1}')
 	if [ -n "$BB" ]; then
