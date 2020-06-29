@@ -340,6 +340,13 @@ int ModemStarted(char *atdevice)
 	return access(atdevice, F_OK);
 }
 
+int ModemReset()
+{
+	gpioSet(settings.gsmpow_pin,1);
+	sleep(5);
+	gpioSet(settings.gsmpow_pin,0);
+}
+
 int SetSim(uint8_t sim)
 {
 	changeCounterForReboot++;
@@ -471,7 +478,10 @@ int main(int argc, char **argv)
 			{
 				if ((state < 0) || (state != INIT))
 				{
-					LOG("modem not found\n");
+					LOG("modem not found, try to turn on\n");
+					ModemReset();
+					sleep(60);
+					first_start = 1;
 					// changeCounter = settings.sw_before_modres;
 					// SetSim(active_sim);
 				}
