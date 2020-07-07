@@ -47,4 +47,5 @@ if [ "$AFTER_UPD" -eq "111" ]; then
 	rm -r /mnt/data/upper/
 	fw_setenv update_flag 112
 	sync
+	reboot
 fi
