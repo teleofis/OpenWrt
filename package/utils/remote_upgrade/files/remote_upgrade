@@ -33,7 +33,19 @@ if [[ -z $FW_NAME ]]; then
 	logger -st remote_upgrade "fw_name is not set"
 	exit 1
 fi
-#logger -st remote_upgrade ""
+
+COMMAND=$(uci get remote_upgrade.core.command)
+if [[ -z $COMMAND ]]; then
+	logger -st remote_upgrade "command is not set"
+	exit 1
+fi
+
+set_result() {	
+	uci set remote_upgrade.core.command="0"
+	uci set remote_upgrade.core.result="$1"
+	uci commit remote_upgrade
+}
+
 load() {
 	ENABLED=$(uci get remote_upgrade.core.enabled)
 	if [ "$ENABLED" -eq "1" ]; then
@@ -180,7 +192,122 @@ load_force() {
 	exit 0
 }
 
+check_new() {
+	logger -st remote_upgrade "Checking the new firmware version started"
+	cd $FW_DIR
+	rm .listing
+	wget --no-remove-listing --spider --timeout=5 --user=$USER --password=$PASS $FTPSERVER &>/dev/null
+	if ! grep -qr "$FW_NAME.tar" .listing ; then
+		logger -st remote_upgrade "Remote server is unavailable or does not contain the *.tar file"
+		set_result "100"
+		exit 1
+	fi
+	if ! grep -qr "$FW_NAME.tar.md5" .listing ; then
+		logger -st remote_upgrade "Remote server is unavailable or does not contain the *.tar.md5 file"
+		set_result "102"
+		exit 1
+	fi
+	if ! grep -qr "$FW_NAME.version" .listing ; then
+		logger -st remote_upgrade "Remote server is unavailable or does not contain the *.version file"
+		set_result "103"
+		exit 1
+	fi
+
+	rm $FW_NAME.version
+	wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.version &>/dev/null
+	while [[ "$?" != "0" ]]; do
+		wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.version &>/dev/null
+	done
+	VERSION=$(grep -r 'DISTRIB_DESCRIPTION' /etc/openwrt_release | awk -F "'" '{print $2}' | awk -F " " '{print $6}' | awk -F '.' '{print $1$2$3}')
+	VERSION=${VERSION:0:3}
+	NEW_VERSION=$(grep -r 'DISTRIB_DESCRIPTION' $FW_NAME.version | awk -F "'" '{print $2}' | awk -F " " '{print $6}' | awk -F '.' '{print $1$2$3}')
+	NEW_VERSION=${NEW_VERSION:0:3}
+	if [ "$NEW_VERSION" -le "$VERSION" ]; then
+		logger -st remote_upgrade "New firmware version not available"
+		set_result "11"
+		exit 1
+	elif [ "$NEW_VERSION" -gt "$VERSION" ]; then
+		logger -st remote_upgrade "New firmware version available"
+		set_result "10"
+		exit 0
+	else
+		logger -st remote_upgrade "The *.version file does not contain correct information"
+		set_result "104"
+		exit 1
+	fi
+}
+
+load_new() {
+	logger -st remote_upgrade "Firmware download started"
+	uci set remote_upgrade.core.result="21"
+	uci commit remote_upgrade
+	cd $FW_DIR
+
+	if [[ -f $FW_NAME.tar && -f $FW_NAME.tar.md5 ]]; then
+		rm $FW_NAME.tar.md5
+		wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar &>/dev/null
+		while [[ "$?" != "0" ]]; do
+			wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar &>/dev/null
+		done
+		wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar.md5 &>/dev/null
+		while [ "$?" != "0" ]; do
+			wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar.md5 &>/dev/null
+		done
+		MD5_REAL=$(md5sum $FW_NAME.tar | awk -F ' ' '{print $1}')
+		MD5_EXPECTED=$(cat $FW_NAME.tar.md5 | awk -F ' ' '{print $1}')
+		if [ "$MD5_REAL" == "$MD5_EXPECTED" ]; then
+			logger -st remote_upgrade "Firmware is already loaded"
+			set_result "23"
+			exit 0
+		fi
+	fi
+
+	rm $FW_NAME.tar*
+	wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar.md5 &>/dev/null
+	while [[ "$?" != "0" ]]; do
+		wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar.md5 &>/dev/null
+	done
+	wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar &>/dev/null
+	while [[ "$?" != "0" ]]; do
+		wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar &>/dev/null
+	done
+
+	MD5_REAL=$(md5sum $FW_NAME.tar | awk -F ' ' '{print $1}')
+	MD5_EXPECTED=$(cat $FW_NAME.tar.md5 | awk -F ' ' '{print $1}')
+	if [ "$MD5_REAL" != "$MD5_EXPECTED" ]; then
+		logger -st remote_upgrade "Upgrade archive is corrupted. Try again"
+		rm $FW_NAME.tar*
+		wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar.md5 &>/dev/null
+		while [[ "$?" != "0" ]]; do
+			wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar.md5 &>/dev/null
+		done
+		wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar &>/dev/null
+		while [[ "$?" != "0" ]]; do
+			wget -c -nd -P $FW_DIR --timeout=5 --user=$USER --password=$PASS $FTPSERVER/$FW_NAME.tar &>/dev/null
+		done
+
+		MD5_REAL=$(md5sum $FW_NAME.tar | awk -F ' ' '{print $1}')
+		MD5_EXPECTED=$(cat $FW_NAME.tar.md5 | awk -F ' ' '{print $1}')
+
+		if [ "$MD5_REAL" != "$MD5_EXPECTED" ]; then
+			logger -st remote_upgrade "Upgrade archive is corrupted. Abort"
+			set_result "24"
+			exit 1
+		fi
+	elif [ "$MD5_REAL" == "$MD5_EXPECTED" ]; then
+		logger -st remote_upgrade "Firmware loaded successfully"
+		set_result "22"
+		exit 0
+	else
+		logger -st remote_upgrade "Unknown error during firmware download"
+		set_result "25"
+		exit 1
+	fi	
+}
+
 upgrade() {
+	uci set remote_upgrade.core.result="30"
+	uci commit remote_upgrade
 	cd $FW_DIR
 	cp $FW_NAME.tar /tmp/sysupgrade_RTU968.tar
 	logger -st remote_upgrade "Sysupgrade process started"
@@ -188,29 +315,37 @@ upgrade() {
 	sysupgrade -t && sysupgrade -u
 }
 
-upgrade_force() {
+remove_fw() {
+	uci set remote_upgrade.core.result="41"
+	uci commit remote_upgrade
 	cd $FW_DIR
-	cp $FW_NAME.tar /tmp/sysupgrade_RTU968.tar
-	logger -st remote_upgrade "Sysupgrade process (force) started"
-	fw_setenv update_flag 113
-	sysupgrade -t && sysupgrade -y
+	rm $FW_NAME.*
+	set_result "42"
+	exit 0
 }
 
-case "$1" in
-	load)
+case "$COMMAND" in
+	"0")
 		eval load
 	;;
-	load_force)
-		eval load_force
+	"1")
+		eval check_new
 	;;
-	upgrade)
+	"2")
+		eval load_new
+	;;
+	"3")
 		eval upgrade
 	;;
-	upgrade_force)
+	"4")
+		eval remove_fw
+	;;
+	"5")
 		eval upgrade_force
 	;;
 	*)
-		logger -st remote_upgrade "Command is not supported. Use the following commands: load load_force upgrade upgrade_force"
+		logger -st remote_upgrade "The command is not supported"
+		exit 1
 	;;
 esac
 
