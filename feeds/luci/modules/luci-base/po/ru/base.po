@@ -4615,3 +4615,15 @@ msgstr "Входное напряжение"
 
 msgid "CPU Temperature"
 msgstr "Температура CPU"
+
+msgid "Overlay Partition Write Protection"
+msgstr "Защита раздела Overlay от записи"
+
+msgid "Switches the partition to Read-Only mode"
+msgstr "Перевод раздела в режим Read-Only (только для чтения)"
+
+msgid "Read-Only mode"
+msgstr "Режим Read-Only"
+
+msgid "Switch mode (Read-Only/Read-Write)"
+msgstr "Переключить режим (Read-Only/Read-Write)"

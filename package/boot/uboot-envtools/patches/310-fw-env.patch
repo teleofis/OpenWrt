@@ -9,7 +9,7 @@
 -	"ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:${hostname}::off; "	\
 -	"bootm"
 +	"env default -a; "								\
-+	"setenv filesize_rootfs 1d90000; "								\
++	"setenv filesize_rootfs 2000000; "								\
 +	"saveenv;"	\
 +	"reset "
  #endif
