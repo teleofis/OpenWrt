@@ -51,6 +51,12 @@ delay = section_gen:option(Value, "delay",  translate("Return to priority SIM, s
   delay.rmempty = false
   delay.optional = false
 
+csq_level = section_gen:option(Value, "csq_level",  translate("Minimum acceptable signal level, ASU (min: 1, max: 31)"),  translate("0 - not used"))
+  csq_level.default = 0
+  csq_level.datatype = "and(uinteger, min(0), max(31))"
+  csq_level.rmempty = false
+  csq_level.optional = false
+
 atdevice = section_gen:option(Value, "atdevice",  translate("AT modem device name"))
   atdevice.default = "/dev/ttyACM3"
   atdevice.datatype = "device"

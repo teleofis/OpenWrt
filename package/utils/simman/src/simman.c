@@ -48,6 +48,7 @@ typedef struct settings_s{
 	uint8_t retry_num;
 	uint16_t check_period;
 	uint16_t delay;
+	uint16_t csq_level;
 	testip_t serv[8];
 	sim_t sim[2];
 	uint8_t *atdevice;
@@ -140,6 +141,12 @@ int ReadConfiguration(settings_t *set)
 		return -1;
 	}	
 	settings.delay = atoi(p);
+
+	if ((p = GetUCIParam("simman.core.csq_level")) == NULL)
+	{
+		settings.csq_level = 0;
+	}	
+	settings.csq_level = atoi(p);
 
 	if ((p = GetUCIParam("simman.core.sw_before_modres")) == NULL)
 	{
@@ -438,6 +445,7 @@ int main(int argc, char **argv)
 		tmp, 
 		ch_sim,
 		num_sim,
+		sig_level,
 		hot_change;
 
 	time_t now_time, prev_time, prev_delay_time;
@@ -719,6 +727,25 @@ int main(int argc, char **argv)
 								}
 								else
 									need_change_sim++;
+							}
+							if (settings.csq_level != 0){
+								sig_level = GetSIG();
+								if (sig_level == 99) {
+									sleep(1);
+									sig_level = GetSIG();
+								}
+								LOG("Current RSSI: %d dBm\n", sig_level);
+								if (sig_level < settings.csq_level || sig_level == 99){
+									LOG("RSSI not detectable or below specified: %d dBm (min: %d dBm), switch to over SIM\n", sig_level, settings.csq_level);
+									ch_sim = 1;
+									// clear 
+									for (i = 0; i < sizeof(settings.serv)/sizeof(settings.serv[0]); i++)
+									{
+										if (!settings.serv[i].ip)
+											break;
+										settings.serv[i].retry_check = 0;
+									}
+								}
 							}
 							prev_time = now_time;
 							/*LOG("Reading SIM info...");

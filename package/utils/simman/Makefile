@@ -2,8 +2,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=simman
-PKG_VERSION:=2
-PKG_RELEASE:=9
+PKG_VERSION:=3
+PKG_RELEASE:=0
 PKG_BUILD_DIR:=$(BUILD_DIR)/simman
 #CMAKE_INSTALL:=1
 
@@ -54,6 +54,7 @@ define Package/simman/install
 	$(INSTALL_BIN) ./files/getband.sh $(1)/etc/simman/getband.sh
 	$(INSTALL_BIN) ./files/getsimcheck.sh $(1)/etc/simman/getsimcheck.sh
 	$(INSTALL_BIN) ./files/getpackinfo.sh $(1)/etc/simman/getpackinfo.sh
+	$(INSTALL_BIN) ./files/getcsq.sh $(1)/etc/simman/getcsq.sh
 	$(CP) ./files/*.gcom $(1)/etc/simman
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/usb
 	$(INSTALL_DATA) ./files/simman.hotplug $(1)/etc/hotplug.d/usb/12-modem
