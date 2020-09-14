@@ -694,6 +694,17 @@ int main(int argc, char **argv)
 							if (diff < settings.check_period)
 								break;
 
+							if (settings.csq_level != 0){
+								sig_level = GetSIG();
+								if (sig_level == 99) {
+									sleep(1);
+									sig_level = GetSIG();
+								}
+								LOG("Current ASU: %d\n", sig_level);
+								if (sig_level < settings.csq_level || sig_level == 99)
+									LOG("ASU not detectable or below specified: %d ASU (min: %d ASU)\n", sig_level, settings.csq_level);
+							}
+
 							LOG("check servers\n");
 
 							uint8_t need_change_sim = 0;
@@ -709,7 +720,10 @@ int main(int argc, char **argv)
 										//ack = ping((char*)settings.serv[i].ip);
 									}while(!ack && (++cnt < 3));
 
-									if (!ack) settings.serv[i].retry_check++;
+									if (!ack) 
+										settings.serv[i].retry_check++;
+									else if (settings.csq_level != 0 && (sig_level < settings.csq_level || sig_level == 99))
+										settings.serv[i].retry_check++;
 									else
 									{
 										settings.serv[i].retry_check = 0;
@@ -720,33 +734,20 @@ int main(int argc, char **argv)
 									if (settings.serv[i].retry_check >= settings.retry_num)
 										need_change_sim++;
 
-									if (!settings.serv[i].retry_check)
-										LOG("%s - LIVE\n", settings.serv[i].ip);
+									if (ack)
+									{										
+										if (settings.csq_level != 0 && (sig_level < settings.csq_level || sig_level == 99))
+											LOG("%s - LIVE; ASU LOW (%d/%d)\n", settings.serv[i].ip,settings.serv[i].retry_check, settings.retry_num);
+										else
+											LOG("%s - LIVE\n", settings.serv[i].ip);
+									}
 									else
 										LOG("%s - DOWN (%d/%d)\n", settings.serv[i].ip,settings.serv[i].retry_check, settings.retry_num);
 								}
 								else
 									need_change_sim++;
 							}
-							if (settings.csq_level != 0){
-								sig_level = GetSIG();
-								if (sig_level == 99) {
-									sleep(1);
-									sig_level = GetSIG();
-								}
-								LOG("Current RSSI: %d dBm\n", sig_level);
-								if (sig_level < settings.csq_level || sig_level == 99){
-									LOG("RSSI not detectable or below specified: %d dBm (min: %d dBm), switch to over SIM\n", sig_level, settings.csq_level);
-									ch_sim = 1;
-									// clear 
-									for (i = 0; i < sizeof(settings.serv)/sizeof(settings.serv[0]); i++)
-									{
-										if (!settings.serv[i].ip)
-											break;
-										settings.serv[i].retry_check = 0;
-									}
-								}
-							}
+
 							prev_time = now_time;
 							/*LOG("Reading SIM info...");
 							if(GetSimInfo(settings.atdevice))
