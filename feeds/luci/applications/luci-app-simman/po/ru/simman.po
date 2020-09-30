@@ -140,3 +140,6 @@ msgstr "IMEI NB-IoT модема"
 
 msgid "Not available"
 msgstr "Не доступен"
+
+msgid "Minimum acceptable signal level, ASU (min: 1, max: 31)"
+msgstr "Минимально допустимый уровень сигнала, ASU (мин: 1, макс: 31)"
