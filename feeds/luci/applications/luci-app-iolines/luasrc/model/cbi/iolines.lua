@@ -30,7 +30,7 @@ voltage = s:option(DummyValue, "voltage", translate("Measured voltage on ADC, mV
         local devver = test:read("*a")
         test:close()
         if tonumber(string.format("%d", devver))>750 and tonumber(string.format("%d", devver))<850 then
-          result = result * 6.755
+          result = result * 13.164
         else
           result = result * 4.365
         end
