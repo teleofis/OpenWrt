@@ -2691,7 +2691,7 @@ msgid ""
 "The system is erasing the configuration partition now and will reboot itself "
 "when finished."
 msgstr ""
-"Идёт удаление раздела конфигурации с последующей перезагрузкой сиситемы."
+"Идёт удаление раздела конфигурации с последующей перезагрузкой системы."
 
 #, fuzzy
 msgid ""
