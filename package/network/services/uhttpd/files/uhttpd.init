@@ -52,7 +52,7 @@ generate_keys() {
 	[ -n "$GENKEY_CMD" ] && {
 		$GENKEY_CMD \
 			-days ${days:-730} -newkey rsa:${bits:-2048} -keyout "${UHTTPD_KEY}.new" -out "${UHTTPD_CERT}.new" \
-			-subj /C="${country:-DE}"/ST="${state:-Saxony}"/L="${location:-Leipzig}"/O="${commonname:-Lede}$UNIQUEID"/CN="${commonname:-Lede}"
+			-subj /C="${country:-DE}"/ST="${state:-Saxony}"/L="${location:-Leipzig}"/O="${commonname:-OpenWrt}$UNIQUEID"/CN="${commonname:-OpenWrt}"
 		sync
 		mv "${UHTTPD_KEY}.new" "${UHTTPD_KEY}"
 		mv "${UHTTPD_CERT}.new" "${UHTTPD_CERT}"
@@ -155,6 +155,9 @@ start_instance()
 	[ -f /lib/libustream-ssl.so ] && [ -n "$https" ] && {
 		[ -s "$UHTTPD_CERT" -a -s "$UHTTPD_KEY" ] || {
 			config_foreach generate_keys cert
+			uci_set uhttpd "$cfg" key "$UHTTPD_KEY"
+			uci_set uhttpd "$cfg" cert "$UHTTPD_CERT"
+			uci_commit uhttpd
 		}
 
 		[ -f "$UHTTPD_CERT" -a -f "$UHTTPD_KEY" ] && {
@@ -176,12 +179,14 @@ start_instance()
 	procd_close_instance
 }
 
-service_triggers()
-{
-	procd_add_reload_trigger "uhttpd"
+start_service() {
+	config_load uhttpd
+	config_foreach start_instance uhttpd
 }
 
-start_service() {
+reload_service()
+{
+	stop_service
 	config_load uhttpd
 	config_foreach start_instance uhttpd
 }
