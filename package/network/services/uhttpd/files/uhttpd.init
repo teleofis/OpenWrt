@@ -183,10 +183,3 @@ start_service() {
 	config_load uhttpd
 	config_foreach start_instance uhttpd
 }
-
-reload_service()
-{
-	stop_service
-	config_load uhttpd
-	config_foreach start_instance uhttpd
-}
