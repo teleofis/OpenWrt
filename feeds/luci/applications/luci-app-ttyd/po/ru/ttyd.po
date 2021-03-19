@@ -13,7 +13,7 @@ msgstr ""
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:56
 msgid "Accept only one client and exit on disconnection"
-msgstr ""
+msgstr "Принимать только одно подключение и выключать сервер при отключении клиента"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:15
 msgid "Add instance"
@@ -21,21 +21,22 @@ msgstr "Добавить экземпляр"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:40
 msgid "Allow URL args"
-msgstr ""
+msgstr "Принимать аргументы в URL"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:40
 msgid ""
 "Allow client to send command line arguments in URL (eg: http://"
 "localhost:7681?arg=foo&arg=bar)"
-msgstr ""
+msgstr "Разрешить клиенту отправлять команду с аргументами в URL (например, http://"
+"localhost:7681?arg=foo&arg=bar)"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:50
 msgid "Check origin"
-msgstr ""
+msgstr "Проверка источника"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:44
 msgid "Client option"
-msgstr ""
+msgstr "Опции клиента"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:76
 msgid "Command"
@@ -47,15 +48,15 @@ msgstr "Конфигурация"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:28
 msgid "Credential"
-msgstr ""
+msgstr "Аутентификация"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:28
 msgid "Credential for Basic Authentication"
-msgstr ""
+msgstr "Учетные данные для простой аутенфикации"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:58
 msgid "Custom index.html path"
-msgstr ""
+msgstr "Модифицированная страница index.html"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:73
 msgid "Debug"
@@ -63,11 +64,11 @@ msgstr "Отладка"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:42
 msgid "Do not allow clients to write to the TTY"
-msgstr ""
+msgstr "Не позволять клиентам отправлять команды в TTY"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:50
 msgid "Do not allow websocket connection from different origin"
-msgstr ""
+msgstr "Не позволять подключаться к веб-сокету из другого источника"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:17
 msgid "Enable"
@@ -75,7 +76,7 @@ msgstr "Включить"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:60
 msgid "Enable IPv6 support"
-msgstr ""
+msgstr "Включить IPv6"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:62
 msgid "Enable SSL"
@@ -83,11 +84,11 @@ msgstr "Включить SSL"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:34
 msgid "Group ID"
-msgstr ""
+msgstr "Group ID"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:34
 msgid "Group id to run with"
-msgstr ""
+msgstr "Group id для запуска"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:60
 msgid "IPv6"
@@ -95,7 +96,7 @@ msgstr "IPv6"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:58
 msgid "Index"
-msgstr ""
+msgstr "Index файл"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:24
 msgid "Interface"
@@ -107,17 +108,17 @@ msgstr "Макс. кол-во обслуживаемых клиентов"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:52
 msgid "Maximum clients to support (default: 0, no limit)"
-msgstr ""
+msgstr "Макс. кол-во обслуживаемых клиентов (по умолчанию - 0, без ограничений)"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:24
 msgid ""
 "Network interface to bind (eg: eth0), or UNIX domain socket path (eg: /var/"
 "run/ttyd.sock)"
-msgstr ""
+msgstr "Сетевой интерфейс для подключения (например, eth0) или UNIX сокет(например, /var/run/ttyd.sock)"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:56
 msgid "Once"
-msgstr ""
+msgstr "Единожды"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:20
 msgid "Port"
@@ -125,13 +126,13 @@ msgstr "Порт"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:20
 msgid "Port to listen (default: 7681, use `0` for random port)"
-msgstr ""
+msgstr "Порт для подключения к серверу (по умолчанию - 7681)"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/term.js:13
 msgid ""
 "Random ttyd port (port=0) is not supported.<br>Change to a fixed port and "
 "try again."
-msgstr ""
+msgstr "Случайный TTY порт (port=0) не поддерживается. Измените на фикированный порт и попробуйте снова"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:42
 msgid "Read-only"
@@ -139,39 +140,39 @@ msgstr "Только для чтения"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:62
 msgid "SSL"
-msgstr ""
+msgstr "Использовать SSL"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:70
 msgid "SSL CA file path for client certificate verification"
-msgstr ""
+msgstr "Файл SSL CA для подтверждения сертификата клиента"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:70
 msgid "SSL ca"
-msgstr ""
+msgstr "SSL ca"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:64
 msgid "SSL cert"
-msgstr ""
+msgstr "SSL сертификат"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:64
 msgid "SSL certificate file path"
-msgstr ""
+msgstr "Файл SSL сертификата"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:67
 msgid "SSL key"
-msgstr ""
+msgstr "SSL ключ"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:67
 msgid "SSL key file path"
-msgstr ""
+msgstr "Файл SSL ключа"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:44
 msgid "Send option to client"
-msgstr ""
+msgstr "Посылать опции клиенту"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:73
 msgid "Set log level (default: 7)"
-msgstr ""
+msgstr "Установить уровень логгирования (по умолчанию - 7)"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:37
 msgid "Signal"
@@ -179,7 +180,7 @@ msgstr "Сигнал"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:37
 msgid "Signal to send to the command when exit it (default: 1, SIGHUP)"
-msgstr ""
+msgstr "Сигнал для завершения программы после выхода (по умолчанию - 1, SIGHUP)"
 
 #: applications/luci-app-ttyd/luasrc/controller/ttyd.lua:11
 msgid "Terminal"
@@ -187,19 +188,19 @@ msgstr "Терминал"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:47
 msgid "Terminal type"
-msgstr ""
+msgstr "Тип терминала"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:47
 msgid "Terminal type to report (default: xterm-256color)"
-msgstr ""
+msgstr "Тип терминала для вывода (по умолчанию - xterm-256color)
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:31
 msgid "User ID"
-msgstr ""
+msgstr "User ID"
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:31
 msgid "User id to run with"
-msgstr ""
+msgstr "User id для запуска"
 
 #: applications/luci-app-ttyd/luasrc/controller/ttyd.lua:10
 msgid "ttyd"
@@ -207,4 +208,7 @@ msgstr ""
 
 #: applications/luci-app-ttyd/htdocs/luci-static/resources/view/ttyd/config.js:12
 msgid "ttyd Instance"
-msgstr ""
+msgstr "Экземпляр ttyd"
+
+msgid "TTYd server is not running"
+msgstr "Сервер TTYd не запущен"

@@ -103,8 +103,8 @@ server_port = s:option(Value, "server_port",  translate("Server Port"))
 
 connection_mode = s:option(ListValue, "connection_mode", translate("Connection Mode"))
   connection_mode.default = 0
-  connection_mode:value(0,"Alternating")
-  connection_mode:value(1,"Simultaneous")
+  connection_mode:value(0,translate("Alternating"))
+  connection_mode:value(1,translate("Simultaneous"))
   connection_mode:depends("mode","server")
 
 holdconntime = s:option(Value, "holdconntime",  translate("Connection Hold Time (sec)"))

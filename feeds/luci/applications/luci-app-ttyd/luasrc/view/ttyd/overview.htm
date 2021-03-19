@@ -43,7 +43,11 @@
 	<% else %>
 		<div class="cbi-section">
 			<div class="cbi-section"><p>
-				<p class="alert-message warning"><%:TTYd server is not running%></p>
+				<p class="alert-message warning">
+					<%=translate(
+						"TTYd server is not running")
+					%>						
+				</p>
 			</div>
 		</div>
 	<% end %>
