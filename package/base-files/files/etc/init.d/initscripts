@@ -6,6 +6,7 @@ STOP=84
 
 start()
 {
+	/sbin/eth_wdt &
 	/etc/initscripts/symlinks &
 	/etc/initscripts/modeminit &
 	/etc/initscripts/usbhost &

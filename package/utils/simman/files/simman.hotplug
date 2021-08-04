@@ -140,5 +140,6 @@ case "$ACTION" in
             fi
         ;;            
         esac
+        sync
     ;;
 esac

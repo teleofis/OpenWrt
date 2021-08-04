@@ -78,3 +78,12 @@ msgstr "Таймаут пакета [0-255] (x100мс)"
 
 msgid "Minimum packet size [0-255] (byte)"
 msgstr "Минимальный размер пакета [0-255] (байт)"
+
+msgid "Connection Mode"
+msgstr "Алгоритм опроса"
+
+msgid "Alternating"
+msgstr "Попеременный"
+
+msgid "Simultaneous"
+msgstr "Одновременный"
