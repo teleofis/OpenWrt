@@ -36,9 +36,11 @@ proto_nbiot_setup() {
 		return 1
 	}
 
-	COMMAND="AT+CBAND=$band" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
-	COMMAND="AT+CFUN=0" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
-	COMMAND="AT+CFUN=1" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
+	if [ -n "$band" ]; then
+		COMMAND="AT+CBAND=$band" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
+		COMMAND="AT+CFUN=0" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
+		COMMAND="AT+CFUN=1" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
+	fi
 
 	COMMAND="AT+CGACT=0,1" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 
@@ -57,8 +59,6 @@ proto_nbiot_setup() {
 
 	connect="${apn:+USE_APN=$apn }DIALNUMBER=$dialnumber /usr/sbin/chat -t5 -v -E -f $chat"
 	ppp_generic_setup "$interface" \
-		noaccomp \
-		nopcomp \
 		nobsdcomp \
 		noauth \
 		lock \
