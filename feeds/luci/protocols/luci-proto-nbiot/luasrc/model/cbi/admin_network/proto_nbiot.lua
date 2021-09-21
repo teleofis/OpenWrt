@@ -1,3 +1,4 @@
+local uci = luci.model.uci.cursor()
 local map, section, net = ...
 
 local device, apn, service, pincode, username, password, dialnumber
@@ -36,6 +37,7 @@ band:value(5)
 band:value(8)
 band:value(20)
 band:value(28)
+device.rmempty = false
 band.default = band.enabled
 band.widget = "checkbox"
 band.delimiter = ","
@@ -44,6 +46,7 @@ function band.cfgvalue(self, section)
 	if value then
 		return value
 	else
+		map.uci:set("network", section, "band", "1,3,5,8,20,28")
 		return "1,3,5,8,20,28"
 	end
 end
