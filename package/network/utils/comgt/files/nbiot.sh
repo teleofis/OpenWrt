@@ -39,9 +39,11 @@ proto_nbiot_setup() {
 	if [ -n "$band" ]; then
 		COMMAND="AT+CBAND=$band" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 		COMMAND="AT+CFUN=0" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
+		COMMAND="AT*MCGDEFCONT=\"IP\",\"$apn\"" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 		COMMAND="AT+CFUN=1" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 	fi
 
+	sleep 2
 	COMMAND="AT+CGACT=0,1" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 
 	chat="/etc/chatscripts/nbiot.chat"
