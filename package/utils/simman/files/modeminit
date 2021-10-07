@@ -1,0 +1,25 @@
+#!/bin/sh
+
+ATDEVICE=/dev/ttyAMA0
+
+while [[ ! -e $ATDEVICE ]]; do
+	sleep 1
+done
+
+MODEM=$(gcom -d "$ATDEVICE" -s /etc/gcom/getcardinfo.gcom)
+
+if echo "$MODEM" | grep -q SIM7020E; then
+	uci set network.nbiot=interface
+	uci set network.nbiot.proto='nbiot'
+	uci set network.nbiot.delegate='0'
+	uci set network.nbiot.device=$ATDEVICE
+	uci set network.nbiot.band='1,3,5,8,20,28'
+	uci commit network
+	NET=$(uci get firewall.@zone[1].network)
+	NET="${NET} nbiot"
+	uci set firewall.@zone[1].network="${NET}"
+	uci commit firewall
+	ubus call network reload
+fi
+
+exit 0
