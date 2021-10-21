@@ -20,6 +20,9 @@ if device_suggestions then
 	end
 end
 
+imei = section:taboption("general", DummyValue, "imei", translate("IMEI"))
+ccid = section:taboption("general", DummyValue, "ccid", translate("SIM CCID"))
+
 apn = section:taboption("general", Value, "apn", translate("APN"))
 pincode = section:taboption("general", Value, "pincode", translate("PIN"))
 username = section:taboption("general", Value, "username", translate("PAP/CHAP username"))

@@ -6,6 +6,7 @@
 
 	. ../netifd-proto.sh
 	. ./ppp.sh
+	. /lib/functions.sh
 	init_proto "$@"
 }
 
@@ -44,6 +45,14 @@ proto_nbiot_setup() {
 	fi
 
 	sleep 2
+
+	IMEI=$(gcom -d "$device" -s /etc/simman/getimei.gcom)
+	IMEI=${IMEI:1}
+	CCID=$(gcom -d "$device" -s /etc/simman/getccid1.gcom)
+	uci_set network "$1" imei "$IMEI"
+	uci_set network "$1" ccid "$CCID"
+	uci_commit network
+
 	COMMAND="AT+CGACT=0,1" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 
 	chat="/etc/chatscripts/nbiot.chat"
