@@ -21,6 +21,13 @@ proto_nbiot_init_config() {
 	proto_config_add_string "band"
 }
 
+modem_reset(){
+	echo low > /sys/class/gpio/gpio133/direction
+	sleep 3
+	echo high > /sys/class/gpio/gpio133/direction
+	sleep 2
+}
+
 proto_nbiot_setup() {
 	local interface="$1"
 	local chat
@@ -37,6 +44,20 @@ proto_nbiot_setup() {
 		return 1
 	}
 
+	RESP=$(gcom -d "$device" -s /etc/gcom/getcardinfo.gcom | grep SIM7020E)
+	COUNT=0
+	while [ -z "$RESP" ];
+	do
+		sleep 1
+		RESP=$(gcom -d "$device" -s /etc/gcom/getcardinfo.gcom | grep SIM7020E)
+		COUNT=$((COUNT+1))
+		if [ "$COUNT" -ge "10" ]; then
+			logger -p daemon.info -t "nbiot" "Modem does not respond to AT commands, modem power reset"
+			modem_reset
+			break
+		fi
+	done
+
 	if [ -n "$band" ]; then
 		COMMAND="AT+CBAND=$band" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 		COMMAND="AT+CFUN=0" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
@@ -49,6 +70,7 @@ proto_nbiot_setup() {
 	IMEI=$(gcom -d "$device" -s /etc/simman/getimei.gcom)
 	IMEI=${IMEI:1}
 	CCID=$(gcom -d "$device" -s /etc/simman/getccid1.gcom)
+	CCID=89${CCID:0:16}
 	uci_set network "$1" imei "$IMEI"
 	uci_set network "$1" ccid "$CCID"
 	uci_commit network
