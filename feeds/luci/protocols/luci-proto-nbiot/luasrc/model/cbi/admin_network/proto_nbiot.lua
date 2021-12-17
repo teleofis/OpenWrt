@@ -28,7 +28,11 @@ pincode = section:taboption("general", Value, "pincode", translate("PIN"))
 username = section:taboption("general", Value, "username", translate("PAP/CHAP username"))
 password = section:taboption("general", Value, "password", translate("PAP/CHAP password"))
 password.password = true
-
+auth = section:taboption("general", ListValue, "auth", translate("Authentication Type"))
+auth.default = "none"
+auth:value("pap", "PAP")
+auth:value("chap", "CHAP")
+auth:value("none", "NONE")
 
 dialnumber = section:taboption("general", Value, "dialnumber", translate("Dial number"))
 dialnumber.placeholder = "*99***1#"

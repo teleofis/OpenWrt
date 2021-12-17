@@ -19,6 +19,9 @@ proto_nbiot_init_config() {
 	proto_config_add_string "pincode"
 	proto_config_add_string "dialnumber"
 	proto_config_add_string "band"
+	proto_config_add_string "username"
+	proto_config_add_string "password"
+	proto_config_add_string "auth"
 }
 
 modem_reset(){
@@ -34,6 +37,9 @@ proto_nbiot_setup() {
 
 	json_get_var device device
 	json_get_var apn apn
+	json_get_var username username
+	json_get_var password password
+	json_get_var auth auth
 	json_get_var pincode pincode
 	json_get_var dialnumber dialnumber
 	json_get_var band band
@@ -61,16 +67,34 @@ proto_nbiot_setup() {
 	if [ -n "$band" ]; then
 		COMMAND="AT+CBAND=$band" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 		COMMAND="AT+CFUN=0" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
-		COMMAND="AT*MCGDEFCONT=\"IP\",\"$apn\"" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
+		if [ -n "$username" ] && [ -n "$password" ] && [ -n "$auth" ]; then
+			case "$auth" in
+				pap) CODE=1;;
+				chap) CODE=2;;
+				*) CODE=0;;
+			esac
+			COMMAND="AT*MCGDEFCONT=\"IP\",\"$apn\",\"$username\",\"$password\",$CODE" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
+		else
+			COMMAND="AT*MCGDEFCONT=\"IP\",\"$apn\"" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
+		fi
 		COMMAND="AT+CFUN=1" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 	fi
 
 	sleep 2
 
 	IMEI=$(gcom -d "$device" -s /etc/simman/getimei.gcom)
-	IMEI=${IMEI:1}
+	if [ -n "$IMEI" ]; then 
+		IMEI=${IMEI:1}
+	else
+		IMEI="n/a"
+	fi
+	
 	CCID=$(gcom -d "$device" -s /etc/simman/getccid1.gcom)
-	CCID=89${CCID:0:16}
+	if [ -n "$CCID" ]; then 
+		CCID=89${CCID:0:16}
+	else
+		CCID="n/a"
+	fi
 	uci_set network "$1" imei "$IMEI"
 	uci_set network "$1" ccid "$CCID"
 	uci_commit network
