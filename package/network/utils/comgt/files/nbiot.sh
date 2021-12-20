@@ -67,11 +67,10 @@ proto_nbiot_setup() {
 	if [ -n "$band" ]; then
 		COMMAND="AT+CBAND=$band" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 		COMMAND="AT+CFUN=0" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
-		if [ -n "$username" ] && [ -n "$password" ] && [ -n "$auth" ]; then
+		if [ -n "$username" ] && [ -n "$password" ] && [ -n "$auth" ] && [ "$auth" != "none" ]; then
 			case "$auth" in
 				pap) CODE=1;;
-				chap) CODE=2;;
-				*) CODE=0;;
+				*) CODE=2;;
 			esac
 			COMMAND="AT*MCGDEFCONT=\"IP\",\"$apn\",\"$username\",\"$password\",$CODE" gcom -d "$device" -s /etc/gcom/runcommand.gcom &>/dev/null
 		else
