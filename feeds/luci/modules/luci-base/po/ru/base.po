@@ -320,6 +320,9 @@ msgstr ""
 msgid "Authentication"
 msgstr "Аутентификация"
 
+msgid "Authentication Type"
+msgstr "Тип аутентификации"
+
 msgid "Authoritative"
 msgstr "Авторитетный"
 
@@ -699,7 +702,7 @@ msgid "Diagnostics"
 msgstr "Диагностика"
 
 msgid "Dial number"
-msgstr ""
+msgstr "Dial номер"
 
 msgid "Directory"
 msgstr "Директория"
@@ -4627,3 +4630,6 @@ msgstr "Режим Read-Only"
 
 msgid "Switch mode (Read-Only/Read-Write)"
 msgstr "Переключить режим (Read-Only/Read-Write)"
+
+msgid "NB-IoT band"
+msgstr "NB-IoT полоса частот"
