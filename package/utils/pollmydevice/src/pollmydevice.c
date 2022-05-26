@@ -1902,7 +1902,7 @@ device_config_t GetFullDeviceConfig(int deviceID)
     sprintf(cmd,"uci set pollmydevice.%d.teleofisid=%lld && uci commit pollmydevice",deviceID, deviceConfig.teleofisID);
     FILE *fp;
     fp = popen(cmd,"r");
-    if (popen(cmd,"r") != NULL) 
+    if (fp != NULL) 
         pclose(fp);
 
 

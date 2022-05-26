@@ -29,7 +29,7 @@ voltage = s:option(DummyValue, "voltage", translate("Measured voltage on ADC, mV
         test = io.popen("cat /dev/board")
         local devver = test:read("*a")
         test:close()
-        if tonumber(string.format("%d", devver))>750 and tonumber(string.format("%d", devver))<850 then
+        if tonumber(string.format("%d", devver))>650 and tonumber(string.format("%d", devver))<900 then
           result = result * 8.219
         else
           result = result * 4.365
@@ -46,7 +46,7 @@ resist = s:option(DummyValue, "resist", translate("Measured resistance by ADC, O
         test = io.popen("cat /dev/board")
         local devver = test:read("*a")
         test:close()
-        if tonumber(string.format("%d", devver))>750 and tonumber(string.format("%d", devver))<850 then
+        if tonumber(string.format("%d", devver))>650 and tonumber(string.format("%d", devver))<900 then
           result = result * 1.022
         else
           result = result * 0.543
