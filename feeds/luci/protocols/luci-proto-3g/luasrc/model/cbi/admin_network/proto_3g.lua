@@ -24,7 +24,8 @@ end
 
 service = section:taboption("general", Value, "service", translate("Service Type"))
 service:value("", translate("-- Please choose --"))
-service:value("umts", "UMTS/GPRS")
+service:value("umts", "ALL")
+service:value("lte_only", translate("LTE only"))
 service:value("umts_only", translate("UMTS only"))
 service:value("gprs_only", translate("GPRS only"))
 

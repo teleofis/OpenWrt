@@ -26,7 +26,7 @@ shift $((OPTIND-1))
 [ -z "$device" ] && device=$(uci -q get simman.core.atdevice)
 
 PROTO_3G=$(uci get simman.core.proto 2>/dev/null)
-if [ "$PROTO_3G" = "3" ];then
+if [ "$PROTO_3G" = "3" -o "$PROTO_3G" = "4" ];then
 	echo "ALL:" > /tmp/lock/smsd.lock
 fi
 
@@ -38,7 +38,7 @@ while [ "$RESULT" != "$cfun" ]; do
 	RESULT=$(COMMAND="?" gcom -d $device -s $SCRIPT_CFUN)
 done
 
-if [ "$PROTO_3G" = "3" ];then
+if [ "$PROTO_3G" = "3" -o "$PROTO_3G" = "4" ];then
 	rm /tmp/lock/smsd.lock
 fi
 

@@ -34,7 +34,7 @@ shift $((OPTIND-1))
 [ ! -e $device ] && exit 0
 
 PROTO_3G=$(uci get simman.core.proto 2>/dev/null)
-if [ "$PROTO_3G" = "3" ];then
+if [ "$PROTO_3G" = "3" -o "$PROTO_3G" = "4" ];then
   echo "ALL:" > /tmp/lock/smsd.lock
 fi
 
@@ -75,7 +75,7 @@ else
   echo $BASESTID
 fi
 
-if [ "$PROTO_3G" = "3" ];then
+if [ "$PROTO_3G" = "3" -o "$PROTO_3G" = "4" ];then
   rm /tmp/lock/smsd.lock
 fi
 

@@ -96,6 +96,16 @@ proto_3g_setup() {
 				export MODE="AT^SYSCFG=${CODE},3FFFFFFF,2,4"
 			fi
 
+			if [ -e /tmp/simman/$interface ] ; then
+				case "$service" in
+					lte_only) CODE=38;;
+					umts_only) CODE=14;;
+					gprs_only) CODE=13;;
+					*) CODE=2;;
+				esac
+				export MODE="AT+CNMP=${CODE}"
+			fi
+
 			if [ -n "$pincode" ]; then
 				PINCODE="$pincode" gcom -d "$device" -s /etc/gcom/setpin.gcom || {
 					proto_notify_error "$interface" PIN_FAILED

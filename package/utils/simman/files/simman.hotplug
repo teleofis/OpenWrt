@@ -68,18 +68,21 @@ case "$ACTION" in
                 -o "$DEVPATH" = "/devices/soc0/80080000.ahb/80090000.usb/ci_hdrc.1/usb1/1-1/1-1.3/1-1.3:1.2" ]; then
 
                 sed -i -e "s/devices = SIM5360/devices = mobile/g" /etc/smsd.conf
-                uci delete network.internet
-                uci set network.internet="interface"
-                uci set network.internet.proto="dhcp"
-                uci set network.internet.ifname="internet"
-                uci set network.internet.metric='5'
-                uci set simman.core.iface=internet
+                uci delete network.wwan0
+                uci set network.internet=interface
+                uci set network.internet.proto=3g
+                uci set network.internet.device=/dev/ttyM0
+                uci set network.internet.service=umts
+                uci set network.internet.apn=internet
+                uci set network.internet.metric=2
+                uci set simman.core.iface=3g-internet
                 uci set simman.core.proto=4
-                echo internet > /sys/class/leds/middle\:net/device_name
-                echo internet > /sys/class/leds/bottom\:act/device_name
+                echo 3g-internet > /sys/class/leds/middle\:net/device_name
+                echo 3g-internet > /sys/class/leds/bottom\:act/device_name
+                sed -i -e "s/\\\^SGAUTH=1,1,\"\",\"\"//g" /etc/chatscripts/3g.chat
                 sed -i -e "s/$version/RTU1068V2/g" /etc/banner
                 sed -i -e "s/$version/RTU1068V2/g" /etc/config/system
-                sed -i -e "s/3g-internet/internet/g" /etc/config/system
+                sed -i -e "s/wwan0/3g-internet/g" /etc/config/system
                 uci commit
             fi
         ;;

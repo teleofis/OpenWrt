@@ -285,8 +285,7 @@ else
 fi
 
 if [ "$proto" == "4" ]; then	
-	COMMAND="AT+CGDCONT=1,\"IP\",\"$apn\"" gcom -d "$ATDEVICE" -s /etc/gcom/runcommand.gcom &>/dev/null
-	COMMAND="AT+CNMP=2" gcom -d "$ATDEVICE" -s /etc/gcom/runcommand.gcom &>/dev/null
+	touch /tmp/simman/$iface
 fi
 
 sleep 1
