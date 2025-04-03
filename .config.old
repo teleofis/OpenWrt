@@ -3412,7 +3412,7 @@ CONFIG_PACKAGE_luci-app-iolines=y
 # CONFIG_PACKAGE_luci-app-meshwizard is not set
 # CONFIG_PACKAGE_luci-app-mjpg-streamer is not set
 # CONFIG_PACKAGE_luci-app-mmc-over-gpio is not set
-CONFIG_PACKAGE_luci-app-mosquitto=y
+# CONFIG_PACKAGE_luci-app-mosquitto is not set
 # CONFIG_PACKAGE_luci-app-multiwan is not set
 CONFIG_PACKAGE_luci-app-mwan3=y
 # CONFIG_PACKAGE_luci-app-ntpc is not set
@@ -3571,31 +3571,6 @@ CONFIG_PACKAGE_luci-i18n-firewall-uk=y
 # CONFIG_PACKAGE_luci-i18n-firewall-zh-tw is not set
 CONFIG_PACKAGE_luci-i18n-gre-en=y
 CONFIG_PACKAGE_luci-i18n-gre-ru=y
-# CONFIG_PACKAGE_luci-i18n-mosquitto-ca is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-cs is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-de is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-el is not set
-CONFIG_PACKAGE_luci-i18n-mosquitto-en=y
-# CONFIG_PACKAGE_luci-i18n-mosquitto-es is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-fr is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-he is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-hu is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-it is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-ja is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-ms is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-no is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-pl is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-pt is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-pt-br is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-ro is not set
-CONFIG_PACKAGE_luci-i18n-mosquitto-ru=y
-# CONFIG_PACKAGE_luci-i18n-mosquitto-sk is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-sv is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-tr is not set
-CONFIG_PACKAGE_luci-i18n-mosquitto-uk=y
-# CONFIG_PACKAGE_luci-i18n-mosquitto-vi is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-zh-cn is not set
-# CONFIG_PACKAGE_luci-i18n-mosquitto-zh-tw is not set
 # CONFIG_PACKAGE_luci-i18n-openvpn-ca is not set
 # CONFIG_PACKAGE_luci-i18n-openvpn-cs is not set
 # CONFIG_PACKAGE_luci-i18n-openvpn-de is not set
@@ -4715,7 +4690,7 @@ CONFIG_PACKAGE_dmesg=y
 # CONFIG_PACKAGE_gnupg is not set
 # CONFIG_PACKAGE_gpioctl-sysfs is not set
 CONFIG_PACKAGE_gpsd=y
-# CONFIG_PACKAGE_gpsd-clients is not set
+CONFIG_PACKAGE_gpsd-clients=y
 CONFIG_PACKAGE_grep=y
 # CONFIG_PACKAGE_hamlib is not set
 # CONFIG_PACKAGE_haserl is not set
